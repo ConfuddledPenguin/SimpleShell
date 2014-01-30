@@ -29,11 +29,27 @@
  *      github repo.
  *
  ******************************************************************************/
- #define VERSION "v0.0. Last Update 28/01/2014\n"
+#define VERSION "v0.0. Last Update 30/01/2014\n"
 
- #include <stdio.h>
+#include <stdio.h>
+#include <string.h>
 
- int main(){
+int main(){
 
-  return(0);
- }
+	int run = 1;
+	char command[512];
+	char *p;
+
+	while (run){
+
+ 		printf("> ");
+ 		fgets(command, 512, stdin);
+ 		printf("%s", command);
+
+ 		if ((p = strchr(command, '\n')) != NULL)
+    		p = '\0';
+ 		run = 0;
+ 	}
+
+ return(0);
+}
