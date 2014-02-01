@@ -28,56 +28,74 @@
  *      Created initial file (SimpleShell.c) as well as read me files and a
  *      github repo.
  *
+ * v0.0.1 - 01/02/2014 - User input
+ *
+ *			Created a basic loop to prompt the user and taken input using 
+ *		fgets(). This is then checked to ensure that the user has not
+ *		just hit enter. Once we are sure we have a sensible input, it is
+ *		tokenised and printed back out the console. The user can also exit the 
+ *		program if he disires. 
+ *
+ *			The comment shall be stored in a struct, as this can be easily 
+ *		accessed and passed, although this has not yet been fully implemented 
+ *		yet.
+ *
  ******************************************************************************/
 #define VERSION "v0.0. Last Update 30/01/2014\n"
 
 #include <stdio.h>
 #include <string.h>
-#include <windows.h>
+
+ #define PROMPT "> "
 
 typedef struct
 {
-	char *command;
+	char *input_command;
 } user_command;
 
 int main(){
 
 	//variable
 	int run = 1;
-	char *prompt = "> ";
 	char input[512];
 	char *p;
 
 	//user loop
-	while (run || (getchar() != EOF) ){
+	while (run){
 
 		user_command command = {
 			NULL
 		};
 
 		//prompt user
- 		printf("%s", prompt);
+ 		printf("%s", PROMPT);
  		fgets(input, 512, stdin);
 
- 		//Simple check
+ 		//To ensure its been taken in. Shall be removed in future
  		printf("The command: %s", input);
+
+ 		//Checking user has not just hit enter
+ 		if (input[0] == '\n') {
+    		continue;
+		}
 
  		//Getting rid of the new line char, replacing with a terminating char
  		if ((p = strchr(input, '\n')) != NULL)
  			*p = '\0';
 
- 		//TOKENISE HERE
+ 		//tokenising 
  		char *tokenizer = " ";
  		char *token;
- 		command.command = strtok(input, tokenizer);
- 		printf("%s\n", command);
+ 		command.input_command = strtok(input, tokenizer);
+ 		printf("%s\n", command.input_command);
+
  		while ( (token = strtok(NULL, tokenizer) ) != NULL){
 
  			printf("%s\n", token);
  		}
 
  		//exit check
-    	if(strcmp(command.command, "exit") == 0){ 
+    	if(strcmp(command.input_command, "exit") == 0){ 
  			run = 0;
  		}
  	}
