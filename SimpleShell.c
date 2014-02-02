@@ -92,7 +92,7 @@ int getInput(user_command *command){
  	fgets(input, 512, stdin);
 
  	//To ensure its been taken in. Shall be removed in future
- 	printf("The input: %s", input);
+ 	printf("The input: '%s'", input);
 
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
@@ -106,7 +106,7 @@ int getInput(user_command *command){
  	char *tokenizer = " ";
  	char *token;
  	command->input_command = strtok(input, tokenizer);
- 	printf("The command: %s\n", command->input_command);
+ 	printf("The command: '%s'\n", command->input_command);
 
  	//exit check
     if(strcmp(command->input_command, "exit") == 0){ 
@@ -119,7 +119,7 @@ int getInput(user_command *command){
  		//printf("%s\n", token);
  		// command.args[i] = token;
  		strcpy(command->args[i], token);
- 		printf("%s ", command->args[i]);
+ 		printf("'%s' ", command->args[i]);
  		i++;
  	}
  	printf("\n");
