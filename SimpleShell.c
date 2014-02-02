@@ -113,11 +113,11 @@ int main(){
 
 		int return_val = -1;
 		return_val = getInput(&command);
-		if (return_val = INPUT_EXIT) {
+		if (return_val == INPUT_EXIT) {
 			break;
-		} else if (return_val = INPUT_CONTINUE) {
+		} else if (return_val == INPUT_CONTINUE) {
 			continue;
-		} else if (return_val = INPUT_ERROR) {
+		} else if (return_val == INPUT_ERROR) {
 			printf("I broke");
 			continue;
 		}
