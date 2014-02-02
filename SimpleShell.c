@@ -34,11 +34,16 @@
  *		fgets(). This is then checked to ensure that the user has not
  *		just hit enter. Once we are sure we have a sensible input, it is
  *		tokenised and printed back out the console. The user can also exit the 
- *		program if he disires. 
+ *		program if he desires. 
  *
- *			The comment shall be stored in a struct, as this can be easily 
+ *			The command shall be stored in a struct, as this can be easily 
  *		accessed and passed, although this has not yet been fully implemented 
  *		yet.
+ *
+ * v0.0.2 - 01/02/2014 - Reorganized 
+ * 
+ *			Mover the prompting of the user; getting input and tokenizing it to 
+ *		a new function: getInput().
  *
  ******************************************************************************/
 #define VERSION "v0.0. Last Update 30/01/2014\n"
@@ -52,12 +57,32 @@
 #define INPUT_RUN 2
 #define INPUT_ERROR 4
 
+/* This structure holds the command entered by the user.
+ */
 typedef struct
 {
 	char *input_command;
 	char args[50][50];
 } user_command;
 
+/* int getInput(user_command *command)
+ * 
+ * #include <stdio.h>
+ * #include <string.h>
+ *
+ * Description:
+ *
+ * Prompts the user for an input and tokenises it. This modifies the struct,
+ * user_command, and fills it with appropriate values.
+ *
+ * Returns:
+ *
+ * int INPUT_EXIT		- If user wishes to exit the program
+ * int INPUT_RUN		- If it was successful
+ * int INPUT_ERROR		- If something has gone drastically wrong
+ * int INPUT_CONTINUE	- If the entered command should not be processed.
+ * 
+ */
 int getInput(user_command *command){
 	char input[512];
 	char *p;
