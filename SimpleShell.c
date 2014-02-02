@@ -46,7 +46,11 @@
 #include <stdio.h>
 #include <string.h>
 
- #define PROMPT "> "
+#define PROMPT "> "
+#define INPUT_EXIT 0
+#define INPUT_CONTINUE 1
+#define INPUT_RUN 2
+#define INPUT_ERROR 4
 
 typedef struct
 {
@@ -54,53 +58,70 @@ typedef struct
 	char args[50][50];
 } user_command;
 
-int main(){
-
-	//variable
-	int run = 1;
+int getInput(user_command *command){
 	char input[512];
 	char *p;
 
+	//prompt user
+ 	printf("%s", PROMPT);
+ 	fgets(input, 512, stdin);
+
+ 	//To ensure its been taken in. Shall be removed in future
+ 	printf("The input: %s", input);
+
+ 	//Checking user has not just hit enter
+ 	if (input[0] == '\n')
+    	return INPUT_CONTINUE;
+
+ 	//Getting rid of the new line char, replacing with a terminating char
+ 	if ((p = strchr(input, '\n')) != NULL)
+ 		*p = '\0';
+
+ 	//tokenising 
+ 	char *tokenizer = " ";
+ 	char *token;
+ 	command->input_command = strtok(input, tokenizer);
+ 	printf("The command: %s\n", command->input_command);
+
+ 	//exit check
+    if(strcmp(command->input_command, "exit") == 0){ 
+ 		return INPUT_EXIT;
+ 	}
+
+ 	int i = 0;
+ 	printf("The parameters: ");
+ 	while ( (token = strtok(NULL, tokenizer) ) != NULL){
+ 		//printf("%s\n", token);
+ 		// command.args[i] = token;
+ 		strcpy(command->args[i], token);
+ 		printf("%s ", command->args[i]);
+ 		i++;
+ 	}
+ 	printf("\n");
+
+ 	return INPUT_RUN;
+}
+
+int main(){
+	//variable
+	int run = 1;
 	//user loop
 	while (run){
-
 		user_command command = {
 			NULL
 		};
 
-		//prompt user
- 		printf("%s", PROMPT);
- 		fgets(input, 512, stdin);
-
- 		//To ensure its been taken in. Shall be removed in future
- 		printf("The command: %s", input);
-
- 		//Checking user has not just hit enter
- 		if (input[0] == '\n')
-    		continue;
-
- 		//Getting rid of the new line char, replacing with a terminating char
- 		if ((p = strchr(input, '\n')) != NULL)
- 			*p = '\0';
-
- 		//tokenising 
- 		char *tokenizer = " ";
- 		char *token;
- 		command.input_command = strtok(input, tokenizer);
- 		printf("%s\n", command.input_command);
-
- 		int i = 0;
- 		while ( (token = strtok(NULL, tokenizer) ) != NULL){
-
- 			strcpy(command.args[i], token);
- 			i++;
- 		}
-
- 		//exit check
-    	if(strcmp(command.input_command, "exit") == 0){ 
- 			run = 0;
- 		}
+		int return_val = -1;
+		return_val = getInput(&command);
+		if (return_val == INPUT_EXIT) {
+			break;
+		} else if (return_val == INPUT_CONTINUE) {
+			continue;
+		} else if (return_val == INPUT_ERROR) {
+			printf("I broke");
+			continue;
+		}
  	}
 
- return(0);
+ 	return(0);
 }
