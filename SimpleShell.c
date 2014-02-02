@@ -47,6 +47,10 @@
 #include <string.h>
 
 #define PROMPT "> "
+#define INPUT_EXIT 0
+#define INPUT_CONTINUE 1
+#define INPUT_RUN 2
+#define INPUT_ERROR 4
 
 typedef struct
 {
@@ -67,7 +71,7 @@ int getInput(user_command *command){
 
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
-    	return 1;
+    	return INPUT_CONTINUE;
 
  	//Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL)
@@ -81,7 +85,7 @@ int getInput(user_command *command){
 
  	//exit check
     if(strcmp(command->input_command, "exit") == 0){ 
- 		return 0;
+ 		return INPUT_EXIT;
  	}
 
  	int i = 0;
@@ -95,7 +99,7 @@ int getInput(user_command *command){
  	}
  	printf("\b\b\b\b\n");
 
- 	return 1;
+ 	return INPUT_RUN;
 }
 
 int main(){
@@ -106,7 +110,17 @@ int main(){
 		user_command command = {
 			NULL
 		};
-		run = getInput(&command);
+
+		int return_val = -1;
+		return_val = getInput(&command);
+		if (return_val = INPUT_EXIT) {
+			break;
+		} else if (return_val = INPUT_CONTINUE) {
+			continue;
+		} else if (return_val = INPUT_ERROR) {
+			printf("I broke");
+			continue;
+		}
  	}
 
  	return(0);
