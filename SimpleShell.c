@@ -94,10 +94,10 @@ int getInput(user_command *command){
  		//printf("%s\n", token);
  		// command.args[i] = token;
  		strcpy(command->args[i], token);
- 		printf("%s, ", command->args[i]);
+ 		printf("%s ", command->args[i]);
  		i++;
  	}
- 	printf("\b\b\b\b\n");
+ 	printf("\n");
 
  	return INPUT_RUN;
 }
