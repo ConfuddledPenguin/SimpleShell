@@ -19,7 +19,7 @@
  * Version:
  *      See VERSION below
  *
- *****************************************************************************/
+ ******************************************************************************/
 
 /********************* R E V I S I O N   H I S T O R Y *************************
  * 
@@ -46,7 +46,7 @@
  *		a new function: getInput().
  *
  ******************************************************************************/
-#define VERSION "v0.0. Last Update 30/01/2014\n"
+#define VERSION "v0.0.2. Last Update 30/01/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -84,6 +84,7 @@ typedef struct
  * 
  */
 int getInput(user_command *command){
+	
 	char input[512];
 	char *p;
 
@@ -128,8 +129,10 @@ int getInput(user_command *command){
 }
 
 int main(){
+	
 	//variable
 	int run = 1;
+	
 	//user loop
 	while (run){
 		user_command command = {
