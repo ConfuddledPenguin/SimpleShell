@@ -91,9 +91,6 @@ int getInput(user_command *command){
  	printf("%s", PROMPT);
  	fgets(input, 512, stdin);
 
- 	//To ensure its been taken in. Shall be removed in future
- 	printf("The input: '%s'", input);
-
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
     	return INPUT_CONTINUE;
@@ -101,6 +98,9 @@ int getInput(user_command *command){
  	//Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
+
+ 	//To ensure its been taken in. Shall be removed in future
+ 	printf("The input: '%s'", input);
 
  	//tokenising 
  	char *tokenizer = " ";
