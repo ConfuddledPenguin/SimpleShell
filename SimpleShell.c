@@ -51,6 +51,7 @@
 typedef struct
 {
 	char *input_command;
+	char args[50][50];
 } user_command;
 
 int main(){
@@ -75,9 +76,8 @@ int main(){
  		printf("The command: %s", input);
 
  		//Checking user has not just hit enter
- 		if (input[0] == '\n') {
+ 		if (input[0] == '\n')
     		continue;
-		}
 
  		//Getting rid of the new line char, replacing with a terminating char
  		if ((p = strchr(input, '\n')) != NULL)
