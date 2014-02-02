@@ -46,7 +46,7 @@
 #include <stdio.h>
 #include <string.h>
 
- #define PROMPT "> "
+#define PROMPT "> "
 
 typedef struct
 {
@@ -54,56 +54,58 @@ typedef struct
 	char args[50][50];
 } user_command;
 
-int main(){
-
-	//variable
-	int run = 1;
+int getInput(user_command *command){
 	char input[512];
 	char *p;
 
+	//prompt user
+ 	printf("%s", PROMPT);
+ 	fgets(input, 512, stdin);
+
+ 	//To ensure its been taken in. Shall be removed in future
+ 	printf("The command: %s", input);
+
+ 	//Checking user has not just hit enter
+ 	if (input[0] == '\n')
+    	return 1;
+
+ 	//Getting rid of the new line char, replacing with a terminating char
+ 	if ((p = strchr(input, '\n')) != NULL)
+ 		*p = '\0';
+
+ 	//tokenising 
+ 	char *tokenizer = " ";
+ 	char *token;
+ 	command.input_command = strtok(input, tokenizer);
+ 	printf("%s\n", command.input_command);
+
+ 	//exit check
+    if(strcmp(command.input_command, "exit") == 0){ 
+ 		return 0;
+ 	}
+
+ 	int i = 0;
+ 	while ( (token = strtok(NULL, tokenizer) ) != NULL){
+ 		printf("%s\n", token);
+ 		// command.args[i] = token;
+ 		strcpy(command.args[i], token);
+ 		printf("%s\n", command.args[i]);
+ 		i++;
+ 	}
+
+ 	return 1;
+}
+
+int main(){
+	//variable
+	int run = 1;
 	//user loop
 	while (run){
-
 		user_command command = {
 			NULL
 		};
-
-		//prompt user
- 		printf("%s", PROMPT);
- 		fgets(input, 512, stdin);
-
- 		//To ensure its been taken in. Shall be removed in future
- 		printf("The command: %s", input);
-
- 		//Checking user has not just hit enter
- 		if (input[0] == '\n')
-    		continue;
-
- 		//Getting rid of the new line char, replacing with a terminating char
- 		if ((p = strchr(input, '\n')) != NULL)
- 			*p = '\0';
-
- 		//tokenising 
- 		char *tokenizer = " ";
- 		char *token;
- 		command.input_command = strtok(input, tokenizer);
- 		printf("%s\n", command.input_command);
-
- 		int i = 0;
- 		while ( (token = strtok(NULL, tokenizer) ) != NULL){
-
- 			printf("%s\n", token);
- 			// command.args[i] = token;
- 			strcpy(command.args[i], token);
- 			printf("%s\n", command.args[i]);
- 			i++;
- 		}
-
- 		//exit check
-    	if(strcmp(command.input_command, "exit") == 0){ 
- 			run = 0;
- 		}
+		run = getInput(&command);
  	}
 
- return(0);
+ 	return(0);
 }
