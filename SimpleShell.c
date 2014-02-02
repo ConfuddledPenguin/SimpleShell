@@ -101,7 +101,7 @@ int getInput(user_command *command){
  		*p = '\0';
 
  	//To ensure its been taken in. Shall be removed in future
- 	printf("The input: '%s'", input);
+ 	printf("The input: '%s'\n", input);
 
  	//tokenising 
  	char *tokenizer = " ";
