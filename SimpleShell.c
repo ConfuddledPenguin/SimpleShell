@@ -51,7 +51,7 @@
 typedef struct
 {
 	char *input_command;
-	char args[50][50];
+	char *args[50];
 } user_command;
 
 int main(){
@@ -89,9 +89,13 @@ int main(){
  		command.input_command = strtok(input, tokenizer);
  		printf("%s\n", command.input_command);
 
+ 		int i = 0;
  		while ( (token = strtok(NULL, tokenizer) ) != NULL){
 
  			printf("%s\n", token);
+ 			command.args[i] = token;
+ 			i++;
+ 			printf("%s\n", command.args[i]);
  		}
 
  		//exit check
