@@ -92,10 +92,7 @@ int main(){
  		int i = 0;
  		while ( (token = strtok(NULL, tokenizer) ) != NULL){
 
- 			printf("%s\n", token);
- 			// command.args[i] = token;
  			strcpy(command.args[i], token);
- 			printf("%s\n", command.args[i]);
  			i++;
  		}
 
