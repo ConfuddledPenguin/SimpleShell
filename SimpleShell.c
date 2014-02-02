@@ -1,6 +1,6 @@
 /******************************************************************************
  * Synopsis: This is a simple unix like shell written in C, for the class CS210 
- *      at the University of Strathcylde. This was a group project to be 
+ *      at the University of Strathclyde. This was a group project to be 
  *      undertaken by four students.
  *
  * Compiling: This program should be compiled using the C99 standard. This is
@@ -51,7 +51,7 @@
 typedef struct
 {
 	char *input_command;
-	char *args[50];
+	char args[50][50];
 } user_command;
 
 int main(){
@@ -93,9 +93,10 @@ int main(){
  		while ( (token = strtok(NULL, tokenizer) ) != NULL){
 
  			printf("%s\n", token);
- 			command.args[i] = token;
- 			i++;
+ 			// command.args[i] = token;
+ 			strcpy(command.args[i], token);
  			printf("%s\n", command.args[i]);
+ 			i++;
  		}
 
  		//exit check
