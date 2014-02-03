@@ -116,6 +116,9 @@ int getInput(user_command *command){
  	char *tokenizer = " ";
  	char *token;
  	command->input_command = strtok(input, tokenizer);
+ 	if(command->input_command == NULL){
+ 		return INPUT_CONTINUE;
+ 	}
  	printf("The command: '%s'\n", command->input_command);
 
  	//exit check
