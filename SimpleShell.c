@@ -51,7 +51,7 @@
  *		in main for when an INPUT_EXIT is returned. While check now replaces it. 
  *
  ******************************************************************************/
-#define VERSION "v0.0.2. Last Update 30/01/2014\n"
+#define VERSION "v0.0.3. Last Update 02/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
