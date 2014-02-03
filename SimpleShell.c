@@ -48,7 +48,7 @@
  *	v0.0.3 - 02/02/2014 - Loop improvement
  *
  *		Changed while loop to a do while loop. Removes the need for an if check
- *		in main for when an INPUT_EXIT is returned. While check now replaces it. 
+ *		in main for when an INPUT_EXIT is returned. While check now replaces it.
  *
  ******************************************************************************/
 #define VERSION "v0.0.3. Last Update 02/02/2014\n"
@@ -100,7 +100,6 @@ int getInput(user_command *command){
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
     	return INPUT_CONTINUE;
-
  	//Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
@@ -112,6 +111,8 @@ int getInput(user_command *command){
  	char *tokenizer = " ";
  	char *token;
  	command->input_command = strtok(input, tokenizer);
+ 	if(command->input_command == NULL)
+ 		return INPUT_CONTINUE;
  	printf("The command: '%s'\n", command->input_command);
 
  	//exit check
