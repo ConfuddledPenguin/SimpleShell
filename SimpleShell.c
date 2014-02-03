@@ -101,8 +101,12 @@ int getInput(user_command *command){
  	if (input[0] == '\n')
     	return INPUT_CONTINUE;
  	//Getting rid of the new line char, replacing with a terminating char
- 	if ((p = strchr(input, '\n')) != NULL)
+ 	if ((p = strchr(input, '\n')) != NULL){
  		*p = '\0';
+ 	}
+ 	else{
+ 		return INPUT_EXIT;
+ 	}
 
  	//To ensure its been taken in. Shall be removed in future
  	printf("The input: '%s'\n", input);
