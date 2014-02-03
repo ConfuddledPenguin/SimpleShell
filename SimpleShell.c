@@ -25,20 +25,20 @@
  * 
  * 	v0.0 - 28/01/2014 - File birth
  *
- *      Created initial file (SimpleShell.c) as well as read me files and a
- *      github repo.
+ * 		Created initial file (SimpleShell.c) as well as read me files and a
+ * 		github repo.
  *
  * 	v0.0.1 - 01/02/2014 - User input
  *
  *		Created a basic loop to prompt the user and taken input using 
  *		fgets(). This is then checked to ensure that the user has not
  *		just hit enter. Once we are sure we have a sensible input, it is
- *		tokenised and printed back out the console. The user can also exit the 
- *		program if he desires. 
+ *		tokenised and printed back out the console. The user can also  
+ *		exit the program if he desires. 
  *
  *		The command shall be stored in a struct, as this can be easily 
- *		accessed and passed, although this has not yet been fully implemented 
- *		yet.
+ *		accessed and passed, although this has not yet been fully
+ *		implemented yet.
  *
  * 	v0.0.2 - 01/02/2014 - Reorganized 
  * 
