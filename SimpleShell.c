@@ -106,7 +106,7 @@ int getInput(user_command *command){
  		*p = '\0';
  	}
  	else{
- 		return INPUT_CONTINUE;
+ 		return INPUT_EXIT;
  	}
 
  	//To ensure its been taken in. Shall be removed in future
