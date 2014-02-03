@@ -23,27 +23,32 @@
 
 /********************* R E V I S I O N   H I S T O R Y *************************
  * 
- * v0.0 - 28/01/2014 - File birth
+ * 	v0.0 - 28/01/2014 - File birth
  *
  *      Created initial file (SimpleShell.c) as well as read me files and a
  *      github repo.
  *
- * v0.0.1 - 01/02/2014 - User input
+ * 	v0.0.1 - 01/02/2014 - User input
  *
- *			Created a basic loop to prompt the user and taken input using 
+ *		Created a basic loop to prompt the user and taken input using 
  *		fgets(). This is then checked to ensure that the user has not
  *		just hit enter. Once we are sure we have a sensible input, it is
  *		tokenised and printed back out the console. The user can also exit the 
  *		program if he desires. 
  *
- *			The command shall be stored in a struct, as this can be easily 
+ *		The command shall be stored in a struct, as this can be easily 
  *		accessed and passed, although this has not yet been fully implemented 
  *		yet.
  *
- * v0.0.2 - 01/02/2014 - Reorganized 
+ * 	v0.0.2 - 01/02/2014 - Reorganized 
  * 
- *			Mover the prompting of the user; getting input and tokenizing it to 
+ *		Mover the prompting of the user; getting input and tokenizing it to 
  *		a new function: getInput().
+ *
+ *	v0.0.3 - 02/02/2014 - Loop improvement
+ *
+ *		Changed while loop to a do while loop. Removes the need for an if check
+ *		in main for when an INPUT_EXIT is returned. While check now replaces it. 
  *
  ******************************************************************************/
 #define VERSION "v0.0.2. Last Update 30/01/2014\n"
@@ -129,27 +134,23 @@ int getInput(user_command *command){
 }
 
 int main(){
-	
-	//variable
-	int run = 1;
-	
+
+	int return_val = -1;
+
 	//user loop
-	while (run){
+	do{
 		user_command command = {
 			NULL
 		};
 
-		int return_val = -1;
 		return_val = getInput(&command);
-		if (return_val == INPUT_EXIT) {
-			break;
-		} else if (return_val == INPUT_CONTINUE) {
+		if (return_val == INPUT_CONTINUE) {
 			continue;
 		} else if (return_val == INPUT_ERROR) {
 			printf("I broke");
 			continue;
 		}
- 	}
+ 	} while(return_val != INPUT_EXIT);
 
  	return(0);
 }
