@@ -60,7 +60,7 @@
 #define INPUT_EXIT 0
 #define INPUT_CONTINUE 1
 #define INPUT_RUN 2
-#define INPUT_ERROR 4
+#define INPUT_ERROR 3
 
 /* This structure holds the command entered by the user.
  */
@@ -100,6 +100,7 @@ int getInput(user_command *command){
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
     	return INPUT_CONTINUE;
+
  	//Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL){
  		*p = '\0';
@@ -127,8 +128,6 @@ int getInput(user_command *command){
  	int i = 0;
  	printf("The parameters: ");
  	while ( (token = strtok(NULL, tokenizer) ) != NULL){
- 		//printf("%s\n", token);
- 		// command.args[i] = token;
  		strcpy(command->args[i], token);
  		printf("'%s' ", command->args[i]);
  		i++;
