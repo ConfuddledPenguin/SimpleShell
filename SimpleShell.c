@@ -35,29 +35,48 @@
  *		just hit enter. Once we are sure we have a sensible input, it is
  *		tokenised and printed back out the console. The user can also  
  *		exit the program if he desires. 
+ *		- Tom
  *
  *		The command shall be stored in a struct, as this can be easily 
  *		accessed and passed, although this has not yet been fully
- *		implemented yet.
+ *		implemented yet. 
+ *		- Tom
  *
  * 	v0.0.2 - 01/02/2014 - Reorganized 
  * 
  *		Mover the prompting of the user; getting input and tokenizing it to 
- *		a new function: getInput().
+ *		a new function: getInput(). 
+ *		- Aidan
  *
  *	v0.0.3 - 02/02/2014 - Loop improvement
  *
  *		Changed while loop to a do while loop. Removes the need for an if check
  *		in main for when an INPUT_EXIT is returned. While check now replaces it.
+ *		- Grant
  *
  *	v0.0.4 - 04/02/2014 - Ctrl D Integration
  *
  *		Completed integration of Ctrl D to end the program by adding an if
- *		check on the input the check if fgets() returns NULL inticating the
- *		presense of the EOF signal.
+ *		check on the input the check if fgets() returns NULL indicating the
+ *		presence of the EOF signal. 
+ *		- Grant/Thomas
+ *
+ *  v0.0.5 - 04/02/2014 - Clean up
+ *
+ *		Cleaned up loose ends in the code:
+ *			- checked the number of the parameters does not exceed the size of 
+ *			the array
+ *			- added comments for clarity
+ *			- added whitespace (sorry whitespace nutjob)
+ *			- removed excess braces
+ *			- reverted back to old user loop. As it will be more efficient once
+ *			new features are added.
+ *		This should be the final version of stage 1, apart from a brief 
+ *		modification after testing to remove input checking printf()'s
+ *		- Tom
  *
  ******************************************************************************/
-#define VERSION "v0.0.4. Last Update 04/02/2014\n"
+#define VERSION "v0.0.5. Last Update 04/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -101,9 +120,8 @@ int getInput(user_command *command){
 
 	//prompt user
  	printf("%s", PROMPT);
- 	//check for EOF
- 	if((fgets(input, 512, stdin)) == NULL){
- 		puts("\n");
+ 	if((fgets(input, 512, stdin)) == NULL){ //end of fill check
+ 		printf("\n");
  		return INPUT_EXIT;
  	}
 
@@ -123,24 +141,29 @@ int getInput(user_command *command){
  	char *tokenizer = " ";
  	char *token;
  	command->input_command = strtok(input, tokenizer);
- 	if(command->input_command == NULL){
+ 	if(command->input_command == NULL)
  		return INPUT_CONTINUE;
- 	}
+
+ 	//ensures command has been taken in. Shall be removed later
  	printf("The command: '%s'\n", command->input_command);
 
  	//exit check
-    if(strcmp(command->input_command, "exit") == 0){ 
+    if(strcmp(command->input_command, "exit") == 0) 
  		return INPUT_EXIT;
- 	}
 
  	int i = 0;
- 	printf("The parameters: ");
- 	while ( (token = strtok(NULL, tokenizer) ) != NULL){
- 		//printf("%s\n", token);
- 		// command.args[i] = token;
+ 	printf("The parameters: "); // Ensuring parameters
+ 	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
+
  		strcpy(command->args[i], token);
- 		printf("'%s' ", command->args[i]);
+ 		printf("'%s' ", command->args[i]); // Ensuring parameters
  		i++;
+
+ 		if (i >= 50) {
+
+ 			printf("Error: To Many commands");
+ 			return INPUT_CONTINUE;
+ 		}
  	}
  	printf("\n");
 
@@ -150,9 +173,11 @@ int getInput(user_command *command){
 int main(){
 
 	int return_val = -1;
+	// int run = 1;
 
 	//user loop
-	do{
+	while (1) {
+
 		user_command command = {
 			NULL
 		};
@@ -163,8 +188,10 @@ int main(){
 		} else if (return_val == INPUT_ERROR) {
 			printf("I broke");
 			continue;
+		} else if (return_val == INPUT_EXIT) {
+			break;
 		}
- 	} while(return_val != INPUT_EXIT);
+ 	};
 
  	return(0);
 }
