@@ -48,10 +48,16 @@
  *	v0.0.3 - 02/02/2014 - Loop improvement
  *
  *		Changed while loop to a do while loop. Removes the need for an if check
- *		in main for when an INPUT_EXIT is returned. While check now replaces it. 
+ *		in main for when an INPUT_EXIT is returned. While check now replaces it.
+ *
+ *	v0.0.4 - 04/02/2014 - Ctrl D Integration
+ *
+ *		Completed integration of Ctrl D to end the program by adding an if
+ *		check on the input the check if fgets() returns NULL inticating the
+ *		presense of the EOF signal.
  *
  ******************************************************************************/
-#define VERSION "v0.0.3. Last Update 02/02/2014\n"
+#define VERSION "v0.0.4. Last Update 04/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -95,7 +101,11 @@ int getInput(user_command *command){
 
 	//prompt user
  	printf("%s", PROMPT);
- 	fgets(input, 512, stdin);
+ 	//check for EOF
+ 	if((fgets(input, 512, stdin)) == NULL){
+ 		puts("\n");
+ 		return INPUT_EXIT;
+ 	}
 
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
@@ -104,9 +114,6 @@ int getInput(user_command *command){
  	//Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL){
  		*p = '\0';
- 	}
- 	else{
- 		return INPUT_EXIT;
  	}
 
  	//To ensure its been taken in. Shall be removed in future
