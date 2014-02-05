@@ -1,6 +1,6 @@
 /******************************************************************************
- * Synopsis: This is a simple unix like shell written in C, for the class CS210 
- *      at the University of Strathclyde. This was a group project to be 
+ * Synopsis: This is a simple Unix like shell written in C, for the class CS210 
+ *      at the University of Strathclyde, Glasgow. This was a group project to be 
  *      undertaken by four students.
  *
  * Compiling: This program should be compiled using the C99 standard. This is
@@ -50,7 +50,13 @@
 #define INPUT_RUN 2
 #define INPUT_ERROR 3
 
-/* This structure holds the command entered by the user.
+/* This structure holds the command entered by the user. For example, the
+ * command "cd Documents" would have input_command = "cd" and args to store
+ * "Documents" in args[0].
+ *
+ * char *input_command	- The command that the user wishes to execute 
+ * char args[50][50]	- The arguments of a command.
+ *
  */
 typedef struct
 {
@@ -83,7 +89,7 @@ int getInput(user_command *command){
 
 	//prompt user
  	printf("%s", PROMPT);
- 	if((fgets(input, 512, stdin)) == NULL){ //end of fill check
+ 	if((fgets(input, 512, stdin)) == NULL){ //end of file check
  		printf("\n");
  		return INPUT_EXIT;
  	}
@@ -96,7 +102,7 @@ int getInput(user_command *command){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	//To ensure its been taken in. Shall be removed in future
+ 	//To ensure it's been taken in. Shall be removed in future
  	printf("The input: '%s'\n", input);
 
  	//tokenising 
@@ -106,7 +112,7 @@ int getInput(user_command *command){
  	if(command->input_command == NULL)
  		return INPUT_CONTINUE;
 
- 	//ensures command has been taken in. Shall be removed later
+ 	//ensures command has been taken in. Shall be removed in future
  	printf("The command: '%s'\n", command->input_command);
 
  	//exit check
@@ -115,11 +121,11 @@ int getInput(user_command *command){
 
  	int i = 0;
 
- 	printf("The parameters: "); // Ensuring parameters
+ 	printf("The parameters: "); // Ensuring parameters. Shall be removed in future
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
 
  		strcpy(command->args[i], token);
- 		printf("'%s' ", command->args[i]); // Ensuring parameters
+ 		printf("'%s' ", command->args[i]); // Ensuring parameters. Shall be removed in future
  		i++;
 
  		if (i >= 50) {
@@ -140,7 +146,7 @@ int main(){
 
 	//user loop
 	while (1) {
-
+		//initializes the new command that the user wishes to execute
 		user_command command = {
 			NULL
 		};
