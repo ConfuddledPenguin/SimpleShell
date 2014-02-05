@@ -23,57 +23,20 @@
 
 /********************* R E V I S I O N   H I S T O R Y *************************
  * 
+ *	For detailed Version history please see "VERSIONHISTORY.txt"
+ *
+ *
+ *
  * 	v0.0 - 28/01/2014 - File birth
  *
  * 		Created initial file (SimpleShell.c) as well as read me files and a
  * 		github repo.
  *
- * 	v0.0.1 - 01/02/2014 - User input
+ * 	v0.1 - 01/02/2014 - Stage One
  *
- *		Created a basic loop to prompt the user and taken input using 
- *		fgets(). This is then checked to ensure that the user has not
- *		just hit enter. Once we are sure we have a sensible input, it is
- *		tokenised and printed back out the console. The user can also  
- *		exit the program if he desires. 
- *		- Tom
- *
- *		The command shall be stored in a struct, as this can be easily 
- *		accessed and passed, although this has not yet been fully
- *		implemented yet. 
- *		- Tom
- *
- * 	v0.0.2 - 01/02/2014 - Reorganized 
- * 
- *		Mover the prompting of the user; getting input and tokenizing it to 
- *		a new function: getInput(). 
- *		- Aidan
- *
- *	v0.0.3 - 02/02/2014 - Loop improvement
- *
- *		Changed while loop to a do while loop. Removes the need for an if check
- *		in main for when an INPUT_EXIT is returned. While check now replaces it.
- *		- Grant
- *
- *	v0.0.4 - 04/02/2014 - Ctrl D Integration
- *
- *		Completed integration of Ctrl D to end the program by adding an if
- *		check on the input the check if fgets() returns NULL indicating the
- *		presence of the EOF signal. 
- *		- Grant/Thomas
- *
- *  v0.0.5 - 04/02/2014 - Clean up
- *
- *		Cleaned up loose ends in the code:
- *			- checked the number of the parameters does not exceed the size of 
- *			the array
- *			- added comments for clarity
- *			- added whitespace (sorry whitespace nutjob)
- *			- removed excess braces
- *			- reverted back to old user loop. As it will be more efficient once
- *			new features are added.
- *		This should be the final version of stage 1, apart from a brief 
- *		modification after testing to remove input checking printf()'s
- *		- Tom
+ *		Created the user loop, which gets input from the user. The input is
+ *		check to make sure it is not absolute gibberish and tokenized. The
+ *		result is stored in a structure called user_command.
  *
  ******************************************************************************/
 #define VERSION "v0.0.5. Last Update 04/02/2014\n"
@@ -138,7 +101,7 @@ int getInput(user_command *command){
  	printf("The input: '%s'\n", input);
 
  	//tokenising 
- 	char *tokenizer = " ";
+ 	char *tokenizer = " \t|><";
  	char *token;
  	command->input_command = strtok(input, tokenizer);
  	if(command->input_command == NULL)
