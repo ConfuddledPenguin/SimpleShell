@@ -90,12 +90,11 @@ int getInput(user_command *command){
 
  	//Checking user has not just hit enter
  	if (input[0] == '\n')
-    	return INPUT_CONTINUE;
+ 		return INPUT_CONTINUE;
 
  	//Getting rid of the new line char, replacing with a terminating char
- 	if ((p = strchr(input, '\n')) != NULL){
+ 	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
- 	}
 
  	//To ensure its been taken in. Shall be removed in future
  	printf("The input: '%s'\n", input);
@@ -111,7 +110,7 @@ int getInput(user_command *command){
  	printf("The command: '%s'\n", command->input_command);
 
  	//exit check
-    if(strcmp(command->input_command, "exit") == 0) 
+ 	if(strcmp(command->input_command, "exit") == 0) 
  		return INPUT_EXIT;
 
  	int i = 0;
