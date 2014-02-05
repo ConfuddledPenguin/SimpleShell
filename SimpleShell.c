@@ -162,7 +162,7 @@ int getInput(user_command *command){
 
  		if (i >= 50) {
 
- 			printf("Error: To Many commands");
+ 			printf("Error: To many parameters\n");
  			return INPUT_CONTINUE;
  		}
  	}
