@@ -83,7 +83,7 @@ typedef struct
  * Description:
  *
  * Takes in the user's input and runs the relevant executable file or
- * build in command.
+ * built in command.
  *
  */
 void processInput(user_command *cmd) {
@@ -94,20 +94,20 @@ void processInput(user_command *cmd) {
 
 	if(PID) { //if parent process
 
-		printf("Parent PID: %d\n", PID);
-		puts("Waiting");
+		printf("Parent PID: %d\n", PID); //testing
+		puts("Parent Waiting"); //testing
 		waitpid(PID, NULL, 0);
-		puts("Done");
-		printf("Parent PID: %d\n", PID);
+		puts("Child Done"); //testing
+		printf("Parent PID: %d\n", PID); //testing
 
-	} else if(PID < 0) {
+	} else if(PID < 0) { //fork failed
 
-		puts("Something went horribly wrong :/");
+		puts("Something went horribly wrong :/"); //whoops :/
 
-	} else { //if child process
+	} else { //else must be child process
 
-		printf("Child PID: %d\n", PID);
-		execv(cmd->input_command, NULL);
+		printf("Child PID: %d\n", PID); //testing
+		execv(cmd->input_command, NULL); //NULL will eventually be changed to 
 
 	} 
 
