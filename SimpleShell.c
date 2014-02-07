@@ -106,7 +106,7 @@ int getInput(user_command *command){
  	printf("The input: '%s'\n", input);
 
  	//tokenising 
- 	char *tokenizer = " \t|><";
+ 	char *tokenizer = " \t";
  	char *token;
  	command->input_command = strtok(input, tokenizer);
  	if(command->input_command == NULL)
