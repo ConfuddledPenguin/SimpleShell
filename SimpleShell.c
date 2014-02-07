@@ -47,8 +47,15 @@
  *		
  *		- Thomas
  *
+ *	v0.1.2 - 07/02/2014 - Further Input Processing
+ *
+ *		Changed execv() to execvp() to allow the SimpleShell to exectute commands
+ *		from the PATH enviroment. Any programs stored locally can be ran with 
+ *		" ./ ". Also added more commentary throughout the program to explain
+ *		what it is doing.
+ *
  ******************************************************************************/
-#define VERSION "v0.1.1. Last Update 07/02/2014\n"
+#define VERSION "v0.1.2. Last Update 07/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -107,8 +114,9 @@ void processInput(user_command *cmd) {
 	} else { //else must be child process
 
 		printf("Child PID: %d\n", PID); //testing
-		execv(cmd->input_command, NULL); //NULL will eventually be changed to 
-
+		execvp(cmd->input_command, NULL); /* NULL will eventually be changed to the
+										     arguments taken in by the program
+										   */
 	} 
 
 } //end processInput
@@ -185,7 +193,7 @@ int getInput(user_command *command){
  	}
  	printf("\n");
 
- 	processInput(command);
+ 	processInput(command); //user input all processed and stored, now carry it out.
 
  	return INPUT_RUN;
 }
