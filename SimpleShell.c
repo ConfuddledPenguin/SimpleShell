@@ -56,16 +56,23 @@
  *
  *	v0.1.3 - 11/02/2014 - Fixed C99 Warnings
  *
- *		Added " #include <unistd.h> " to remove warning from C99 when compiling.
+ *		Added " #include <unistd.h> " to remove warnings from C99 when compiling.
+ *
+ *	v0.1.4 - 11/02/2014 - Invalid Input Filtering
+ *
+ *		Enclosed execvp() in an if statement so that when it returns "-1" indicating
+ *		that it has failed due to invalid input being entered, the child process
+ *		is killed allowing the parent to continue stopping "Shellception".
  *
  ******************************************************************************/
-#define VERSION "v0.1.3. Last Update 11/02/2014\n"
+#define VERSION "v0.1.4. Last Update 11/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <signal.h>
 
 #define PROMPT "> "
 #define INPUT_EXIT 0
@@ -91,6 +98,8 @@ typedef struct
  *
  * #include <sys/types.h>
  * #include <sys/wait.h>
+ * #include <unistd.h>
+ * #include <signal.h>
  *
  * Description:
  *
@@ -108,7 +117,7 @@ void processInput(user_command *command) {
 
 		printf("Parent PID: %d\n", PID); //testing
 		puts("Parent Waiting"); //testing
-		wait(NULL);
+		wait(NULL); //wait for child to exit
 		puts("Child Done"); //testing
 		printf("Parent PID: %d\n", PID); //testing
 
@@ -119,7 +128,10 @@ void processInput(user_command *command) {
 	} else { //else must be child process
 
 		printf("Child PID: %d\n", PID); //testing
-		execvp(command->args[0], command->args);
+		if(execvp(command->input_command, NULL) == -1) { //if execvp fails
+			puts("Input not recognised");
+			kill(getpid(), SIGKILL); //kill child process
+		}
 
 	} 
 
@@ -216,7 +228,6 @@ int main(){
 
 		return_val = getInput(&command);
 		if (return_val == INPUT_CONTINUE) {
-			printf("cheese\n");
 			continue;
 		} else if (return_val == INPUT_ERROR) {
 			printf("I broke");
