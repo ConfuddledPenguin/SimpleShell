@@ -54,13 +54,18 @@
  *		" ./ ". Also added more commentary throughout the program to explain
  *		what it is doing.
  *
+ *	v0.1.3 - 11/02/2014 - Fixed C99 Warnings
+ *
+ *		Added " #include <unistd.h> " to remove warning from C99 when compiling.
+ *
  ******************************************************************************/
-#define VERSION "v0.1.2. Last Update 07/02/2014\n"
+#define VERSION "v0.1.3. Last Update 11/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #define PROMPT "> "
 #define INPUT_EXIT 0
@@ -93,7 +98,7 @@ typedef struct
  * built in command.
  *
  */
-void processInput(user_command *cmd) {
+void processInput(user_command *command) {
 
 	pid_t PID; //Process ID
 
@@ -103,7 +108,7 @@ void processInput(user_command *cmd) {
 
 		printf("Parent PID: %d\n", PID); //testing
 		puts("Parent Waiting"); //testing
-		waitpid(PID, NULL, 0);
+		wait(NULL);
 		puts("Child Done"); //testing
 		printf("Parent PID: %d\n", PID); //testing
 
@@ -114,9 +119,8 @@ void processInput(user_command *cmd) {
 	} else { //else must be child process
 
 		printf("Child PID: %d\n", PID); //testing
-		execvp(cmd->input_command, NULL); /* NULL will eventually be changed to the
-										     arguments taken in by the program
-										   */
+		execvp(command->args[0], command->args);
+
 	} 
 
 } //end processInput
@@ -212,6 +216,7 @@ int main(){
 
 		return_val = getInput(&command);
 		if (return_val == INPUT_CONTINUE) {
+			printf("cheese\n");
 			continue;
 		} else if (return_val == INPUT_ERROR) {
 			printf("I broke");
@@ -219,6 +224,7 @@ int main(){
 		} else if (return_val == INPUT_EXIT) {
 			break;
 		}
+
  	};
 
  	return(0);
