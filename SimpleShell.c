@@ -38,22 +38,11 @@
  *		check to make sure it is not absolute gibberish and tokenized. The
  *		result is stored in a structure called user_command.
  *
- *	v0.1.1 - 07/02/2014 - Input Processing
- *
- *		Created a new function to process the user Input and run an executable
- *		file stored on the user's computer using the fork(), waitpid() & execv()
- *		functions. The program can currently execute executable files within 
- *		the current directory and it's subdirectories. See issues for bugs.
- *		
- *		- Thomas
- *
  ******************************************************************************/
 #define VERSION "v0.1.1. Last Update 07/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 #define PROMPT "> "
 #define INPUT_EXIT 0
@@ -74,44 +63,6 @@ typedef struct
 	char *input_command;
 	char args[50][50];
 } user_command;
-
-/* void processInput(user_command *cmd)
- *
- * #include <sys/types.h>
- * #include <sys/wait.h>
- *
- * Description:
- *
- * Takes in the user's input and runs the relevant executable file or
- * build in command.
- *
- */
-void processInput(user_command *cmd) {
-
-	pid_t PID; //Process ID
-
-	PID = fork();
-
-	if(PID) { //if parent process
-
-		printf("Parent PID: %d\n", PID);
-		puts("Waiting");
-		waitpid(PID, NULL, 0);
-		puts("Done");
-		printf("Parent PID: %d\n", PID);
-
-	} else if(PID < 0) {
-
-		puts("Something went horribly wrong :/");
-
-	} else { //if child process
-
-		printf("Child PID: %d\n", PID);
-		execv(cmd->input_command, NULL);
-
-	} 
-
-} //end processInput
 
 /* int getInput(user_command *command)
  * 
@@ -184,8 +135,6 @@ int getInput(user_command *command){
  		}
  	}
  	printf("\n");
-
- 	processInput(command);
 
  	return INPUT_RUN;
 }
