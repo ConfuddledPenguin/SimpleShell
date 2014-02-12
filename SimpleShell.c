@@ -1,7 +1,7 @@
 /******************************************************************************
  * Synopsis: This is a simple Unix like shell written in C, for the class CS210 
- *      at the University of Strathclyde, Glasgow. This was a group project to be 
- *      undertaken by four students.
+ *      at the University of Strathclyde, Glasgow. This was a group project to 
+ *		be undertaken by four students.
  *
  * Compiling: This program should be compiled using the C99 standard. This is
  *      due to the inclusion of c++ style comments i.e: //comment
