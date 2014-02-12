@@ -122,6 +122,20 @@ typedef struct
 	char *args[50];
 } user_command;
 
+void freeMemory(user_command *command) {
+
+	int i = 1;
+
+	while(command->args[i] != NULL) {
+
+		free(command->args[i]);
+
+		i++;
+
+	}
+
+}
+
 /* void processInput(user_command *command)
  *
  * #include <sys/types.h>
@@ -162,6 +176,8 @@ void processInput(user_command *command) {
 		puts("Something went horribly wrong :/"); //whoops :/
 
 	}
+
+	freeMemory(command);
 
 } //end processInput
 
@@ -250,13 +266,12 @@ int getInput(user_command *command){
 int main(){
 
 	int return_val = -1;
-	// int run = 1;
 
 	//user loop
 	while (1) {
 		//initializes the new command that the user wishes to execute
 		user_command command = {
-			NULL
+			NULL, {NULL}
 		};
 
 		return_val = getInput(&command);
