@@ -26,7 +26,6 @@
  *	For detailed Version history please see "VERSIONHISTORY.txt"
  *
  *
- *
  * 	v0.0 - 28/01/2014 - File birth
  *
  * 		Created initial file (SimpleShell.c) as well as read me files and a
@@ -89,10 +88,15 @@
  *		The SimpleShell can now successfully carry out most built in unix commands
  *		and run executable files. It can also pass in any required parameters.
  *
- *		- Thomas		
+ *		- Thomas
+ *
+ *	v0.1.6 - 12/02/2014 - Memory Freeing
+ *
+ *		Added a function to free memory from malloc after each command has been
+ *		executed.		
  *
  ******************************************************************************/
-#define VERSION "v0.1.5. Last Update 11/02/2014\n"
+#define VERSION "v0.1.6. Last Update 12/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -122,19 +126,25 @@ typedef struct
 	char *args[50];
 } user_command;
 
+/* void freeMemory(user_command *command)
+ *
+ * Description:
+ *
+ * This function frees the memory allocated to the args array
+ * in the user_command struct.
+ *
+ */
+
 void freeMemory(user_command *command) {
 
 	int i = 1;
 
 	while(command->args[i] != NULL) {
-
 		free(command->args[i]);
-
 		i++;
-
 	}
 
-}
+} //end freeMemory
 
 /* void processInput(user_command *command)
  *
