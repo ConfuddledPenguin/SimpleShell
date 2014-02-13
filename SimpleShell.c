@@ -107,8 +107,19 @@
  *
  *		- Aidan
  *
+ *	v0.1.8 - 13/02/2014 - Fixing Aidan's Errors
+ *
+ *		Discovered that Aidan's changes had a few bugs which I went through and
+ *		Fixed. There were problems running commands as the command was stored in
+ *		args[0] then malloc was being used to assign the memory. The line assigning
+ *		memory had simply been overlooked when making changes. Also added a function
+ *		to reset args to NULL everytime the program loops round.
+ *
+ *		- Thomas
+ *
+ *
  ******************************************************************************/
-#define VERSION "v0.1.7. Last Update 13/02/2014\n"
+#define VERSION "v0.1.8. Last Update 13/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -144,7 +155,7 @@ char *args[50];
  *
  */
 
-void freeMemory(char *args[50]) {
+void freeMemory() {
 
 	int i = 0;
 
@@ -154,6 +165,24 @@ void freeMemory(char *args[50]) {
 	}
 
 } //end freeMemory
+
+/* void reset_args()
+ *
+ * Description:
+ *
+ * Resets the contents of args to NULL
+ *
+ */
+
+void reset_args() {
+
+	int i = 0;
+	while(args[i] != NULL) {
+		args[i] = NULL;
+		i++;
+	}
+
+} //end reset_args
 
 /* void processInput(char *args[50])
  *
@@ -168,7 +197,7 @@ void freeMemory(char *args[50]) {
  * built in command.
  *
  */
-void processInput(char *args[50]) {
+void processInput() {
 
 	pid_t PID; //Process ID
 
@@ -181,6 +210,7 @@ void processInput(char *args[50]) {
 		wait(NULL); //wait for child to exit
 		puts("Child Done"); //testing
 		printf("Parent PID: %d\n", PID); //testing
+
 	} else if(PID == 0){ //else must be child process
 
 		printf("Child PID: %d\n", PID); //testing
@@ -188,13 +218,14 @@ void processInput(char *args[50]) {
 			puts("Input not recognised");
 			kill(getpid(), SIGKILL); //kill child process
 		}
+
 	} else { //fork failed
 
 		puts("Something went horribly wrong :/"); //whoops :/
 
 	}
 
-	freeMemory(&args[50]);
+	// freeMemory();
 
 } //end processInput
 
@@ -217,7 +248,7 @@ void processInput(char *args[50]) {
  * int INPUT_CONTINUE	- If the entered command should not be processed.
  * 
  */
-int getInput(char *args[50]){
+int getInput(){
 	
 	char input[512];
 	char *p;
@@ -243,6 +274,7 @@ int getInput(char *args[50]){
  	//tokenising 
  	char *tokenizer = " \t";
  	char *token;
+ 	args[0] = malloc(50);
  	args[0] = strtok(input, tokenizer);
  	if(args[0] == NULL)
  		return INPUT_CONTINUE;
@@ -255,7 +287,6 @@ int getInput(char *args[50]){
  		return INPUT_EXIT;
 
  	int i = 1;
- 	args[0] = malloc(50);
  	printf("The parameters: "); // Ensuring parameters. Shall be removed in future
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
 
@@ -271,9 +302,10 @@ int getInput(char *args[50]){
  			return INPUT_CONTINUE;
  		}
  	}
+
  	printf("\n");
 
- 	processInput(args); //user input all processed and stored, now carry it out.
+ 	processInput(); //user input all processed and stored, now carry it out.
  	return INPUT_RUN;
 }
 
@@ -282,7 +314,10 @@ int main(){
 	int return_val = -1;
 	//user loop
 	while (1) {
-		return_val = getInput(&args[50]);
+
+		reset_args(); //empty args
+
+		return_val = getInput();
 		if (return_val == INPUT_CONTINUE) {
 			continue;
 		} else if (return_val == INPUT_ERROR) {
