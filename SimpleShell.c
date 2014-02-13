@@ -71,17 +71,17 @@
  *
  *	v0.1.5 - 11/02/2014 - Passing Input to Commands
  *
- *		Set execvp() to take process the arguments stored in command.args. To do
- *		this, args[50][50] within the user_command struct had to be changed to
- *		args[50] as execvp() could not handle the data type. I am now using
+ *		Set execvp() to take process the arguments stored in command.command. To do
+ *		this, command[50][50] within the user_command struct had to be changed to
+ *		command[50] as execvp() could not handle the data type. I am now using
  *		malloc within processInput() to assign each token it's space in memory.
  *		We also have to work out where and how to free any memory assigned by
  *		malloc in order avoid any problems with memory in out systems.
  *		<stdlib.h> was included to allow malloc to be used.
  *
  *		I also had to make another change within the processInput() function
- *		as the command must be stored in args[0] with the arguments stored in
- *		args[1] and onwards when it is passed into execp(). This has to be tidied
+ *		as the command must be stored in command[0] with the arguments stored in
+ *		command[1] and onwards when it is passed into execp(). This has to be tidied
  *		up as input_command is still being used in some places when it could probably
  *		be completely removed.
  *
@@ -100,8 +100,8 @@
  *	v0.1.7 - 13/02/2014 - Remove user_command
  *
  *		The user_command has been found to be redundant and unneccesary. The 
- *		variable char *args[50] has been used to replace the struct. The command
- *		will be in args[0] with the parameters proceeding it. The entire program
+ *		variable char *command[50] has been used to replace the struct. The command
+ *		will be in command[0] with the parameters proceeding it. The entire program
  *		has been gutted to reflect these changes, with function headers which
  *		take in a command as a parameter being altered and such.
  *
@@ -111,15 +111,27 @@
  *
  *		Discovered that Aidan's changes had a few bugs which I went through and
  *		Fixed. There were problems running commands as the command was stored in
- *		args[0] then malloc was being used to assign the memory. The line assigning
+ *		command[0] then malloc was being used to assign the memory. The line assigning
  *		memory had simply been overlooked when making changes. Also added a function
- *		to reset args to NULL everytime the program loops round.
+ *		to reset command to NULL everytime the program loops round.
  *
  *		- Thomas
  *
+ *		Cleaned up getInput() to make it more readable. Also removed all input
+ *		checking printf's as the function now works correctly.
+ *		^ Tom
+ *
+ *		Fixed issue with kill() not being defined
+ *		^ Tom
  *
  ******************************************************************************/
 #define VERSION "v0.1.8. Last Update 13/02/2014\n"
+
+
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE
+#endif
+
 
 #include <stdio.h>
 #include <string.h>
@@ -129,29 +141,30 @@
 #include <signal.h>
 #include <stdlib.h>
 
+
 #define PROMPT "> "
 #define INPUT_EXIT 0
 #define INPUT_CONTINUE 1
 #define INPUT_RUN 2
 #define INPUT_ERROR 3
 
-/* char *args[50]
+/* char *command[50]
  *
  * Description:
  *
  * An array of strings that stores a command and it's parameters.
- * 	-	args[0] stores the command.
- * 	-	args[1-X] stores the subsequent parameters.
+ * 	-	command[0] stores the command.
+ * 	-	command[1-X] stores the subsequent parameters.
  *
  */
-char *args[50]; 
+char *command[50]; 
 
 
 /* void freeMemory(user_command *command)
  *
  * Description:
  *
- * This function frees the memory allocated to the args array.
+ * This function frees the memory allocated to the command array.
  *
  */
 
@@ -159,32 +172,32 @@ void freeMemory() {
 
 	int i = 0;
 
-	while(args[i] != NULL) {
-		free(args[i]);
+	while(command[i] != NULL) {
+		free(command[i]);
 		i++;
 	}
 
 } //end freeMemory
 
-/* void reset_args()
+/* void reset_command()
  *
  * Description:
  *
- * Resets the contents of args to NULL
+ * Resets the contents of command to NULL
  *
  */
 
-void reset_args() {
+void reset_command() {
 
 	int i = 0;
-	while(args[i] != NULL) {
-		args[i] = NULL;
+	while(command[i] != NULL) {
+		command[i] = NULL;
 		i++;
 	}
 
-} //end reset_args
+} //end reset_command
 
-/* void processInput(char *args[50])
+/* void processInput(char *command[50])
  *
  * #include <sys/types.h>
  * #include <sys/wait.h>
@@ -214,7 +227,7 @@ void processInput() {
 	} else if(PID == 0){ //else must be child process
 
 		printf("Child PID: %d\n", PID); //testing
-		if(execvp(args[0], args) == -1) { //if execvp fails
+		if(execvp(command[0], command) == -1) { //if execvp fails
 			puts("Input not recognised");
 			kill(getpid(), SIGKILL); //kill child process
 		}
@@ -229,7 +242,7 @@ void processInput() {
 
 } //end processInput
 
-/* int getInput(char *args[50])
+/* int getInput(char *command[50])
  * 
  * #include <stdio.h>
  * #include <string.h>
@@ -237,7 +250,7 @@ void processInput() {
  *
  * Description:
  *
- * Prompts the user for an input and tokenises it. This modifies the args
+ * Prompts the user for an input and tokenises it. This modifies the command
  * array, and fills it with appropriate values.
  *
  * Returns:
@@ -253,49 +266,48 @@ int getInput(){
 	char input[512];
 	char *p;
 
-	//prompt user
+	// Prompt user
  	printf("%s", PROMPT);
+
+ 	// Get input
  	if((fgets(input, 512, stdin)) == NULL){ //end of file check
  		printf("\n");
  		return INPUT_EXIT;
  	}
 
- 	//Checking user has not just hit enter
+ 	// Checking user has not just hit enter
  	if (input[0] == '\n')
  		return INPUT_CONTINUE;
 
- 	//Getting rid of the new line char, replacing with a terminating char
+ 	// Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	//To ensure it's been taken in. Shall be removed in future
- 	printf("The input: '%s'\n", input);
+ 	// Tokenising 
 
- 	//tokenising 
  	char *tokenizer = " \t";
  	char *token;
- 	args[0] = malloc(50);
- 	args[0] = strtok(input, tokenizer);
- 	if(args[0] == NULL)
+
+ 	command[0] = malloc(50);
+ 	command[0] = strtok(input, tokenizer);
+ 	if(command[0] == NULL)
  		return INPUT_CONTINUE;
 
- 	//ensures command has been taken in. Shall be removed in future
- 	printf("The command: '%s'\n", args[0]);
-
- 	//exit check
- 	if(strcmp(args[0], "exit") == 0) 
+ 	/* Exit check
+ 	 *
+ 	 * To check if user wishes to exit the shell before continuing
+ 	 */
+ 	if(strcmp(command[0], "exit") == 0) 
  		return INPUT_EXIT;
 
  	int i = 1;
- 	printf("The parameters: "); // Ensuring parameters. Shall be removed in future
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
 
- 		args[i] = malloc(50);
-
- 		strcpy(args[i], token);
- 		printf("'%s' ", args[i]); // Ensuring parameters. Shall be removed in future
+ 		command[i] = malloc(50);
+ 		strcpy(command[i], token);
  		i++;
 
+ 		// Spec says no more than 50 parameters will be entered
  		if (i >= 50) {
 
  			printf("Error: Too many parameters\n");
@@ -307,15 +319,16 @@ int getInput(){
 
  	processInput(); //user input all processed and stored, now carry it out.
  	return INPUT_RUN;
-}
+} // End of getInput()
 
 int main(){
 
 	int return_val = -1;
-	//user loop
+
+	// User loop
 	while (1) {
 
-		reset_args(); //empty args
+		reset_command(); // Empty command
 
 		return_val = getInput();
 		if (return_val == INPUT_CONTINUE) {
