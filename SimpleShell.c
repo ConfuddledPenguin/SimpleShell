@@ -1,4 +1,4 @@
-/******************************************************************************
+ /******************************************************************************
  * Synopsis: This is a simple Unix like shell written in C, for the class CS210 
  *      at the University of Strathclyde, Glasgow. This was a group project to be 
  *      undertaken by four students.
@@ -95,8 +95,20 @@
  *		Added a function to free memory from malloc after each command has been
  *		executed.		
  *
+ *		- Thomas
+ *
+ *	v0.1.7 - 13/02/2014 - Remove user_command
+ *
+ *		The user_command has been found to be redundant and unneccesary. The 
+ *		variable char *args[50] has been used to replace the struct. The command
+ *		will be in args[0] with the parameters proceeding it. The entire program
+ *		has been gutted to reflect these changes, with function headers which
+ *		take in a command as a parameter being altered and such.
+ *
+ *		- Aidan
+ *
  ******************************************************************************/
-#define VERSION "v0.1.6. Last Update 12/02/2014\n"
+#define VERSION "v0.1.7. Last Update 13/02/2014\n"
 
 #include <stdio.h>
 #include <string.h>
@@ -112,41 +124,38 @@
 #define INPUT_RUN 2
 #define INPUT_ERROR 3
 
-/* This structure holds the command entered by the user. For example, the
- * command "cd Documents" would have input_command = "cd" and args to store
- * "Documents" in args[0].
+/* char *args[50]
  *
- * char *input_command	- The command that the user wishes to execute 
- * char args[50]		- The arguments of a command.
+ * Description:
+ *
+ * An array of strings that stores a command and it's parameters.
+ * 	-	args[0] stores the command.
+ * 	-	args[1-X] stores the subsequent parameters.
  *
  */
-typedef struct
-{
-	char *input_command;
-	char *args[50];
-} user_command;
+char *args[50]; 
+
 
 /* void freeMemory(user_command *command)
  *
  * Description:
  *
- * This function frees the memory allocated to the args array
- * in the user_command struct.
+ * This function frees the memory allocated to the args array.
  *
  */
 
-void freeMemory(user_command *command) {
+void freeMemory(char *args[50]) {
 
-	int i = 1;
+	int i = 0;
 
-	while(command->args[i] != NULL) {
-		free(command->args[i]);
+	while(args[i] != NULL) {
+		free(args[i]);
 		i++;
 	}
 
 } //end freeMemory
 
-/* void processInput(user_command *command)
+/* void processInput(char *args[50])
  *
  * #include <sys/types.h>
  * #include <sys/wait.h>
@@ -159,7 +168,7 @@ void freeMemory(user_command *command) {
  * built in command.
  *
  */
-void processInput(user_command *command) {
+void processInput(char *args[50]) {
 
 	pid_t PID; //Process ID
 
@@ -172,26 +181,24 @@ void processInput(user_command *command) {
 		wait(NULL); //wait for child to exit
 		puts("Child Done"); //testing
 		printf("Parent PID: %d\n", PID); //testing
-
-	} else if(PID == 0) { //else must be child process
+	} else if(PID == 0){ //else must be child process
 
 		printf("Child PID: %d\n", PID); //testing
-		if(execvp(command->args[0], command->args) == -1) { //if execvp fails
+		if(execvp(args[0], args) == -1) { //if execvp fails
 			puts("Input not recognised");
 			kill(getpid(), SIGKILL); //kill child process
 		}
-
 	} else { //fork failed
 
 		puts("Something went horribly wrong :/"); //whoops :/
 
 	}
 
-	freeMemory(command);
+	freeMemory(&args[50]);
 
 } //end processInput
 
-/* int getInput(user_command *command)
+/* int getInput(char *args[50])
  * 
  * #include <stdio.h>
  * #include <string.h>
@@ -199,8 +206,8 @@ void processInput(user_command *command) {
  *
  * Description:
  *
- * Prompts the user for an input and tokenises it. This modifies the struct,
- * user_command, and fills it with appropriate values.
+ * Prompts the user for an input and tokenises it. This modifies the args
+ * array, and fills it with appropriate values.
  *
  * Returns:
  *
@@ -210,7 +217,7 @@ void processInput(user_command *command) {
  * int INPUT_CONTINUE	- If the entered command should not be processed.
  * 
  */
-int getInput(user_command *command){
+int getInput(char *args[50]){
 	
 	char input[512];
 	char *p;
@@ -236,28 +243,26 @@ int getInput(user_command *command){
  	//tokenising 
  	char *tokenizer = " \t";
  	char *token;
- 	command->input_command = strtok(input, tokenizer);
- 	if(command->input_command == NULL)
+ 	args[0] = strtok(input, tokenizer);
+ 	if(args[0] == NULL)
  		return INPUT_CONTINUE;
 
  	//ensures command has been taken in. Shall be removed in future
- 	printf("The command: '%s'\n", command->input_command);
+ 	printf("The command: '%s'\n", args[0]);
 
  	//exit check
- 	if(strcmp(command->input_command, "exit") == 0) 
+ 	if(strcmp(args[0], "exit") == 0) 
  		return INPUT_EXIT;
 
  	int i = 1;
- 	command->args[0] = malloc(50);
- 	command->args[0] = command->input_command;
-
+ 	args[0] = malloc(50);
  	printf("The parameters: "); // Ensuring parameters. Shall be removed in future
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
 
- 		command->args[i] = malloc(50);
+ 		args[i] = malloc(50);
 
- 		strcpy(command->args[i], token);
- 		printf("'%s' ", command->args[i]); // Ensuring parameters. Shall be removed in future
+ 		strcpy(args[i], token);
+ 		printf("'%s' ", args[i]); // Ensuring parameters. Shall be removed in future
  		i++;
 
  		if (i >= 50) {
@@ -268,23 +273,16 @@ int getInput(user_command *command){
  	}
  	printf("\n");
 
- 	processInput(command); //user input all processed and stored, now carry it out.
-
+ 	processInput(args); //user input all processed and stored, now carry it out.
  	return INPUT_RUN;
 }
 
 int main(){
 
 	int return_val = -1;
-
 	//user loop
 	while (1) {
-		//initializes the new command that the user wishes to execute
-		user_command command = {
-			NULL, {NULL}
-		};
-
-		return_val = getInput(&command);
+		return_val = getInput(&args[50]);
 		if (return_val == INPUT_CONTINUE) {
 			continue;
 		} else if (return_val == INPUT_ERROR) {
@@ -295,6 +293,5 @@ int main(){
 		}
 
  	};
-
  	return(0);
 }
