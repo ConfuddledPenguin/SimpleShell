@@ -1,4 +1,4 @@
-#Simple Shell v0.0 28/1/2014#
+#Simple Shell v0.1.7 13/2/2014#
 
 ###Authors:##
 
@@ -13,7 +13,7 @@ Grant Toghill       - wsb12157
 ###Description:###
 
 
-This is a simple unix like shell written in C, for the class CS210 at the University of StrathClyde. This was a group project to be undertaken by 4 students.
+This is a simple unix like shell written in C, for the class CS210 at the University of Strathclyde, Glasgow. This was a group project to be undertaken by 4 students.
 
 ###LICENSE:###
 
