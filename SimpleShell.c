@@ -43,10 +43,22 @@
  *		achieved using execvp().
  *
  *		The struct from stage one was replaced with an array.
+ *
+ *	v0.2.1 - 14/02/2014 - Set Home Directory
+ *
+ *		Created a function which changes the current directory to the home
+ *		directory by first using getenv() to get the location of the home directory
+ *		then chdir to move into it. The function is called as soon as the program
+ *		runs.
+ *
+ *	v0.3 - 14/02/2014 - Ping Working Directory
+ *
+ *		Used the getcwd() function to get the current working directory and
+ *		then print it out.
  * 
  ******************************************************************************/
 
-#define VERSION "v0.2. Last Update 14/02/2014\n"
+#define VERSION "v0.3. Last Update 14/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -81,7 +93,7 @@
 char *command[50]; 
 
 
-/* void freeMemory(user_command *command)
+/* void free_memory(user_command *command)
  *
  * Description:
  *
@@ -89,7 +101,7 @@ char *command[50];
  *
  */
 
-void freeMemory() {
+void free_memory() {
 
 	int i = 1;
 
@@ -98,7 +110,7 @@ void freeMemory() {
 		i++;
 	}
 
-} //end freeMemory
+} //end free_memory()
 
 /* void reset_command()
  *
@@ -116,9 +128,9 @@ void reset_command() {
 		i++;
 	}
 
-} //end reset_command
+} //end reset_command()
 
-/* void processInput(char *command[50])
+/* void process_input(char *command[50])
  *
  * #include <sys/types.h>
  * #include <sys/wait.h>
@@ -131,7 +143,7 @@ void reset_command() {
  * built in command.
  *
  */
-void processInput() {
+void process_input() {
 
 	pid_t PID; //Process ID
 
@@ -154,9 +166,59 @@ void processInput() {
 
 	}
 
-	freeMemory();
+} //end process_input()
 
-} //end processInput
+/* void set_home_dir()
+ * 
+ * Description:
+ *
+ * Set the current directory as the home directory
+ *
+ */
+void set_home_dir() {
+
+	chdir(getenv("HOME"));
+
+} //end set_home_dir()
+
+/* void ping_working_dir()
+ *
+ * Description:
+ *
+ * Print the current directory.
+ *
+ */
+void ping_working_dir() {
+
+	char current_dir[100];
+
+	puts(getcwd(current_dir, 100));
+
+} //end ping_working_dir()
+
+/* void filter_input()
+ *
+ * Description:
+ *
+ * Checks for built in commands. If none available
+ * then run system command.
+ *
+ */
+void filter_input() {
+
+	if(strcmp(command[0], "pwd") == 0) {
+
+		ping_working_dir();
+
+	} else {
+
+		process_input();
+
+	}
+
+	free_memory();
+
+} //end filter_input()
 
 /* int getInput(char *command[50])
  * 
@@ -231,11 +293,13 @@ int getInput(){
  		}
  	}
 
- 	processInput(); //user input all processed and stored, now carry it out.
+ 	filter_input(); //user input all processed and stored, now carry it out.
  	return INPUT_RUN;
 } // End of getInput()
 
-int main(){
+int main() {
+
+	set_home_dir();
 
 	int return_val = -1;
 
