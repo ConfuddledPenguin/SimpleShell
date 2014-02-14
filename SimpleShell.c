@@ -90,7 +90,7 @@ char *command[50];
 
 void freeMemory() {
 
-	int i = 0;
+	int i = 1;
 
 	while(command[i] != NULL) {
 		free(command[i]);
@@ -152,6 +152,8 @@ void processInput() {
 		puts("Something went horribly wrong :/"); //whoops :/
 
 	}
+
+	freeMemory();
 
 } //end processInput
 
