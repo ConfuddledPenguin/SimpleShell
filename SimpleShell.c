@@ -121,11 +121,25 @@
  *		checking printf's as the function now works correctly.
  *		^ Tom
  *
- *		Fixed issue with kill() not being defined
+ *		Fixed issue with kill() not being defined in linux
  *		^ Tom
  *
+ *		Removed all input checking "printf's" & "puts" from processInput().
+ *
+ *		- Thomas
+ *
+ *	v0.1.9 - 14/02/2014 - Improving malloc()
+ *
+ *		Imporved malloc() in getInput() function to only assign the amount of
+ *		memory that it needs rather than a fixed amount. This will stop the
+ *		program assigning too much memory for a value therefore leaving wasted
+ *		space or not assigning enough memory and causing a segmentation error
+ *		at runtime.
+ *
+ *		- Thomas
+ *
  ******************************************************************************/
-#define VERSION "v0.1.8. Last Update 13/02/2014\n"
+#define VERSION "v0.1.9. Last Update 14/02/2014\n"
 
 
 #ifndef _XOPEN_SOURCE
@@ -218,15 +232,10 @@ void processInput() {
 
 	if(PID > 0) { //if parent process
 
-		printf("Parent PID: %d\n", PID); //testing
-		puts("Parent Waiting"); //testing
 		wait(NULL); //wait for child to exit
-		puts("Child Done"); //testing
-		printf("Parent PID: %d\n", PID); //testing
 
 	} else if(PID == 0){ //else must be child process
 
-		printf("Child PID: %d\n", PID); //testing
 		if(execvp(command[0], command) == -1) { //if execvp fails
 			puts("Input not recognised");
 			kill(getpid(), SIGKILL); //kill child process
@@ -237,8 +246,6 @@ void processInput() {
 		puts("Something went horribly wrong :/"); //whoops :/
 
 	}
-
-	// freeMemory();
 
 } //end processInput
 
@@ -288,7 +295,7 @@ int getInput(){
  	char *tokenizer = " \t";
  	char *token;
 
- 	command[0] = malloc(50);
+ 	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
  	if(command[0] == NULL)
  		return INPUT_CONTINUE;
@@ -303,7 +310,7 @@ int getInput(){
  	int i = 1;
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
 
- 		command[i] = malloc(50);
+ 		command[i] = malloc(sizeof(command[i]));
  		strcpy(command[i], token);
  		i++;
 
@@ -314,8 +321,6 @@ int getInput(){
  			return INPUT_CONTINUE;
  		}
  	}
-
- 	printf("\n");
 
  	processInput(); //user input all processed and stored, now carry it out.
  	return INPUT_RUN;
