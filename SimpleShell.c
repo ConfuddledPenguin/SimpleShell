@@ -44,13 +44,6 @@
  *
  *		The struct from stage one was replaced with an array.
  *
- *	v0.2.1 - 14/02/2014 - Set Home Directory
- *
- *		Created a function which changes the current directory to the home
- *		directory by first using getenv() to get the location of the home directory
- *		then chdir to move into it. The function is called as soon as the program
- *		runs.
- *
  *	v0.3 - 14/02/2014 - Ping Working Directory
  *
  *		Used the getcwd() function to get the current working directory and

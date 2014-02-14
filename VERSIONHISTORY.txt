@@ -173,7 +173,22 @@ Ended		- 14/02/2014
 ================================================================================
 Stage Three
 
-Commenced 	- . . . 
-Ended		- . . . 
+Commenced 	- 14/02/2014 
+Ended		- 14/02/2014 
 --------------------------------------------------------------------------------
 
+	v0.2.1 - 14/02/2014 - Set Home Directory
+ 
+ 		Created a function which changes the current directory to the home
+ 		directory by first using getenv() to get the location of the home directory
+ 		then chdir to move into it. The function is called as soon as the program
+ 		runs.
+ 		^ Thomas
+ 		
+
+================================================================================
+Stage Four
+
+Commenced 	- 14/02/2014 
+Ended		- . . .
+--------------------------------------------------------------------------------
