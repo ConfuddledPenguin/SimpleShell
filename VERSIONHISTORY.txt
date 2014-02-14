@@ -52,7 +52,7 @@ Ended		- 04/02/2014
 			- checked the number of the parameters does not exceed the size of 
 			the array
 			- added comments for clarity
-			- added whitespace (sorry whitespace nutjob)
+			- added whitespace
 			- removed excess braces
 			- reverted back to old user loop. As it will be more efficient once
 			new features are added.
@@ -63,16 +63,117 @@ Ended		- 04/02/2014
 
 	v0.0.6 - 06/02/2014
 
-		Fixed spelling issues - I'm sorry I'm special okay!! :(
+		Fixed spelling issues
 		^ Tom
-
-		ADD BUG FIXES HERE!!!!!!!! OR I WILL MAIME YOU.
 
 
 ================================================================================
 Stage Two
 
-Commenced 	- . . .
+Commenced 	- 07/02/2014
+Ended		- 14/02/2014 
+--------------------------------------------------------------------------------
+
+	v0.1.1 - 07/02/2014 - Input Processing
+ 
+		Created a new function, called processInput(), to process the user Input 
+		and run an executable file stored on the user's computer using the 
+		fork(), waitpid() & execv()functions. The program can currently execute
+		executable files within the current directory and it's subdirectories. 
+		^ Thomas
+ 
+ 	v0.1.2 - 07/02/2014 - Further Input Processing
+ 
+ 		Changed execv() to execvp() to allow the SimpleShell to execute commands
+ 		from the PATH environment. Any programs stored locally can be ran with 
+ 		" ./ ". Also added more commentary throughout the program to explain
+ 		what it is doing.
+		^ Thomas
+ 
+ 	v0.1.3 - 11/02/2014 - Fixed C99 Warnings
+ 
+ 		Added " #include <unistd.h> " to remove warnings from C99 when compiling.
+		^ Thomas
+ 
+ 	v0.1.4 - 11/02/2014 - Invalid Input Filtering
+ 
+ 		Enclosed execvp() in an if statement so that when it returns "-1" indicating
+ 		that it has failed due to invalid input being entered, the child process
+		is killed allowing the parent to continue therefore stopping "Shellception".
+		^ Thomas
+
+ 	v0.1.5 - 11/02/2014 - Passing Input to Commands
+ 
+ 		Set execvp() to take process the arguments stored in command.args. To do
+ 		this, args[50][50] within the user_command struct had to be changed to
+ 		args[50] as execvp() could not handle the data type. I am now using
+ 		malloc within processInput() to assign each token it's space in memory.
+		We also have to work out where and how to free any memory assigned by
+ 		malloc in order avoid any problems with memory in out systems.
+ 		<stdlib.h> was included to allow malloc to be used.
+ 
+ 		I also had to make another change within the processInput() function
+ 		as the command must be stored in args[0] with the arguments stored in
+ 		args[1] and onwards when it is passed into execp(). This has to be tidied
+ 		up as input_command is still being used in some places when it could probably
+ 		be completely removed.
+ 
+ 		The SimpleShell can now successfully carry out most built in unix commands
+ 		and run executable files. It can also pass in any required parameters.
+		^ Thomas
+ 
+ 	v0.1.6 - 12/02/2014 - Memory Freeing
+ 
+ 		Created the function freeMemory() to free memory from malloc after each 
+		command has been executed. It will clear all memory used by the malloc 
+		for the args array from position 0 to the last used position.
+		^ Thomas
+
+	v0.1.7 - 13/02/2014 - Remove user_command
+ 
+ 		The user_command has been found to be redundant and unnecessary. The 
+ 		variable char *args[50] has been used to replace the original struct,
+		user_command. The command will be stored in args[0] with the parameters 
+		proceeding it in the following locations in the array. The entire 
+		program has been adjusted to reflect these changes, with function 
+		headers which take in a command as a parameter being altered 
+		accordingly.
+		^ Aidan
+
+	v0.1.8 - 13/02/2014 - Fixing Aidan's Errors
+
+ 		Discovered that Aidan's changes contained a few bugs which I went through and
+ 		fixed. There were problems relating running commands as the command was stored
+		in command[0] then malloc was being used to assign the memory. The line 
+		assigning memory had simply been overlooked when making changes. Also added a 
+		new function to reset command to NULL everytime the program continues the
+		loop.
+ 		^ Thomas
+
+		Cleaned up getInput() to make it more readable and maintainable. 
+		Also removed all input checking printf's as the function now works correctly.
+ 		^ Tom
+ 
+ 		Fixed issue with kill() not being defined in linux.
+ 		^ Tom
+ 
+ 		Removed all input checking "printf's" & "puts" from processInput().
+ 		^ Thomas
+ 
+ 	v0.1.9 - 14/02/2014 - Improving malloc()
+ 
+ 		Improved malloc() in getInput() function to only assign the amount of
+		memory that it needs rather than a fixed amount. This will stop the
+ 		program assigning too much memory for a value therefore leaving wasted
+ 		space or not assigning enough memory and causing a segmentation error
+ 		at runtime.
+ 		^ Thomas
+
+
+================================================================================
+Stage Three
+
+Commenced 	- . . . 
 Ended		- . . . 
 --------------------------------------------------------------------------------
 
