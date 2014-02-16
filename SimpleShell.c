@@ -49,7 +49,7 @@
  *		Used the getcwd() function to get the current working directory and
  *		then print it out.
  *
- * v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
+ *	v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
  *
  *		Created a function, getPath() to get the current PATH of the system. 
  *		Also created a function, setPath() to set the PATH of the system. These
@@ -60,7 +60,7 @@
  * 
  ******************************************************************************/
 
-#define VERSION "v0.3. Last Update 14/02/2014\n"
+#define VERSION "v0.3.1 Last Update 16/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
