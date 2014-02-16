@@ -52,27 +52,18 @@
  *		Also added the command, pwd - print working directory. This prints the
  *		users current directory.
  *
- *	v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
+ *	v0.4 - 16/02/2014 - Stage Four
  *
- *		Created a function, getPath() to get the current PATH of the system. 
- *		Also created a function, setPath() to set the PATH of the system. These
- *		two functions are used to get a PATH of the system when the shell is
- *		first started and then to set it back to the original value when the
- *		shell is exited.
- *		^ Tom
+ *		Getting and restoring of the PATH
  *
- *	v0.4 - 16/02/2014 - Add to PATH
+ *		Added the getpath and setpath commands to allow the user to interface
+ *		with the PATH.
  *
- *		Added two new built in commands: getpath and setpath. The getpath()
- *		function prints out the contents of the system's PATH enviroment while
- *		the setpath() function allows the user to add new directories into the
- *		PATH enviroment.
- *		^ Thomas
- *
- *	v0.5 - 16/02/2014 - Change Directory
+ *	v0.4.1 - 16/02/2014 - Change Directory
  *
  *		Added change_directory() function to allow the user to navigate between
  *		directories with the command cd.
+ ^		^Thomas
  * 
  ******************************************************************************/
 #define VERSION "v0.5. Last Update 14/02/2014\n"

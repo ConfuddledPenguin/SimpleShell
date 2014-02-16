@@ -66,7 +66,7 @@ Ended		- 04/02/2014
 		Fixed spelling issues
 		^ Tom
 
-	v0.1.0 - 14/02/2014 - Final stage one
+	v0.1.0 - 04/02/2014 - Final stage one
 
  		Finalized everything.
  		^ Tom
@@ -194,8 +194,13 @@ Ended		- 14/02/2014
  		then chdir to move into it. The function is called as soon as the program
  		runs.
  		^ Thomas
+ 
+ 	v0.2.2 - 14/02/2014 - Print Working Directory
+ 
+ 		Used the getcwd() function to get the current working directory and
+ 		then print it out.
 
- 	v0.3.0 - 14/02/2014 - Final stage two
+ 	v0.3.0 - 14/02/2014 - Final stage Two
 
  		Finalized everything.
  		^ Tom
@@ -205,5 +210,34 @@ Ended		- 14/02/2014
 Stage Four
 
 Commenced 	- 14/02/2014 
+Ended		- 16/02/2014
+--------------------------------------------------------------------------------
+
+ 	v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
+ 
+ 		Created a function, getPath() to get the current PATH of the system. 
+ 		Also created a function, setPath() to set the PATH of the system. These
+ 		two functions are used to get a PATH of the system when the shell is
+ 		first started and then to set it back to the original value when the
+ 		shell is exited.
+ 		^ Tom
+ 
+ 	v0.3.2 - 16/02/2014 - Add to PATH
+ 
+ 		Added two new built in commands: getpath and setpath. The getpath()
+ 		function prints out the contents of the system's PATH enviroment while
+ 		the setpath() function allows the user to add new directories into the
+ 		PATH enviroment.
+ 		^ Thomas
+
+ 	v0.4.0 - 16/02/2014 - Final stage three
+
+ 		Finalized everything
+ 		^tom
+
+================================================================================
+Stage Five
+
+Commenced 	- 16/02/2014 
 Ended		- 16/02/2014
 --------------------------------------------------------------------------------
