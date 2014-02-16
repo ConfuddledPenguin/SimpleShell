@@ -123,7 +123,7 @@ void reset_command() {
 
 } //end reset_command()
 
-/* void process_input(char *command[50])
+/* void run_external_cmd(char *command[50])
  *
  * #include <sys/types.h>
  * #include <sys/wait.h>
@@ -136,7 +136,7 @@ void reset_command() {
  * built in command.
  *
  */
-void process_input() {
+void run_external_cmd() {
 
 	pid_t PID; //Process ID
 
@@ -159,7 +159,7 @@ void process_input() {
 
 	}
 
-} //end process_input()
+} //end run_external_cmd()
 
 /* void set_home_dir()
  * 
@@ -190,7 +190,7 @@ void print_working_dir() {
 } //end print_working_dir()
 
 
-/* void filter_input()
+/* void process_input()
  *
  * Description:
  *
@@ -198,7 +198,7 @@ void print_working_dir() {
  * then run system command.
  *
  */
-void filter_input() {
+void process_input() {
 
 	if(strcmp(command[0], "pwd") == 0) {
 
@@ -206,13 +206,13 @@ void filter_input() {
 
 	} else {
 
-		process_input();
+		run_external_cmd();
 
 	}
 
 	free_memory();
 
-} //end filter_input()
+} //end process_input()
 
 /* int getInput(char *command[50])
  * 
@@ -287,7 +287,7 @@ int getInput(){
  		}
  	}
 
- 	filter_input(); //user input all processed and stored, now carry it out.
+ 	process_input(); //user input all processed and stored, now carry it out.
  	return INPUT_RUN;
 } // End of getInput()
 
