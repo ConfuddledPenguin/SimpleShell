@@ -66,6 +66,11 @@ Ended		- 04/02/2014
 		Fixed spelling issues
 		^ Tom
 
+	v0.1.0 - 14/02/2014 - Final stage one
+
+ 		Finalized everything.
+ 		^ Tom
+
 
 ================================================================================
 Stage Two
@@ -169,6 +174,11 @@ Ended		- 14/02/2014
  		at runtime.
  		^ Thomas
 
+ 	v0.2.0 - 14/02/2014 - Final stage two
+
+ 		Finalized everything.
+ 		^ Tom
+
 
 ================================================================================
 Stage Three
@@ -184,11 +194,16 @@ Ended		- 14/02/2014
  		then chdir to move into it. The function is called as soon as the program
  		runs.
  		^ Thomas
+
+ 	v0.3.0 - 14/02/2014 - Final stage two
+
+ 		Finalized everything.
+ 		^ Tom
  		
 
 ================================================================================
 Stage Four
 
 Commenced 	- 14/02/2014 
-Ended		- . . .
+Ended		- 16/02/2014
 --------------------------------------------------------------------------------

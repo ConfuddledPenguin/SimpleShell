@@ -44,10 +44,13 @@
  *
  *		The structure from stage one was replaced with an array.
  *
- *	v0.3 - 14/02/2014 - Print Working Directory
+ *	v0.3 - 14/02/2014 - Stage Three
  *
- *		Used the getcwd() function to get the current working directory and
- *		then print it out.
+ *		The directory thats the shell starts in has been updated to the users
+ *		home directory.
+ *
+ *		Also added the command, pwd - print working directory. This prints the
+ *		users current directory.
  *
  *	v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
  *
