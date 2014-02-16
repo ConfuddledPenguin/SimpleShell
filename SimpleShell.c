@@ -61,16 +61,21 @@
  *		shell is exited.
  *		^ Tom
  *
- *	v0.3.2 - 16/02/2014 - Add to PATH
+ *	v0.4 - 16/02/2014 - Add to PATH
  *
  *		Added two new built in commands: getpath and setpath. The getpath()
  *		function prints out the contents of the system's PATH enviroment while
  *		the setpath() function allows the user to add new directories into the
  *		PATH enviroment.
  *		^ Thomas
+ *
+ *	v0.5 - 16/02/2014 - Change Directory
+ *
+ *		Added change_directory() function to allow the user to navigate between
+ *		directories with the command cd.
  * 
  ******************************************************************************/
-#define VERSION "v0.3.2. Last Update 14/02/2014\n"
+#define VERSION "v0.5. Last Update 14/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -243,6 +248,33 @@ void print_working_dir() {
 	puts(getcwd(current_dir, 100));
 } //end print_working_dir()
 
+/* void change_directory()
+ *
+ * Description:
+ *
+ * Navigate to a directory specified by the user.
+ * If no parameters are input after the command then the
+ * function sets the home directory as the current directory.
+ * If the parameters contains a "/" at the begining it will
+ * navigate from the root of the filesystem (absolute 
+ * path) otherwise it will treat it as a relative path.
+ *
+ */
+void change_directory() {
+
+	if(command[1] == NULL) { //no parameters, navigate to HOME
+
+		set_home_dir();
+
+	} else { //absolute path
+
+		if(chdir(command[1]) == -1)
+			perror("");
+
+	}
+
+} //end change_directory()
+
 /* void getpath()
  *
  * #include <stdlib.h>
@@ -294,6 +326,10 @@ void process_input() {
 	if(strcmp(command[0], "pwd") == 0) {
 
 		print_working_dir();
+
+	} else if(strcmp(command[0], "cd") == 0) {
+
+		change_directory();
 
 	} else if(strcmp(command[0], "getpath") == 0) {
 
