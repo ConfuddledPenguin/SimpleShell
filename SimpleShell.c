@@ -42,12 +42,21 @@
  *		Added forking and executing of external system commands. This is 
  *		achieved using execvp().
  *
- *		The struct from stage one was replaced with an array.
+ *		The structure from stage one was replaced with an array.
  *
  *	v0.3 - 14/02/2014 - print Working Directory
  *
  *		Used the getcwd() function to get the current working directory and
  *		then print it out.
+ *
+ * v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
+ *
+ *		Created a function, getPath() to get the current PATH of the system. 
+ *		Also created a function, setPath() to set the PATH of the system. These
+ *		two functions are used to get a PATH of the system when the shell is
+ *		first started and then to set it back to the original value when the
+ *		shell is exited.
+ *		^ Tom
  * 
  ******************************************************************************/
 
@@ -56,6 +65,11 @@
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
+#endif
+
+//to allow setenv() to compile in linux without error
+#ifndef _BSD_SOURCE
+#define _BSD_SOURCE
 #endif
 
 
@@ -85,6 +99,38 @@
  */
 char *command[50]; 
 
+/* char *getPath()
+ *
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Gets the current PATH of the system
+ *
+ * Returns:
+ *
+ * char *PATH	- the current PATH of the system 
+ */
+char *getPath(){
+
+	return getenv("PATH");
+}
+
+/* char *setPath()
+ *
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Sets the current PATH of the system
+ *
+ */
+void setPath(char *path){
+
+	setenv("PATH", path, 1);
+}
 
 /* void free_memory(user_command *command)
  *
@@ -181,12 +227,7 @@ void print_working_dir() {
 	char current_dir[100];
 
 	puts(getcwd(current_dir, 100));
-<<<<<<< HEAD
-} //end ping_working_dir()
-=======
-
 } //end print_working_dir()
->>>>>>> 45f631be38c8c0915cdb8d30c30d9ce8c3a0a8e3
 
 /* void process_input()
  *
@@ -291,6 +332,7 @@ int getInput(){
 
 int main() {
 
+	char *path = getPath();
 	set_home_dir();
 
 	int return_val = -1;
@@ -307,6 +349,7 @@ int main() {
 			printf("I broke");
 			continue;
 		} else if (return_val == INPUT_EXIT) {
+			setPath(path);
 			break;
 		}
 
