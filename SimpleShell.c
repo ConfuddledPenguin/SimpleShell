@@ -181,12 +181,8 @@ void print_working_dir() {
 	char current_dir[100];
 
 	puts(getcwd(current_dir, 100));
-<<<<<<< HEAD
-} //end ping_working_dir()
-=======
 
 } //end print_working_dir()
->>>>>>> 45f631be38c8c0915cdb8d30c30d9ce8c3a0a8e3
 
 /* void process_input()
  *
