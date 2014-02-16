@@ -93,7 +93,6 @@ char *command[50];
  * This function frees the memory allocated to the command array.
  *
  */
-
 void free_memory() {
 
 	int i = 1;
@@ -102,7 +101,6 @@ void free_memory() {
 		free(command[i]);
 		i++;
 	}
-
 } //end free_memory()
 
 /* void reset_command()
@@ -120,7 +118,6 @@ void reset_command() {
 		command[i] = NULL;
 		i++;
 	}
-
 } //end reset_command()
 
 /* void run_external_cmd(char *command[50])
@@ -158,7 +155,6 @@ void run_external_cmd() {
 		puts("Something went horribly wrong :/"); //whoops :/
 
 	}
-
 } //end run_external_cmd()
 
 /* void set_home_dir()
@@ -171,7 +167,6 @@ void run_external_cmd() {
 void set_home_dir() {
 
 	chdir(getenv("HOME"));
-
 } //end set_home_dir()
 
 /* void ping_working_dir()
@@ -186,7 +181,6 @@ void ping_working_dir() {
 	char current_dir[100];
 
 	puts(getcwd(current_dir, 100));
-
 } //end ping_working_dir()
 
 /* void process_input()
@@ -210,7 +204,6 @@ void process_input() {
 	}
 
 	free_memory();
-
 } //end process_input()
 
 /* int getInput(char *command[50])
@@ -254,7 +247,7 @@ int getInput(){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	// Tokenising 
+ 	// Tokenising
 
  	char *tokenizer = " \t";
  	char *token;
