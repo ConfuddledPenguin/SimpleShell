@@ -44,7 +44,7 @@
  *
  *		The structure from stage one was replaced with an array.
  *
- *	v0.3 - 14/02/2014 - print Working Directory
+ *	v0.3 - 14/02/2014 - Print Working Directory
  *
  *		Used the getcwd() function to get the current working directory and
  *		then print it out.
@@ -57,10 +57,18 @@
  *		first started and then to set it back to the original value when the
  *		shell is exited.
  *		^ Tom
+ *
+ *	v0.3.2 - 16/02/2014 - Add to PATH
+ *
+ *		Added two new built in commands: getpath and setpath. The getpath()
+ *		function prints out the contents of the system's PATH enviroment while
+ *		the setpath() function allows the user to add new directories into the
+ *		PATH enviroment.
+ *		^ Thomas
  * 
  ******************************************************************************/
 
-#define VERSION "v0.3. Last Update 14/02/2014\n"
+#define VERSION "v0.3.2. Last Update 14/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -204,6 +212,8 @@ void run_external_cmd() {
 } //end run_external_cmd()
 
 /* void set_home_dir()
+ *
+ * #include <stdlib.h>
  * 
  * Description:
  *
@@ -217,6 +227,8 @@ void set_home_dir() {
 
 /* void print_working_dir()
  *
+ * #include <unistd.h>
+ *
  * Description:
  *
  * Print the current directory.
@@ -228,6 +240,44 @@ void print_working_dir() {
 
 	puts(getcwd(current_dir, 100));
 } //end print_working_dir()
+
+/* void getpath()
+ *
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Prints out the contents of the system's PATH
+ * enviroment
+ *
+ */
+void getpath() {
+
+	puts(getenv("PATH"));
+
+} //end getpath()
+
+/* void setpath()
+ *
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Adds new directories specified by the user into the system's
+ * PATH enviroment.
+ *
+ */
+void setpath() {
+
+	char newpath[1000];
+
+	sprintf(newpath, "%s:%s/", getenv("PATH"), command[1]);
+
+	if(command[1] != NULL)
+		if(setenv("PATH", newpath, 1) == -1)
+			puts("PATH update failed");
+
+} //end setpath()
 
 /* void process_input()
  *
@@ -243,6 +293,14 @@ void process_input() {
 
 		print_working_dir();
 
+	} else if(strcmp(command[0], "getpath") == 0) {
+
+		getpath();
+
+	} else if(strcmp(command[0], "setpath") == 0) {
+
+		setpath();
+
 	} else {
 
 		run_external_cmd();
@@ -250,6 +308,7 @@ void process_input() {
 	}
 
 	free_memory();
+
 } //end process_input()
 
 /* int getInput(char *command[50])
