@@ -44,7 +44,7 @@
  *
  *		The struct from stage one was replaced with an array.
  *
- *	v0.3 - 14/02/2014 - Print Working Directory
+ *	v0.3 - 14/02/2014 - Ping Working Directory
  *
  *		Used the getcwd() function to get the current working directory and
  *		then print it out.
@@ -174,21 +174,20 @@ void set_home_dir() {
 
 } //end set_home_dir()
 
-/* void print_working_dir()
+/* void ping_working_dir()
  *
  * Description:
  *
  * Print the current directory.
  *
  */
-void print_working_dir() {
+void ping_working_dir() {
 
 	char current_dir[100];
 
 	puts(getcwd(current_dir, 100));
 
-} //end print_working_dir()
-
+} //end ping_working_dir()
 
 /* void filter_input()
  *
@@ -202,7 +201,7 @@ void filter_input() {
 
 	if(strcmp(command[0], "pwd") == 0) {
 
-		print_working_dir();
+		ping_working_dir();
 
 	} else {
 
@@ -267,7 +266,8 @@ int getInput(){
 
  	/* Exit check
  	 *
- 	 * To check if user wishes to exit the shell before continuing
+ 	 * To check if user wishes to exit the shell before continuing with 
+ 	 * tokenising
  	 */
  	if(strcmp(command[0], "exit") == 0) 
  		return INPUT_EXIT;
