@@ -1,4 +1,4 @@
-#Simple Shell v0.1.7 13/2/2014#
+#Simple Shell v0.2.0 14/2/2014#
 
 ###Authors:##
 
