@@ -200,7 +200,7 @@ Ended		- 14/02/2014
  		Used the getcwd() function to get the current working directory and
  		then print it out.
 
- 	v0.3.0 - 14/02/2014 - Final stage Two
+ 	v0.3.0 - 14/02/2014 - Final stage three
 
  		Finalized everything.
  		^ Tom
@@ -230,10 +230,10 @@ Ended		- 16/02/2014
  		PATH enviroment.
  		^ Thomas
 
- 	v0.4.0 - 16/02/2014 - Final stage three
+ 	v0.4.0 - 16/02/2014 - Final stage four
 
  		Finalized everything
- 		^tom
+ 		^ Tom
 
 ================================================================================
 Stage Five
@@ -241,3 +241,15 @@ Stage Five
 Commenced 	- 16/02/2014 
 Ended		- 16/02/2014
 --------------------------------------------------------------------------------
+
+
+	v0.4.1 - 16/02/2014 - Change Directory
+ 
+ 		Added change_directory() function to allow the user to navigate between
+ 		directories with the command cd.
+ 		^ Thomas
+
+	v0.5.0 - 16/02/2014 - Final stage five
+
+ 		Finalized everything
+ 		^ Thomas/Grant

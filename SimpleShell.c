@@ -59,14 +59,14 @@
  *		Added the getpath and setpath commands to allow the user to interface
  *		with the PATH.
  *
- *	v0.4.1 - 16/02/2014 - Change Directory
+ *	v0.5 - 16/02/2014 - Stage Five
  *
- *		Added change_directory() function to allow the user to navigate between
- *		directories with the command cd.
- ^		^Thomas
+ *		Added the function change_directory() to allow the user to
+ *		change directory within the simple shell through the use of the command
+ *		cd.
  * 
  ******************************************************************************/
-#define VERSION "v0.5. Last Update 14/02/2014\n"
+#define VERSION "v0.5. Last Update 16/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
