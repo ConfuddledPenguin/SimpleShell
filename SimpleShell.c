@@ -94,6 +94,27 @@
 #define INPUT_RUN 2
 #define INPUT_ERROR 3
 
+#define SIZE(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
+
+
+/* char *history[20]
+ * 
+ * Description:
+ *
+ * An array of 20 strings which store the previous 20 inputs from the user.
+ *
+ */
+char history[10][512];
+
+/* int count
+ *
+ * Description:
+ *
+ * Stores the next available position in the history array.
+ *
+ */
+int count;
+
 /* char *command[50]
  *
  * Description:
@@ -119,7 +140,6 @@ char *command[50];
  * char *PATH	- the current PATH of the system 
  */
 char *getPath(){
-
 	return getenv("PATH");
 }
 
@@ -134,7 +154,6 @@ char *getPath(){
  *
  */
 void setPath(char *path){
-
 	setenv("PATH", path, 1);
 }
 
@@ -146,9 +165,7 @@ void setPath(char *path){
  *
  */
 void free_memory() {
-
 	int i = 1;
-
 	while(command[i] != NULL) {
 		free(command[i]);
 		i++;
@@ -162,9 +179,7 @@ void free_memory() {
  * Resets the contents of command to NULL
  *
  */
-
 void reset_command() {
-
 	int i = 0;
 	while(command[i] != NULL) {
 		command[i] = NULL;
@@ -219,7 +234,6 @@ void run_external_cmd() {
  *
  */
 void set_home_dir() {
-
 	chdir(getenv("HOME"));
 } //end set_home_dir()
 
@@ -233,9 +247,7 @@ void set_home_dir() {
  *
  */
 void print_working_dir() {
-
 	char current_dir[100];
-
 	puts(getcwd(current_dir, 100));
 } //end print_working_dir()
 
@@ -304,6 +316,41 @@ void setpath() {
 
 } //end setpath()
 
+/* void print_history()
+ * 
+ * Description:
+ *
+ * Prints the previous 20 inputs from the user.
+ *
+ */
+void print_history(){
+	for(int i=0; i < SIZE(history); i++){
+		//if(strcmp(history[i], "") != 0)
+			printf("%i. %s\n", i+1, history[i]);
+	}
+}
+
+/* void update(history)
+ *
+ * Description:
+ * 
+ * Adds the latest input into the command array. In the event of a fully array,
+ * the contents of the array is shifted left (history[1] is now history[0]), 
+ * so the first element is removed.
+ *
+ */
+void update_history(char input[512]){
+	if(count < SIZE(history)){
+ 		strcpy(history[count], input);
+ 		count++;
+ 	} else{
+ 		for(int i=1; i<SIZE(history); i++){
+ 			strcpy(history[i-1], history[i]);
+ 		}
+ 		strcpy(history[SIZE(history)-1], input);
+ 	}
+}
+
 /* void process_input()
  *
  * Description:
@@ -329,6 +376,10 @@ void process_input() {
 	} else if(strcmp(command[0], "setpath") == 0) {
 
 		setpath();
+
+	} else if(strcmp(command[0], "history") == 0){
+
+		print_history();
 
 	} else {
 
@@ -381,6 +432,9 @@ int getInput(){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
+ 	// Adding to history
+ 	update_history(input);
+
  	// Tokenising
 
  	char *tokenizer = " \t";
@@ -424,6 +478,12 @@ int main() {
 	set_home_dir();
 
 	int return_val = -1;
+
+	// Initializing the count.
+	count = 0;
+
+	for(int i=0; i<SIZE(history); i++)
+		strcpy(history[i], "");
 
 	// User loop
 	while (1) {
