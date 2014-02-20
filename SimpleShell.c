@@ -66,14 +66,20 @@
  *		cd.
  * 
  *
- *	v0.5.1 - 20/02/2013 - Moved tokenising
+ *	v0.5.1 - 20/02/2014 - Moved tokenising
  *
  *		Move the tokenising code into its own method to facilitate the execution
  *		of commands stored in history.
  *		^ Tom
  *
+ *	v0.5.2 - 20/02/2014 - Improved Error Messages
+ *		
+ *		Added perror() to change_directory() and print_working_directory() to
+ *		print out the relevant errno message when the user enters incorrect
+ *		information
+ *
  ******************************************************************************/
-#define VERSION "v0.5.1. Last Update 20/02/2014\n"
+#define VERSION "v0.5.2. Last Update 20/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -93,6 +99,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <errno.h> 
 
 
 #define PROMPT "> "
@@ -185,6 +192,7 @@ void reset_command() {
  * #include <sys/wait.h>
  * #include <unistd.h>
  * #include <signal.h>
+ * #include <errno.h>
  *
  * Description:
  *
@@ -205,7 +213,7 @@ void run_external_cmd() {
 	} else if(PID == 0){ //else must be child process
 
 		if(execvp(command[0], command) == -1) { //if execvp fails
-			puts("Input not recognised");
+			perror(command[0]);
 			kill(getpid(), SIGKILL); //kill child process
 		}
 
@@ -248,6 +256,8 @@ void print_working_dir() {
 
 /* void change_directory()
  *
+ * #include <errno.h>
+ *
  * Description:
  *
  * Navigate to a directory specified by the user.
@@ -267,7 +277,7 @@ void change_directory() {
 	} else { //absolute path
 
 		if(chdir(command[1]) == -1)
-			perror("");
+			perror(command[1]);
 
 	}
 
