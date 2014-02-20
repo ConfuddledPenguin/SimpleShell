@@ -102,7 +102,9 @@ Ended		- 14/02/2014
  
  	v0.1.4 - 11/02/2014 - Invalid Input Filtering
  
- 		Enclosed execvp() in an if statement so that when it returns "-1" indicating that it has failed due to invalid input being entered, the child process is killed allowing the parent to continue therefore
+ 		Enclosed execvp() in an if statement so that when it returns "-1"
+ 		indicating that it has failed due to invalid input being entered, the
+ 		child process is killed allowing the parent to continue therefore
  		stopping "Shellception".
 		^ Thomas
 
@@ -119,10 +121,12 @@ Ended		- 14/02/2014
  		I also had to make another change within the processInput() function
  		as the command must be stored in args[0] with the arguments stored in
  		args[1] and onwards when it is passed into execp(). This has to be
- 		tidied up as input_command is still being used in some places when it could probably be completely removed.
+ 		tidied up as input_command is still being used in some places when it
+ 		could probably be completely removed.
  
  		The SimpleShell can now successfully carry out most built in unix
- 		commands and run executable files. It can also pass in any required parameters.
+ 		commands and run executable files. It can also pass in any required
+ 		parameters.
 		^ Thomas
  
  	v0.1.6 - 12/02/2014 - Memory Freeing
@@ -146,12 +150,16 @@ Ended		- 14/02/2014
 	v0.1.8 - 13/02/2014 - Fixing Aidan's Errors
 
  		Discovered that Aidan's changes contained a few bugs which I went
- 		through and fixed. There were problems relating running commands as the command was stored in command[0] then malloc was being used to assign
- 		the memory. The line assigning memory had simply been overlooked when making changes. Also added a new function to reset command to NULL everytime the program continues the loop.
+ 		through and fixed. There were problems relating running commands as the
+ 	 	command was stored in command[0] then malloc was being used to assign
+ 		the memory. The line assigning memory had simply been overlooked when
+ 		making changes. Also added a new function to reset command to NULL
+ 		everytime the program continues the loop.
  		^ Thomas
 
 		Cleaned up getInput() to make it more readable and maintainable. 
-		Also removed all input checking printf's as the function now works correctly.
+		Also removed all input checking printf's as the function now works
+		correctly.
  		^ Tom
  
  		Fixed issue with kill() not being defined in linux.
@@ -186,7 +194,8 @@ Ended		- 14/02/2014
  
  		Created a function which changes the current directory to the home
  		directory by first using getenv() to get the location of the home
- 		directory then chdir to move into it. The function is called as soon as the program runs.
+ 		directory then chdir to move into it. The function is called as soon as
+ 		the program runs.
  		^ Thomas
  
  	v0.2.2 - 14/02/2014 - Print Working Directory
