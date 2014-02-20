@@ -77,6 +77,7 @@
  *		Added perror() to change_directory() and print_working_directory() to
  *		print out the relevant errno message when the user enters incorrect
  *		information
+ *		^ Thomas
  *
  ******************************************************************************/
 #define VERSION "v0.5.2. Last Update 20/02/2014\n"
