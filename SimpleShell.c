@@ -67,8 +67,17 @@
  *
  *	v0.6 - 19/02/2014
  * 
+ *
+ *	v0.5.1 - 20/02/2013 - Moved tokenising
+ *
+ *		Move the tokenising code into its own method to facilitate the execution
+ *		of commands stored in history.
+ *		^ Tom
+ *
  ******************************************************************************/
+
 #define VERSION "v0.6. Last Update 19/02/2014\n"
+
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -244,7 +253,7 @@ void set_home_dir() {
  * #include <unistd.h>
  *
  * Description:
- *
+ ** int INPUT_EXIT		- If user wishes to exit th* int INPUT_EXIT		- If user wishes to exit the program* int INPUT_EXIT		- If user wishes to exit the programe program
  * Print the current directory.
  *
  */
@@ -332,25 +341,17 @@ void print_history(){
 	}
 }
 
-/* void update(history)
- *
- * Description:
- * 
- * Adds the latest input into the command array. In the event of a fully array,
- * the contents of the array is shifted left (history[1] is now history[0]), 
- * so the first element is removed.
- *
- */
-void update_history(char input[512]){
-	if(count < SIZE(history)){
- 		strcpy(history[count], input);
- 		count++;
- 	} else{
- 		for(int i=1; i<SIZE(history); i++){
- 			strcpy(history[i-1], history[i]);
- 		}
- 		strcpy(history[SIZE(history)-1], input);
- 	}
+void invoke_previous(int previous){
+	char temp[512];
+	strcpy(temp, history[previous]);
+	int index = 1;
+	while(command[index] != NULL){
+		sprintf(temp, "%s ", temp);
+		strcat(temp, command[index]);
+		index++;
+	}
+	tokenise(&temp);
+	process_input();
 }
 
 /* void process_input()
@@ -383,7 +384,12 @@ void process_input() {
 
 		print_history();
 
-	} else {
+	} else if(strcmp(command[0], "!!") == 0){
+
+		invoke_previous(count-1);
+
+	} 
+	else {
 
 		run_external_cmd();
 
@@ -393,16 +399,36 @@ void process_input() {
 
 } //end process_input()
 
-/* int getInput(char *command[50])
+/* void update(history)
+ *
+ * Description:
  * 
+ * Adds the latest input into the command array. In the event of a fully array,
+ * the contents of the array is shifted left (history[1] is now history[0]), 
+ * so the first element is removed.
+ *
+ */
+void update_history(char input[512]){
+	if(count < SIZE(history)){
+ 		strcpy(history[count], input);
+ 		count++;
+ 	} else{
+ 		for(int i=1; i<SIZE(history); i++){
+ 			strcpy(history[i-1], history[i]);
+ 		}
+ 		strcpy(history[SIZE(history)-1], input);
+ 	}
+}
+
+/*	int tokenise(char *input)
+ *
  * #include <stdio.h>
  * #include <string.h>
  * #include <stdlib.h>
  *
  * Description:
  *
- * Prompts the user for an input and tokenises it. This modifies the command
- * array, and fills it with appropriate values.
+ * Tokenises the passed in string and places it in the global command array
  *
  * Returns:
  *
@@ -412,32 +438,7 @@ void process_input() {
  * int INPUT_CONTINUE	- If the entered command should not be processed.
  * 
  */
-int getInput(){
-	
-	char input[512];
-	char *p;
-
-	// Prompt user
- 	printf("%s", PROMPT);
-
- 	// Get input
- 	if((fgets(input, 512, stdin)) == NULL){ //end of file check
- 		printf("\n");
- 		return INPUT_EXIT;
- 	}
-
- 	// Checking user has not just hit enter
- 	if (input[0] == '\n')
- 		return INPUT_CONTINUE;
-
- 	// Getting rid of the new line char, replacing with a terminating char
- 	if ((p = strchr(input, '\n')) != NULL)
- 		*p = '\0';
-
- 	// Adding to history
- 	update_history(input);
-
- 	// Tokenising
+int tokenise(char *input){
 
  	char *tokenizer = " \t";
  	char *token;
@@ -468,6 +469,57 @@ int getInput(){
  			printf("Error: Too many parameters\n");
  			return INPUT_CONTINUE;
  		}
+ 	}
+
+ 	return INPUT_RUN;
+} //  End tokenise(char *input)
+
+/* int getInput()
+ * 
+ * #include <stdio.h>
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Prompts the user for an input and tokenises it. This modifies the command
+ * array, and fills it with appropriate values.
+ *
+ * Returns:
+ *
+ * int INPUT_EXIT		- If user wishes to exit the program
+ * int INPUT_RUN		- If it was successful
+ * int INPUT_ERROR		- If something has gone drastically wrong
+ * int INPUT_CONTINUE	- If the entered command should not be processed.
+ * 
+ */
+int getInput(){
+	
+	char input[513];
+	char *p;
+
+	// Prompt user
+ 	printf("%s", PROMPT);
+
+ 	// Get input
+ 	if((fgets(input, 513, stdin)) == NULL){ //end of file check
+ 		printf("\n");
+ 		return INPUT_EXIT;
+ 	}
+
+ 	// Checking user has not just hit enter
+ 	if (input[0] == '\n')
+ 		return INPUT_CONTINUE;
+
+ 	// Getting rid of the new line char, replacing with a terminating char
+ 	if ((p = strchr(input, '\n')) != NULL)
+ 		*p = '\0';
+
+ 	update_history(input);
+ 	int return_val;
+ 	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
+
+ 		return return_val;
  	}
 
  	process_input(); //user input all processed and stored, now carry it out.
