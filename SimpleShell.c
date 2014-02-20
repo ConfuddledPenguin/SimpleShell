@@ -422,14 +422,14 @@ int tokenise(char *input){
  */
 int getInput(){
 	
-	char input[512];
+	char input[513];
 	char *p;
 
 	// Prompt user
  	printf("%s", PROMPT);
 
  	// Get input
- 	if((fgets(input, 512, stdin)) == NULL){ //end of file check
+ 	if((fgets(input, 513, stdin)) == NULL){ //end of file check
  		printf("\n");
  		return INPUT_EXIT;
  	}
