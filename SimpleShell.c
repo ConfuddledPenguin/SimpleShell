@@ -64,9 +64,11 @@
  *		Added the function change_directory() to allow the user to
  *		change directory within the simple shell through the use of the command
  *		cd.
+ *
+ *	v0.6 - 19/02/2014
  * 
  ******************************************************************************/
-#define VERSION "v0.5. Last Update 16/02/2014\n"
+#define VERSION "v0.6. Last Update 19/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -104,7 +106,7 @@
  * An array of 20 strings which store the previous 20 inputs from the user.
  *
  */
-char history[10][512];
+char history[20][512];
 
 /* int count
  *
@@ -325,7 +327,7 @@ void setpath() {
  */
 void print_history(){
 	for(int i=0; i < SIZE(history); i++){
-		//if(strcmp(history[i], "") != 0)
+		if(strcmp(history[i], "") != 0)
 			printf("%i. %s\n", i+1, history[i]);
 	}
 }
