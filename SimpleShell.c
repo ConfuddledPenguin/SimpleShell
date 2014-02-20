@@ -65,8 +65,15 @@
  *		change directory within the simple shell through the use of the command
  *		cd.
  * 
+ *
+ *	v0.5.1 - 20/02/2013 - Moved tokenising
+ *
+ *		Move the tokenising code into its own method to facilitate the execution
+ *		of commands stored in history.
+ *		^ Tom
+ *
  ******************************************************************************/
-#define VERSION "v0.5. Last Update 16/02/2014\n"
+#define VERSION "v0.5.1. Last Update 20/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -228,7 +235,7 @@ void set_home_dir() {
  * #include <unistd.h>
  *
  * Description:
- *
+ ** int INPUT_EXIT		- If user wishes to exit th* int INPUT_EXIT		- If user wishes to exit the program* int INPUT_EXIT		- If user wishes to exit the programe program
  * Print the current directory.
  *
  */
@@ -340,7 +347,61 @@ void process_input() {
 
 } //end process_input()
 
-/* int getInput(char *command[50])
+/*	int tokenise(char *input)
+ *
+ * #include <stdio.h>
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Tokenises the passed in string and places it in the global command array
+ *
+ * Returns:
+ *
+ * int INPUT_EXIT		- If user wishes to exit the program
+ * int INPUT_RUN		- If it was successful
+ * int INPUT_ERROR		- If something has gone drastically wrong
+ * int INPUT_CONTINUE	- If the entered command should not be processed.
+ * 
+ */
+int tokenise(char *input){
+
+	char *tokenizer = " \t";
+ 	char *token;
+
+ 	command[0] = malloc(sizeof(command[0]));
+ 	command[0] = strtok(input, tokenizer);
+ 	if(command[0] == NULL)
+ 		return INPUT_CONTINUE;
+
+ 	/* Exit check
+ 	 *
+ 	 * To check if user wishes to exit the shell before continuing with 
+ 	 * tokenising
+ 	 */
+ 	if(strcmp(command[0], "exit") == 0) 
+ 		return INPUT_EXIT;
+
+ 	int i = 1;
+ 	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
+
+ 		command[i] = malloc(sizeof(command[i]));
+ 		strcpy(command[i], token);
+ 		i++;
+
+ 		// Spec says no more than 50 parameters will be entered
+ 		if (i >= 50) {
+
+ 			printf("Error: Too many parameters\n");
+ 			return INPUT_CONTINUE;
+ 		}
+ 	}
+
+ 	return INPUT_RUN;
+} //  End tokenise(char *input)
+
+/* int getInput()
  * 
  * #include <stdio.h>
  * #include <string.h>
@@ -382,36 +443,10 @@ int getInput(){
  		*p = '\0';
 
  	// Tokenising
+ 	int return_val;
+ 	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
 
- 	char *tokenizer = " \t";
- 	char *token;
-
- 	command[0] = malloc(sizeof(command[0]));
- 	command[0] = strtok(input, tokenizer);
- 	if(command[0] == NULL)
- 		return INPUT_CONTINUE;
-
- 	/* Exit check
- 	 *
- 	 * To check if user wishes to exit the shell before continuing with 
- 	 * tokenising
- 	 */
- 	if(strcmp(command[0], "exit") == 0) 
- 		return INPUT_EXIT;
-
- 	int i = 1;
- 	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
-
- 		command[i] = malloc(sizeof(command[i]));
- 		strcpy(command[i], token);
- 		i++;
-
- 		// Spec says no more than 50 parameters will be entered
- 		if (i >= 50) {
-
- 			printf("Error: Too many parameters\n");
- 			return INPUT_CONTINUE;
- 		}
+ 		return return_val;
  	}
 
  	process_input(); //user input all processed and stored, now carry it out.
