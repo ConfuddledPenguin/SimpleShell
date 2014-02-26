@@ -49,7 +49,10 @@
  *		The directory thats the shell starts in has been updated to the users
  *		home directory.
  *
- *		Also added the command, pwd - print working directory. This prints the
+ *		Also added the command, pwd - print working direction = command[0] + 1; //command[0] without first char.
+			int index = atoi(position); //Retrieves integer from string.
+
+			invoke_preory. This prints the
  *		users current directory.
  *
  *	v0.4 - 16/02/2014 - Stage Four
@@ -107,6 +110,7 @@
 
 #define SIZE(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
 
+void process_input(); //Forward declaration to be used in invoke_previous()
 
 /* char *history[20]
  * 
@@ -135,7 +139,62 @@ int count;
  * 	-	command[1-X] stores the subsequent parameters.
  *
  */
-char *command[50]; 
+char *command[50];
+
+/*	int tokenise(char *input)
+ *
+ * #include <stdio.h>
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Tokenises the passed in string and places it in the global command array
+ *
+ * Returns:
+ *
+ * int INPUT_EXIT		- If user wishes to exit the program
+ * int INPUT_RUN		- If it was successful
+ * int INPUT_ERROR		- If something has gone drastically wrong
+ * int INPUT_CONTINUE	- If the entered command should not be processed.
+ * 
+ */
+int tokenise(char *input){
+
+ 	char *tokenizer = " \t";
+ 	char *token;
+
+ 	//free_memory();
+
+ 	command[0] = malloc(sizeof(command[0]));
+ 	command[0] = strtok(input, tokenizer);
+ 	if(command[0] == NULL)
+ 		return INPUT_CONTINUE;
+
+ 	/* Exit check
+ 	 *
+ 	 * To check if user wishes to exit the shell before continuing with 
+ 	 * tokenising
+ 	 */
+ 	if(strcmp(command[0], "exit") == 0) 
+ 		return INPUT_EXIT;
+
+ 	int i = 1;
+ 	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
+
+ 		command[i] = malloc(sizeof(command[i]));
+ 		strcpy(command[i], token);
+ 		i++;
+
+ 		// Spec says no more than 50 parameters will be entered
+ 		if (i >= 50) {
+
+ 			printf("Error: Too many parameters\n");
+ 			return INPUT_CONTINUE;
+ 		}
+ 	}
+ 	return INPUT_RUN;
+} //  End tokenise(char *input)
 
 /* char *getPath()
  *
@@ -168,20 +227,6 @@ void setPath(char *path){
 	setenv("PATH", path, 1);
 }
 
-/* void free_memory(user_command *command)
- *
- * Description:
- *
- * This function frees the memory allocated to the command array.
- *
- */
-void free_memory() {
-	int i = 1;
-	while(command[i] != NULL) {
-		free(command[i]);
-		i++;
-	}
-} //end free_memory()
 
 /* void reset_command()
  *
@@ -253,7 +298,7 @@ void set_home_dir() {
  * #include <unistd.h>
  *
  * Description:
- ** int INPUT_EXIT		- If user wishes to exit th* int INPUT_EXIT		- If user wishes to exit the program* int INPUT_EXIT		- If user wishes to exit the programe program
+ *
  * Print the current directory.
  *
  */
@@ -335,23 +380,46 @@ void setpath() {
  *
  */
 void print_history(){
-	for(int i=0; i < SIZE(history); i++){
-		if(strcmp(history[i], "") != 0)
-			printf("%i. %s\n", i+1, history[i]);
+	int i = 0;
+	while(strcmp(history[i], "") != 0){ //Ensures empty history isn't printed.
+		printf("%i. %s\n", i+1, history[i]);
+		i++;
 	}
 }
 
-void invoke_previous(int previous){
-	char temp[512];
-	strcpy(temp, history[previous]);
-	int index = 1;
-	while(command[index] != NULL){
-		sprintf(temp, "%s ", temp);
-		strcat(temp, command[index]);
-		index++;
+
+void invoke_previous(int index){
+
+	char temp[513];
+
+	if(index >= 0 && index <= 19){ //Checks if index is between 0 and 19.
+		if(strcmp(history[index], "") == 0){ //Checks if there is history
+			
+			puts("No command in history.");
+
+		} else{
+			
+			strcpy(temp, history[index]); //Copies history[index] to temp
+			int index = 1;
+			
+			while(command[index] != NULL) {
+				
+				sprintf(temp, "%s ", temp); //Tidiness
+				strcat(temp, command[index]); //Adds commands after !! to temp
+				index++;
+
+			}
+			
+			puts(temp); //Print check
+
+			if(tokenise(temp) == INPUT_RUN)
+				process_input();
+
+		}
 	}
-	tokenise(&temp);
-	process_input();
+	else{
+		puts("Invalid history invocation."); //The number put in is invalid.
+	}
 }
 
 /* void process_input()
@@ -363,7 +431,6 @@ void invoke_previous(int previous){
  *
  */
 void process_input() {
-
 	if(strcmp(command[0], "pwd") == 0) {
 
 		print_working_dir();
@@ -384,18 +451,26 @@ void process_input() {
 
 		print_history();
 
-	} else if(strcmp(command[0], "!!") == 0){
+	} else if(command[0][0] == '!'){
 
-		invoke_previous(count-1);
+		if(strcmp(command[0], "!!") == 0)
+			invoke_previous(count-1);
 
-	} 
+		else{	
+
+			char *position = command[0] + 1; //command[0] without first char.
+			int index = atoi(position); //Retrieves integer from string.
+
+			invoke_previous(index-1);
+
+		}	
+
+	}
 	else {
 
 		run_external_cmd();
 
 	}
-
-	free_memory();
 
 } //end process_input()
 
@@ -410,69 +485,20 @@ void process_input() {
  */
 void update_history(char input[512]){
 	if(count < SIZE(history)){
+
  		strcpy(history[count], input);
  		count++;
+
  	} else{
- 		for(int i=1; i<SIZE(history); i++){
+
+ 		for(int i=1; i<SIZE(history); i++){ //Array contents shifted to left.
  			strcpy(history[i-1], history[i]);
  		}
+
  		strcpy(history[SIZE(history)-1], input);
+
  	}
 }
-
-/*	int tokenise(char *input)
- *
- * #include <stdio.h>
- * #include <string.h>
- * #include <stdlib.h>
- *
- * Description:
- *
- * Tokenises the passed in string and places it in the global command array
- *
- * Returns:
- *
- * int INPUT_EXIT		- If user wishes to exit the program
- * int INPUT_RUN		- If it was successful
- * int INPUT_ERROR		- If something has gone drastically wrong
- * int INPUT_CONTINUE	- If the entered command should not be processed.
- * 
- */
-int tokenise(char *input){
-
- 	char *tokenizer = " \t";
- 	char *token;
-
- 	command[0] = malloc(sizeof(command[0]));
- 	command[0] = strtok(input, tokenizer);
- 	if(command[0] == NULL)
- 		return INPUT_CONTINUE;
-
- 	/* Exit check
- 	 *
- 	 * To check if user wishes to exit the shell before continuing with 
- 	 * tokenising
- 	 */
- 	if(strcmp(command[0], "exit") == 0) 
- 		return INPUT_EXIT;
-
- 	int i = 1;
- 	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
-
- 		command[i] = malloc(sizeof(command[i]));
- 		strcpy(command[i], token);
- 		i++;
-
- 		// Spec says no more than 50 parameters will be entered
- 		if (i >= 50) {
-
- 			printf("Error: Too many parameters\n");
- 			return INPUT_CONTINUE;
- 		}
- 	}
-
- 	return INPUT_RUN;
-} //  End tokenise(char *input)
 
 /* int getInput()
  * 
@@ -515,7 +541,9 @@ int getInput(){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	update_history(input);
+ 	if(input[0] != '!')
+ 		update_history(input);
+
  	int return_val;
  	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
 
