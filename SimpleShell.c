@@ -87,6 +87,12 @@
  *		are currently recognized.
  *		^ Aidan
  *
+ *	v0.5.4 - 28/02/2014 - History invocation fix
+ *
+ *		Fixed the bug where inputs like "!1a" were deemed valid history
+ *		invocations.
+ *		^ Aidan
+ *
  ******************************************************************************/
 
 #define VERSION "v0.5.3. Last Update 20/02/2014\n"
