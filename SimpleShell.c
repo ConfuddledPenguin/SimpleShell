@@ -95,7 +95,7 @@
  *
  ******************************************************************************/
 
-#define VERSION "v0.5.3. Last Update 20/02/2014\n"
+#define VERSION "v0.5.4. Last Update 28/02/2014\n"
 
 
 //To allow kill() to compile in linux without error
