@@ -79,6 +79,17 @@
  *		information
  *		^ Thomas
  *
+ *	v0.5.3 - 28/02/2014 - PATH Improvements
+ *
+ *		Modified the setpath() function to change the PATH rather than adding to
+ *		it.
+ *		^ Tom
+ *
+ *		Added a printf to alert the user that they are exiting the shell, as
+ *		well as the PATH that has just been restored from the start of the 
+ *		program 
+ *		^ Tom
+ *
  ******************************************************************************/
 #define VERSION "v0.5.2. Last Update 20/02/2014\n"
 
@@ -312,12 +323,8 @@ void getpath() {
  */
 void setpath() {
 
-	char newpath[1000];
-
-	sprintf(newpath, "%s:%s/", getenv("PATH"), command[1]);
-
 	if(command[1] != NULL)
-		if(setenv("PATH", newpath, 1) == -1)
+		if(setenv("PATH", command[1], 1) == -1)
 			puts("PATH update failed");
 
 } //end setpath()
@@ -484,9 +491,10 @@ int main() {
 			continue;
 		} else if (return_val == INPUT_EXIT) {
 			setPath(path);
+			printf("\nExiting the shell . . .\n\n");
+			printf("PATH returned to: %s \n\n", getPath());
 			break;
-		}
-
- 	};
+		} // User if
+ 	}; // Close Shell Loop
  	return(0);
 }
