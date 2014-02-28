@@ -49,10 +49,7 @@
  *		The directory thats the shell starts in has been updated to the users
  *		home directory.
  *
- *		Also added the command, pwd - print working direction = command[0] + 1; //command[0] without first char.
-			int index = atoi(position); //Retrieves integer from string.
-
-			invoke_preory. This prints the
+ *		Also added the command, pwd - This prints the
  *		users current directory.
  *
  *	v0.4 - 16/02/2014 - Stage Four
@@ -68,18 +65,31 @@
  *		change directory within the simple shell through the use of the command
  *		cd.
  *
- *	v0.6 - 19/02/2014
- * 
+ *	v0.5.1 - 19/02/2014 - Added history
  *
- *	v0.5.1 - 20/02/2013 - Moved tokenising
+ *		Added the array "history" which stores the previous 20 commands.
+ *		Added the functions update_history() and print_history() which
+ *		malipulate the history.
+ *		^ Aidan
+ *
+ *	v0.5.2 - 20/02/2014 - Moved tokenising
  *
  *		Move the tokenising code into its own method to facilitate the execution
  *		of commands stored in history.
  *		^ Tom
  *
+ *	v0.5.3 - 20/02/2014 - History invocation
+ * 	
+ *		Within process_input():
+ *		The command "!!" is now recognized, and will execute the previous
+ *		command when such a command is available.
+ *		The command "!<no>" is also now recognized. However, commands like "!1d"
+ *		are currently recognized.
+ *		^ Aidan
+ *
  ******************************************************************************/
 
-#define VERSION "v0.6. Last Update 19/02/2014\n"
+#define VERSION "v0.5.3. Last Update 20/02/2014\n"
 
 
 //To allow kill() to compile in linux without error
@@ -92,7 +102,7 @@
 #define _BSD_SOURCE
 #endif
 
-
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -108,7 +118,9 @@
 #define INPUT_RUN 2
 #define INPUT_ERROR 3
 
+
 #define SIZE(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
+
 
 void process_input(); //Forward declaration to be used in invoke_previous()
 
@@ -385,9 +397,16 @@ void print_history(){
 		printf("%i. %s\n", i+1, history[i]);
 		i++;
 	}
+
 }
 
-
+/* void invoke_previous(int index)
+ *
+ * Description:
+ *
+ * Invokes a previous command from the history.
+ *
+ */
 void invoke_previous(int index){
 
 	char temp[513];
@@ -414,12 +433,47 @@ void invoke_previous(int index){
 
 			if(tokenise(temp) == INPUT_RUN)
 				process_input();
-
 		}
 	}
 	else{
 		puts("Invalid history invocation."); //The number put in is invalid.
 	}
+}
+
+/* void invoke_history 
+ *
+ * Description:
+ *
+ * Determines whether or not the histoy invocation is of the previous command
+ * or another command in history. The function also checks whether or not the
+ * command is valid.
+ *
+ */
+void invoke_history(){
+
+	if(strcmp(command[0], "!!") == 0){
+		invoke_previous(count-1);
+	}
+	else{
+
+		char *position = strtok(command[0], "!"); //Copies command[0] w/o '!'
+		char temp[SIZE(position)]; //A new string the same size as position.
+
+		puts(position);	//Print check. Kept in for realism.
+
+		int index = atoi(position); /* Retrieves an int from position, if there
+		is no int, then it is 0. */
+		sprintf(temp, "%i", index); // Converts index back into its own string.
+
+		/* If the two strings match, then the history invocation is valid. 
+		 * This means that an input of "!1a" is not valid, while "!1" is.
+		 */
+		if(strcmp(temp, position) == 0)
+			invoke_previous(index-1);
+		else
+			puts("Invalid history invocation.");
+	}
+
 }
 
 /* void process_input()
@@ -453,17 +507,7 @@ void process_input() {
 
 	} else if(command[0][0] == '!'){
 
-		if(strcmp(command[0], "!!") == 0)
-			invoke_previous(count-1);
-
-		else{	
-
-			char *position = command[0] + 1; //command[0] without first char.
-			int index = atoi(position); //Retrieves integer from string.
-
-			invoke_previous(index-1);
-
-		}	
+		invoke_history();
 
 	}
 	else {
@@ -541,17 +585,20 @@ int getInput(){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	if(input[0] != '!')
- 		update_history(input);
-
+ 	
  	int return_val;
  	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
 
  		return return_val;
  	}
 
+ 	if(input[0] != '!')
+ 		update_history(input);
+
  	process_input(); //user input all processed and stored, now carry it out.
+
  	return INPUT_RUN;
+
 } // End of getInput()
 
 int main() {
