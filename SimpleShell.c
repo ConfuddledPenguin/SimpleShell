@@ -401,7 +401,7 @@ void process_input() {
  */
 int tokenise(char *input){
 
-	char *tokenizer = " \t";
+	char *tokenizer = " \t|<>";
  	char *token;
 
  	command[0] = malloc(sizeof(command[0]));
@@ -467,6 +467,8 @@ int getInput(){
  		printf("\n");
  		return INPUT_EXIT;
  	}
+
+ 	fflush(stdin);
 
  	// Checking user has not just hit enter
  	if (input[0] == '\n')
