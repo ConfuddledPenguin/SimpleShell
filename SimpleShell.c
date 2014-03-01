@@ -117,7 +117,7 @@
  *
  ******************************************************************************/
 
-#define VERSION "v0.5.6. Last Update 28/02/2014\n"
+#define VERSION "Simple Shell v0.5.6. Last Update 28/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -643,6 +643,11 @@ int getInput(){
 } // End of getInput()
 
 int main() {
+
+	printf(VERSION);
+	printf("Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill, 
+		Aidan O'Grady\n");
+	printf("Copyright 2014.\n");
 
 	char *path = getPath();
 	set_home_dir();
