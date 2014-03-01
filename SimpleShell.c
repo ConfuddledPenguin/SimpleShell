@@ -90,8 +90,12 @@
  *		program 
  *		^ Tom
  *
+ *		Updated setpath() to include error checking. It now checks if the
+ *		command has been used correctly and if the entered PATH is a directory
+ *		^ Tom
+ *
  ******************************************************************************/
-#define VERSION "v0.5.2. Last Update 20/02/2014\n"
+#define VERSION "v0.5.3. Last Update 28/02/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -112,6 +116,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <errno.h> 
+#include <sys/stat.h>
 
 
 #define PROMPT "> "
@@ -323,9 +328,20 @@ void getpath() {
  */
 void setpath() {
 
-	if(command[1] != NULL)
+	struct stat sb;
+
+	if(command[1] == NULL || command[2] != NULL){
+
+		printf("ERROR: Wrong Usage - setpath <PATH>\n");
+		return;
+	}
+
+	if (stat(command[1], &sb) == 0 && S_ISDIR(sb.st_mode)){
 		if(setenv("PATH", command[1], 1) == -1)
 			puts("PATH update failed");
+	}else {
+		printf("ERROR: <%s> is not a directory\n", command[1]);
+	}
 
 } //end setpath()
 
