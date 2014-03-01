@@ -257,3 +257,22 @@ Ended		- 16/02/2014
 
  		Finalized everything
  		^ Thomas/Grant
+
+================================================================================
+Stage Six
+
+Commenced 	- 16/02/2014 
+Ended		- Ongoing
+--------------------------------------------------------------------------------
+
+
+	v0.5.1 - 19/02/2014 - History
+
+		Added basic history functionality. Introduced array history, which stores the user's input. The int count is used to control the array.
+		Added update_history(), where the array is continuously updated with the latest input. In the event that the array is full, the history is shifted left to allow the new input to be added.
+		^ Aidan
+
+	v0.5.2 - 19/02/2014 - Print History
+
+		Added print_history(), where when invoked by the user with the command "history", will print upto the previous 20 commands.
+		^ Aidan
