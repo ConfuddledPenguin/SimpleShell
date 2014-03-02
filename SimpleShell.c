@@ -115,9 +115,14 @@
  *		invocations.
  *		^ Aidan
  *
+ *	v0.5.7 - 02/03/2014 - Too many arguments fix
+ *
+ *		Fixed an issue where the pwd command and the cd command would accept
+ *		too many parameters eg: "pwd 1" or "cd /Desktop 1"
+ *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.5.6. Last Update 28/02/2014\n"
+#define VERSION "Simple Shell v0.5.7. Last Update 02/03/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
