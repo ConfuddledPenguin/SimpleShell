@@ -525,12 +525,16 @@ void invoke_history(){
  */
 void process_input() {
 	if(strcmp(command[0], "pwd") == 0) {
-
-		print_working_dir();
+		if(command[1] != NULL)
+			puts("Too many arguments input");
+		else
+			print_working_dir();
 
 	} else if(strcmp(command[0], "cd") == 0) {
-
-		change_directory();
+		if(command[2] != NULL)
+			puts("Too many arguments input");
+		else
+			change_directory();
 
 	} else if(strcmp(command[0], "getpath") == 0) {
 
@@ -645,8 +649,8 @@ int getInput(){
 int main() {
 
 	printf(VERSION);
-	printf("Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill, 
-		Aidan O'Grady\n");
+	printf("Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" 
+		" & Aidan O'Grady\n");
 	printf("Copyright 2014.\n");
 
 	char *path = getPath();
