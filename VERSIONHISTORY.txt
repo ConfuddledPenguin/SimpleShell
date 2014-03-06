@@ -97,14 +97,15 @@ Ended		- 14/02/2014
  
  	v0.1.3 - 11/02/2014 - Fixed C99 Warnings
  
- 		Added " #include <unistd.h> " to remove warnings from C99 when compiling.
+ 		Added '#include <unistd.h>' to remove warnings from C99 when compiling.
 		^ Thomas
  
  	v0.1.4 - 11/02/2014 - Invalid Input Filtering
  
- 		Enclosed execvp() in an if statement so that when it returns "-1" indicating
- 		that it has failed due to invalid input being entered, the child process
-		is killed allowing the parent to continue therefore stopping "Shellception".
+ 		Enclosed execvp() in an if statement so that when it returns "-1"
+ 		indicating that it has failed due to invalid input being entered, the
+ 		child process is killed allowing the parent to continue therefore
+ 		stopping "Shellception".
 		^ Thomas
 
  	v0.1.5 - 11/02/2014 - Passing Input to Commands
@@ -119,12 +120,13 @@ Ended		- 14/02/2014
  
  		I also had to make another change within the processInput() function
  		as the command must be stored in args[0] with the arguments stored in
- 		args[1] and onwards when it is passed into execp(). This has to be tidied
- 		up as input_command is still being used in some places when it could probably
- 		be completely removed.
+ 		args[1] and onwards when it is passed into execp(). This has to be
+ 		tidied up as input_command is still being used in some places when it
+ 		could probably be completely removed.
  
- 		The SimpleShell can now successfully carry out most built in unix commands
- 		and run executable files. It can also pass in any required parameters.
+ 		The SimpleShell can now successfully carry out most built in unix
+ 		commands and run executable files. It can also pass in any required
+ 		parameters.
 		^ Thomas
  
  	v0.1.6 - 12/02/2014 - Memory Freeing
@@ -147,16 +149,17 @@ Ended		- 14/02/2014
 
 	v0.1.8 - 13/02/2014 - Fixing Aidan's Errors
 
- 		Discovered that Aidan's changes contained a few bugs which I went through and
- 		fixed. There were problems relating running commands as the command was stored
-		in command[0] then malloc was being used to assign the memory. The line 
-		assigning memory had simply been overlooked when making changes. Also added a 
-		new function to reset command to NULL everytime the program continues the
-		loop.
+ 		Discovered that Aidan's changes contained a few bugs which I went
+ 		through and fixed. There were problems relating running commands as the
+ 	 	command was stored in command[0] then malloc was being used to assign
+ 		the memory. The line assigning memory had simply been overlooked when
+ 		making changes. Also added a new function to reset command to NULL
+ 		everytime the program continues the loop.
  		^ Thomas
 
 		Cleaned up getInput() to make it more readable and maintainable. 
-		Also removed all input checking printf's as the function now works correctly.
+		Also removed all input checking printf's as the function now works
+		correctly.
  		^ Tom
  
  		Fixed issue with kill() not being defined in linux.
@@ -190,17 +193,18 @@ Ended		- 14/02/2014
 	v0.2.1 - 14/02/2014 - Set Home Directory
  
  		Created a function which changes the current directory to the home
- 		directory by first using getenv() to get the location of the home directory
- 		then chdir to move into it. The function is called as soon as the program
- 		runs.
+ 		directory by first using getenv() to get the location of the home
+ 		directory then chdir to move into it. The function is called as soon as
+ 		the program runs.
  		^ Thomas
  
  	v0.2.2 - 14/02/2014 - Print Working Directory
  
  		Used the getcwd() function to get the current working directory and
  		then print it out.
+ 		^ Thomas
 
- 	v0.3.0 - 14/02/2014 - Final stage Two
+ 	v0.3.0 - 14/02/2014 - Final stage three
 
  		Finalized everything.
  		^ Tom
@@ -230,14 +234,113 @@ Ended		- 16/02/2014
  		PATH enviroment.
  		^ Thomas
 
- 	v0.4.0 - 16/02/2014 - Final stage three
+ 	v0.4.0 - 16/02/2014 - Final stage four
 
  		Finalized everything
- 		^tom
+ 		^ Tom
 
 ================================================================================
 Stage Five
 
 Commenced 	- 16/02/2014 
 Ended		- 16/02/2014
+--------------------------------------------------------------------------------
+
+
+	v0.4.1 - 16/02/2014 - Change Directory
+ 
+ 		Added change_directory() function to allow the user to navigate between
+ 		directories with the command cd.
+ 		^ Thomas
+
+	v0.5.0 - 16/02/2014 - Final stage five
+
+ 		Finalized everything
+ 		^ Thomas/Grant
+
+================================================================================
+Stage Six
+
+Commenced 	- 16/02/2014 
+Ended		- 06/03/2014
+--------------------------------------------------------------------------------
+
+
+	v0.5.1 - 19/02/2014 - History
+
+		Added basic history functionality. Introduced array history, which 
+		stores the user's input. The int count is used to control the array.
+		Added update_history(), where the array is continuously updated with the
+		latest input. In the event that the array is full, the history is 
+		shifted left to allow the new input to be added.
+		^ Aidan
+
+	v0.5.2 - 19/02/2014 - Print History
+
+		Added print_history(), where when invoked by the user with the command 
+		"history", will print upto the previous 20 commands.
+		^ Aidan
+
+	v0.5.3 - 20/02/2014 - Moved tokenising
+ 
+ 		Move the tokenising code into its own method to facilitate the execution
+ 		of commands stored in history.
+ 		^ Tom
+ 
+ 	v0.5.4 - 20/02/2014 - Improved Error Messages
+ 		
+ 		Added perror() to change_directory() and print_working_directory() to
+ 		print out the relevant errno message when the user enters incorrect
+ 		information
+ 		^ Thomas
+ 
+ 	v0.5.5 - 28/02/2014 - PATH Improvements
+ 
+ 		Modified the setpath() function to change the PATH rather than adding to
+ 		it.
+ 		^ Tom
+ 
+ 		Added a printf to alert the user that they are exiting the shell, as
+ 		well as the PATH that has just been restored from the start of the 
+ 		program 
+ 		^ Tom
+ 
+ 		Updated setpath() to include error checking. It now checks if the
+ 		command has been used correctly and if the entered PATH is a directory
+ 		^ Tom
+ 
+ 	v0.5.6 - 20/02/2014 - History invocation
+  	
+ 		Within process_input():
+ 		The command "!!" is now recognized, and will execute the previous
+ 		command when such a command is available.
+ 		The command "!<no>" is also now recognized. However, commands like "!1d"
+ 		are currently recognized.
+ 		^ Aidan
+ 
+ 	v0.5.7 - 28/02/2014 - History invocation fix
+ 
+ 		Fixed the bug where inputs like "!1a" were deemed valid history
+ 		invocations.
+ 		^ Aidan
+ 
+ 	v0.5.8 - 02/03/2014 - Too many arguments fix
+ 
+ 		Fixed an issue where the pwd command and the cd command would accept
+ 		too many parameters eg: "pwd 1" or "cd /Desktop 1"
+ 		^ Thomas
+ 
+ 	v0.5.9 - 06/03/2014 - Removed extra setpath
+ 
+ 		Removed excess setpath() function.
+ 		Modified setPath() and setpath() so things make more sense. As these
+ 		functions where very similiar. One taking a string, with the other 
+ 		taking the command.
+ 		^Tom
+
+================================================================================
+Stage Seven
+
+Commenced 	- 06/03/2014 
+Ended		- Ongoing
 --------------------------------------------------------------------------------
