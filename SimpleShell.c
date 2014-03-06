@@ -119,6 +119,15 @@
  *
  *		Fixed an issue where the pwd command and the cd command would accept
  *		too many parameters eg: "pwd 1" or "cd /Desktop 1"
+ *		^ Thomas
+ *
+ *	v0.5.8 - 06/03/2014 - Removed extra setpath
+ *
+ *		Removed excess setpath() function.
+ *		Modified setPath() and setpath() so things make more sense. As these
+ *		functions where very similiar. One taking a string, with the other 
+ *		taking the command.
+ *		^Tom
  *
  ******************************************************************************/
 
@@ -242,37 +251,6 @@ int tokenise(char *input){
  	return INPUT_RUN;
 } //  End tokenise(char *input)
 
-/* char *getPath()
- *
- * #include <string.h>
- * #include <stdlib.h>
- *
- * Description:
- *
- * Gets the current PATH of the system
- *
- * Returns:
- *
- * char *PATH	- the current PATH of the system 
- */
-char *getPath(){
-	return getenv("PATH");
-}
-
-/* char *setPath()
- *
- * #include <string.h>
- * #include <stdlib.h>
- *
- * Description:
- *
- * Sets the current PATH of the system
- *
- */
-void setPath(char *path){
-	setenv("PATH", path, 1);
-}
-
 
 /* void reset_command()
  *
@@ -383,23 +361,38 @@ void change_directory() {
 
 } //end change_directory()
 
-/* void getpath()
+/* char *getPath()
  *
+ * #include <string.h>
  * #include <stdlib.h>
  *
  * Description:
  *
- * Prints out the contents of the system's PATH
- * enviroment
+ * Gets the current PATH of the system
+ *
+ * Returns:
+ *
+ * char *PATH	- the current PATH of the system 
+ */
+char *getPath(){
+	return getenv("PATH");
+}
+
+/* char *setPathString()
+ *
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Sets the current PATH of the system
  *
  */
-void getpath() {
+void setPathString(char *path){
+	setenv("PATH", path, 1);
+}
 
-	puts(getenv("PATH"));
-
-} //end getpath()
-
-/* void setpath()
+/* void setPath()
  *
  * #include <stdlib.h>
  *
@@ -409,7 +402,7 @@ void getpath() {
  * PATH enviroment.
  *
  */
-void setpath() {
+void setPath() {
 
 	struct stat sb;
 
@@ -543,11 +536,11 @@ void process_input() {
 
 	} else if(strcmp(command[0], "getpath") == 0) {
 
-		getpath();
+		puts(getPath());
 
 	} else if(strcmp(command[0], "setpath") == 0) {
 
-		setpath();
+		setPath();
 
 	} else if(strcmp(command[0], "history") == 0){
 
