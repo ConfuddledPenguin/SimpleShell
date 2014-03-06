@@ -463,7 +463,6 @@ void invoke_previous(int index){
 		} else{
 			
 			strcpy(temp, history[index]); //Copies history[index] to temp
-			puts(temp);
 			int index = 1;
 			
 			while(command[index] != NULL) {
@@ -474,8 +473,7 @@ void invoke_previous(int index){
 
 			}
 			
-			puts(temp); //Print check
-
+			puts(temp);
 			if(tokenise(temp) == INPUT_RUN)
 				process_input();
 		}
@@ -504,7 +502,6 @@ void invoke_history(){
 		char *position = strtok(command[0], "!"); //Copies command[0] w/o '!'
 		char temp[SIZE(position)]; //A new string the same size as position.
 
-		puts(position);	//Print check. Kept in for realism.
 
 		int index = atoi(position); /* Retrieves an int from position, if there
 		is no int, then it is 0. */
@@ -610,7 +607,8 @@ void update_history(char input[512]){
  * int INPUT_RUN		- If it was successful
  * int INPUT_ERROR		- If something has gone drastically wrong
  * int INPUT_CONTINUE	- If the entered command should not be processed.
- * 
+ * 1
+
  */
 int getInput(){
 	
