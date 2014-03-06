@@ -463,6 +463,7 @@ void invoke_previous(int index){
 		} else{
 			
 			strcpy(temp, history[index]); //Copies history[index] to temp
+			puts(temp);
 			int index = 1;
 			
 			while(command[index] != NULL) {
@@ -635,15 +636,16 @@ int getInput(){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	
+ 	if(input[0] != '!')
+ 		update_history(input);
+
  	int return_val;
  	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
 
  		return return_val;
  	}
 
- 	if(input[0] != '!')
- 		update_history(input);
+ 	
 
  	process_input(); //user input all processed and stored, now carry it out.
 
