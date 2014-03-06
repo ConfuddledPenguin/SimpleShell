@@ -167,14 +167,14 @@ void process_input(); //Forward declaration to be used in invoke_previous()
  */
 char history[20][512];
 
-/* int count
+/* int count_history
  *
  * Description:
  *
  * Stores the next available position in the history array.
  *
  */
-int count;
+int count_history;
 
 /* char *command[50]
  *
@@ -437,7 +437,7 @@ void setpath() {
  */
 void print_history(){
 	int i = 0;
-	while(strcmp(history[i], "") != 0){ //Ensures empty history isn't printed.
+	while(i < count_history){ //Ensures empty history isn't printed.
 		printf("%i. %s\n", i+1, history[i]);
 		i++;
 	}
@@ -495,7 +495,7 @@ void invoke_previous(int index){
 void invoke_history(){
 
 	if(strcmp(command[0], "!!") == 0){
-		invoke_previous(count-1);
+		invoke_previous(count_history-1);
 	}
 	else{
 
@@ -574,10 +574,10 @@ void process_input() {
  *
  */
 void update_history(char input[512]){
-	if(count < SIZE(history)){
+	if(count_history < SIZE(history)){
 
- 		strcpy(history[count], input);
- 		count++;
+ 		strcpy(history[count_history], input);
+ 		count_history++;
 
  	} else{
 
@@ -663,8 +663,8 @@ int main() {
 
 	int return_val = -1;
 
-	// Initializing the count.
-	count = 0;
+	// Initializing the count_history.
+	count_history = 0;
 
 	for(int i=0; i<SIZE(history); i++)
 		strcpy(history[i], "");
