@@ -65,73 +65,13 @@
  *		change directory within the simple shell through the use of the command
  *		cd.
  *
- *	v0.5.1 - 19/02/2014 - Added history
- *
- *		Added the array "history" which stores the previous 20 commands.
- *		Added the functions update_history() and print_history() which
- *		malipulate the history.
- *		^ Aidan
- *
- *	v0.5.2 - 20/02/2014 - Moved tokenising
- *
- *		Move the tokenising code into its own method to facilitate the execution
- *		of commands stored in history.
- *		^ Tom
- *
- *	v0.5.3 - 20/02/2014 - Improved Error Messages
+ *	v0.6 - 06/03/2014 - Stage Six
  *		
- *		Added perror() to change_directory() and print_working_directory() to
- *		print out the relevant errno message when the user enters incorrect
- *		information
- *		^ Thomas
- *
- *	v0.5.4 - 28/02/2014 - PATH Improvements
- *
- *		Modified the setpath() function to change the PATH rather than adding to
- *		it.
- *		^ Tom
- *
- *		Added a printf to alert the user that they are exiting the shell, as
- *		well as the PATH that has just been restored from the start of the 
- *		program 
- *		^ Tom
- *
- *		Updated setpath() to include error checking. It now checks if the
- *		command has been used correctly and if the entered PATH is a directory
- *		^ Tom
- *
- *	v0.5.5 - 20/02/2014 - History invocation
- * 	
- *		Within process_input():
- *		The command "!!" is now recognized, and will execute the previous
- *		command when such a command is available.
- *		The command "!<no>" is also now recognized. However, commands like "!1d"
- *		are currently recognized.
- *		^ Aidan
- *
- *	v0.5.6 - 28/02/2014 - History invocation fix
- *
- *		Fixed the bug where inputs like "!1a" were deemed valid history
- *		invocations.
- *		^ Aidan
- *
- *	v0.5.7 - 02/03/2014 - Too many arguments fix
- *
- *		Fixed an issue where the pwd command and the cd command would accept
- *		too many parameters eg: "pwd 1" or "cd /Desktop 1"
- *		^ Thomas
- *
- *	v0.5.8 - 06/03/2014 - Removed extra setpath
- *
- *		Removed excess setpath() function.
- *		Modified setPath() and setpath() so things make more sense. As these
- *		functions where very similiar. One taking a string, with the other 
- *		taking the command.
- *		^Tom
+ *		GRANT WILL DO THIS BIT
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.5.7. Last Update 02/03/2014\n"
+#define VERSION "Simple Shell v0.6.0. Last Update 06/03/2014\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
