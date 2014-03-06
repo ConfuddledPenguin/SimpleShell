@@ -338,8 +338,42 @@ Ended		- 06/03/2014
  		taking the command.
  		^Tom
 
+ 	v0.6.0 - 06/03/2014 - Final stage six
+
+ 		Finalized everything
+ 		^ Tom/Aidan/Grant
+
 ================================================================================
 Stage Seven
+
+Commenced 	- 06/03/2014 
+Ended		- 06/03/2014
+--------------------------------------------------------------------------------
+
+	v0.6.1 - 06/03/2014 - saveHistory
+
+		Added saveHistory(), where the contents of the history array is taken
+		and stored into a file which is rewitten if exists or created if it does
+		not exist. The call to the function was added after everything else in
+		main().
+		^ Grant
+
+	v0.6.2 - 06/03/2014 - openHistory
+
+		Added openHistory(), where the contents of the file .history is taken
+		and stored line by line into the history array using updatehistory(). 
+		If the file does not exist then it just exits the function.
+		^ Grant
+
+	v0.7.0 - 06/03/2014 - Final stage seven
+
+ 		Finalized everything
+ 		^ Tom/Grant
+
+
+
+================================================================================
+Stage Eight
 
 Commenced 	- 06/03/2014 
 Ended		- Ongoing

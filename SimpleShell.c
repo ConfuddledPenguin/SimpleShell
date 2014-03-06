@@ -71,10 +71,17 @@
  *		history for the last 20 commands or less. THe program can now store the
  *		last 20 commands entered by the user and be able to recall them to use
  *		again with the commands ! or !!.
+ *	
+ *	v0.7 - 06/03/2014 - Stage Seven
+ *	
+ *		Added the functions openHistory() and saveHistory() to allow the user's
+ *		history file to be read and saved after each use of the SimpleShell so
+ *		the history of the commands they have used is kept over multiple uses.
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.6.0. Last Update 06/03/2014\n"
+#define VERSION "Simple Shell v0.7.0. Last Update 06/03/2014\n"
+#define COPYRIGHT "Copyright 2014.\n"
 
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
@@ -587,12 +594,71 @@ int getInput(){
 
 } // End of getInput()
 
+/* void openHistory()
+ *
+ * Description:
+ *
+ * Opens the file .history if it exists and if it exists then take the data
+ * from the file and puts it into the history array until there is no more
+ * data left to take from the file.
+ *
+ */
+void openHistory(){
+	FILE *fp;
+	char c[513];
+	char *p;
+ 	int h = 0;
+
+	if((fp = fopen(".history", "r")) != NULL){ //file exist check
+ 		while (1) {
+ 			if((fgets(c, 513, fp)) == NULL){ //end of file check
+ 				break;
+ 			}
+
+ 			// Getting rid of the new line char, replacing with a terminating char
+ 			if ((p = strchr(c, '\n')) != NULL)
+ 			*p = '\0';
+
+ 			update_history(c);
+
+ 			h++;
+ 		}
+ 	}
+
+ 	fclose(fp);
+}
+
+/* void saveHistory()
+ *
+ * Description:
+ *
+ * Opens the file .history or creates the file if none exists. It takes the
+ * contents of the history array and puts each bit of data on a new line in order
+ * from the start of the array. When there is nothing left to be copied from the
+ * array then the file if closed.
+ *
+ */
+void saveHistory(){
+	FILE *fp;
+
+	fp = fopen(".history", "w+");
+
+ 	int g = 0;
+	while(strcmp(history[g], "") != 0){ //Ensures empty history isn't printed.
+		fprintf(fp, "%s\n", history[g]);
+		g++;
+	}
+ 	
+
+ 	fclose(fp);
+}
+
 int main() {
 
 	printf(VERSION);
 	printf("Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" 
 		" & Aidan O'Grady\n");
-	printf("Copyright 2014.\n");
+	printf(COPYRIGHT);
 
 	char *path = getPath();
 	set_home_dir();
@@ -604,6 +670,8 @@ int main() {
 
 	for(int i=0; i<SIZE(history); i++)
 		strcpy(history[i], "");
+
+	openHistory();
 
 	// User loop
 	while (1) {
@@ -623,5 +691,8 @@ int main() {
 			break;
 		} // User if
  	}; // Close Shell Loop
+
+ 	saveHistory();
+
  	return(0);
 }
