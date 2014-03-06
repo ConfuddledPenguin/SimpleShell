@@ -67,7 +67,10 @@
  *
  *	v0.6 - 06/03/2014 - Stage Six
  *		
- *		GRANT WILL DO THIS BIT
+ *		Added functions to allow the user to call the function history to get
+ *		history for the last 20 commands or less. THe program can now store the
+ *		last 20 commands entered by the user and be able to recall them to use
+ *		again with the commands ! or !!.
  *
  ******************************************************************************/
 
