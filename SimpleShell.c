@@ -614,7 +614,7 @@ int main() {
 			printf("I broke");
 			continue;
 		} else if (return_val == INPUT_EXIT) {
-			setPath(path);
+			setPathString(path);
 			printf("\nExiting the shell . . .\n\n");
 			printf("PATH returned to: %s \n\n", getPath());
 			break;
