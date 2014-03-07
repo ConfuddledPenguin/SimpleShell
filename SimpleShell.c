@@ -78,9 +78,25 @@
  *		history file to be read and saved after each use of the SimpleShell so
  *		the history of the commands they have used is kept over multiple uses.
  *
+ *	v0.7.1 - 07/03/2014 - Fixed openHistory()
+ *
+ *		Found a bug on linux where the shell would crash while running on linux
+ *		if the history file did not already exist. The program would create the
+ *		new file but as it would be empty, any attempt to read data from it
+ *		would cause segmentation errors.
+ * 
+ *		Moved the call to saveHistory() wihin main() to inside if(INPUT_EXIT) so
+ *		the shell isn't wasting time by making unessesary writes to memory. It
+ *		now only reads the file on start up and writes to it on the program's
+ *		exit.
+ *
+ *		Also changed the history file name from .history to .hist_list as
+ *		required by the assignment specification.
+ *		^ Thomas
+ *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.7.0. Last Update 06/03/2014\n"
+#define VERSION "Simple Shell v0.7.1. Last Update 07/03/2014\n"
 #define COPYRIGHT "Copyright 2014.\n"
 
 //To allow kill() to compile in linux without error
@@ -168,8 +184,6 @@ int tokenise(char *input){
 
  	char *tokenizer = " \t|<>";
  	char *token;
-
- 	//free_memory();
 
  	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
@@ -586,8 +600,6 @@ int getInput(){
  		return return_val;
  	}
 
- 	
-
  	process_input(); //user input all processed and stored, now carry it out.
 
  	return INPUT_RUN;
@@ -598,7 +610,7 @@ int getInput(){
  *
  * Description:
  *
- * Opens the file .history if it exists and if it exists then take the data
+ * Opens the file .hist_list if it exists and if it exists then take the data
  * from the file and puts it into the history array until there is no more
  * data left to take from the file.
  *
@@ -609,30 +621,40 @@ void openHistory(){
 	char *p;
  	int h = 0;
 
-	if((fp = fopen(".history", "r")) != NULL){ //file exist check
- 		while (1) {
- 			if((fgets(c, 513, fp)) == NULL){ //end of file check
- 				break;
- 			}
+ 	/* If .hist_list exists, read it and add to history.
+ 	   If .hist_list doesn't exist, create it and skip
+ 	   adding to history as the file is empty therefore
+ 	   there is nothing to add. 
+ 	 */
+	if((fp = fopen(".hist_list", "r")) == NULL){ //find or create file
+		puts("Creating new history file in home directory");
+	} else { //file exists, read it.
 
- 			// Getting rid of the new line char, replacing with a terminating char
- 			if ((p = strchr(c, '\n')) != NULL)
- 			*p = '\0';
+		while (1) {
+			if((fgets(c, 513, fp)) == NULL){ //end of file check
+				break;
+			}
 
- 			update_history(c);
+			// Getting rid of the new line char, replacing with a terminating char
+			if ((p = strchr(c, '\n')) != NULL)
+			*p = '\0';
 
- 			h++;
- 		}
- 	}
+			update_history(c);
 
- 	fclose(fp);
-}
+			h++;
+	 	}
+
+	 	fclose(fp);
+
+	}
+
+} //end openHistory()
 
 /* void saveHistory()
  *
  * Description:
  *
- * Opens the file .history or creates the file if none exists. It takes the
+ * Opens the file .hist_list or creates the file if none exists. It takes the
  * contents of the history array and puts each bit of data on a new line in order
  * from the start of the array. When there is nothing left to be copied from the
  * array then the file if closed.
@@ -641,7 +663,7 @@ void openHistory(){
 void saveHistory(){
 	FILE *fp;
 
-	fp = fopen(".history", "w+");
+	fp = fopen(".hist_list", "w+");
 
  	int g = 0;
 	while(strcmp(history[g], "") != 0){ //Ensures empty history isn't printed.
@@ -688,11 +710,10 @@ int main() {
 			setPathString(path);
 			printf("\nExiting the shell . . .\n\n");
 			printf("PATH returned to: %s \n\n", getPath());
+			saveHistory();
 			break;
 		} // User if
  	}; // Close Shell Loop
-
- 	saveHistory();
 
  	return(0);
 }
