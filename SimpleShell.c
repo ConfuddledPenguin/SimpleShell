@@ -224,6 +224,7 @@ int tokenise(char *input){
  *
  */
 void reset_command() {
+	
 	int i = 0;
 	while(command[i] != NULL) {
 		command[i] = NULL;
@@ -393,6 +394,7 @@ void setPath() {
  *
  */
 void print_history(){
+
 	int i = 0;
 	while(i < count_history){ //Ensures empty history isn't printed.
 		printf("%i. %s\n", i+1, history[i]);
@@ -484,6 +486,7 @@ void invoke_history(){
  *
  */
 void process_input() {
+
 	if(strcmp(command[0], "pwd") == 0) {
 		if(command[1] != NULL)
 			puts("Too many arguments input");
@@ -531,6 +534,7 @@ void process_input() {
  *
  */
 void update_history(char input[512]){
+
 	if(count_history < SIZE(history)){
 
  		strcpy(history[count_history], input);
@@ -616,6 +620,7 @@ int getInput(){
  *
  */
 void openHistory(){
+
 	FILE *fp;
 	char c[513];
 	char *p;
@@ -661,6 +666,7 @@ void openHistory(){
  *
  */
 void saveHistory(){
+
 	FILE *fp;
 
 	fp = fopen(".hist_list", "w+");
