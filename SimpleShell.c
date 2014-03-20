@@ -94,6 +94,9 @@
  *		required by the assignment specification.
  *		^ Thomas
  *
+ *		Fixed the issue where exit can make it into the history
+ *		^ Tom
+ *
  ******************************************************************************/
 
 #define VERSION "Simple Shell v0.7.1. Last Update 07/03/2014\n"
