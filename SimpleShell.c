@@ -125,10 +125,9 @@
 
 
 #define PROMPT "> "
-#define INPUT_EXIT 0
-#define INPUT_CONTINUE 1
-#define INPUT_RUN 2
-#define INPUT_ERROR 3
+#define INPUT_CONTINUE 0
+#define INPUT_RUN 1
+#define INPUT_ERROR 2
 
 
 #define SIZE(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
@@ -165,6 +164,109 @@ int count_history;
  */
 char *command[50];
 
+/*
+ * Stores the orginal path
+ */
+char *path;
+
+/* void update(history)
+ *
+ * Description:
+ * 
+ * Adds the latest input into the command array. In the event of a fully array,
+ * the contents of the array is shifted left (history[1] is now history[0]), 
+ * so the first element is removed.
+ *
+ */
+void update_history(char input[512]){
+
+	if(count_history < SIZE(history)){
+
+ 		strcpy(history[count_history], input);
+ 		count_history++;
+
+ 	} else{
+
+ 		for(int i=1; i<SIZE(history); i++){ //Array contents shifted to left.
+ 			strcpy(history[i-1], history[i]);
+ 		}
+
+ 		strcpy(history[SIZE(history)-1], input);
+
+ 	}
+}
+
+/* void openHistory()
+ *
+ * Description:
+ *
+ * Opens the file .hist_list if it exists and if it exists then take the data
+ * from the file and puts it into the history array until there is no more
+ * data left to take from the file.
+ *
+ */
+void openHistory(){
+
+	FILE *fp;
+	char c[513];
+	char *p;
+ 	int h = 0;
+
+ 	/* If .hist_list exists, read it and add to history.
+ 	   If .hist_list doesn't exist, create it and skip
+ 	   adding to history as the file is empty therefore
+ 	   there is nothing to add. 
+ 	 */
+	if((fp = fopen(".hist_list", "r")) == NULL){ //find or create file
+		puts("Creating new history file in home directory");
+	} else { //file exists, read it.
+
+		while (1) {
+			if((fgets(c, 513, fp)) == NULL){ //end of file check
+				break;
+			}
+
+			// Getting rid of the new line char, replacing with a terminating char
+			if ((p = strchr(c, '\n')) != NULL)
+			*p = '\0';
+
+			update_history(c);
+
+			h++;
+	 	}
+
+	 	fclose(fp);
+
+	}
+
+} //end openHistory()
+
+/* void saveHistory()
+ *
+ * Description:
+ *
+ * Opens the file .hist_list or creates the file if none exists. It takes the
+ * contents of the history array and puts each bit of data on a new line in order
+ * from the start of the array. When there is nothing left to be copied from the
+ * array then the file if closed.
+ *
+ */
+void saveHistory(){
+
+	FILE *fp;
+
+	fp = fopen(".hist_list", "w+");
+
+ 	int g = 0;
+	while(strcmp(history[g], "") != 0){ //Ensures empty history isn't printed.
+		fprintf(fp, "%s\n", history[g]);
+		g++;
+	}
+ 	
+
+ 	fclose(fp);
+}
+
 /*	int tokenise(char *input)
  *
  * #include <stdio.h>
@@ -177,7 +279,6 @@ char *command[50];
  *
  * Returns:
  *
- * int INPUT_EXIT		- If user wishes to exit the program
  * int INPUT_RUN		- If it was successful
  * int INPUT_ERROR		- If something has gone drastically wrong
  * int INPUT_CONTINUE	- If the entered command should not be processed.
@@ -192,14 +293,6 @@ int tokenise(char *input){
  	command[0] = strtok(input, tokenizer);
  	if(command[0] == NULL)
  		return INPUT_CONTINUE;
-
- 	/* Exit check
- 	 *
- 	 * To check if user wishes to exit the shell before continuing with 
- 	 * tokenising
- 	 */
- 	if(strcmp(command[0], "exit") == 0) 
- 		return INPUT_EXIT;
 
  	int i = 1;
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
@@ -480,6 +573,15 @@ void invoke_history(){
 
 }
 
+void exiting(){
+
+	setPathString(path);
+	printf("\nExiting the shell . . .\n\n");
+	printf("PATH returned to: %s \n\n", getPath());
+	saveHistory();
+	exit(0);
+}
+
 /* void process_input()
  *
  * Description:
@@ -518,41 +620,16 @@ void process_input() {
 
 		invoke_history();
 
-	}
-	else {
+	} else if (strcmp(command[0], "exit") == 0){
+
+		exiting();
+	} else {
 
 		run_external_cmd();
 
 	}
 
 } //end process_input()
-
-/* void update(history)
- *
- * Description:
- * 
- * Adds the latest input into the command array. In the event of a fully array,
- * the contents of the array is shifted left (history[1] is now history[0]), 
- * so the first element is removed.
- *
- */
-void update_history(char input[512]){
-
-	if(count_history < SIZE(history)){
-
- 		strcpy(history[count_history], input);
- 		count_history++;
-
- 	} else{
-
- 		for(int i=1; i<SIZE(history); i++){ //Array contents shifted to left.
- 			strcpy(history[i-1], history[i]);
- 		}
-
- 		strcpy(history[SIZE(history)-1], input);
-
- 	}
-}
 
 /* int getInput()
  * 
@@ -567,7 +644,6 @@ void update_history(char input[512]){
  *
  * Returns:
  *
- * int INPUT_EXIT		- If user wishes to exit the program
  * int INPUT_RUN		- If it was successful
  * int INPUT_ERROR		- If something has gone drastically wrong
  * int INPUT_CONTINUE	- If the entered command should not be processed.
@@ -585,7 +661,7 @@ int getInput(){
  	// Get input
  	if((fgets(input, 513, stdin)) == NULL){ //end of file check
  		printf("\n");
- 		return INPUT_EXIT;
+ 		exiting();
  	}
 
  	//This may clear the input remove the issue of there being to many
@@ -619,77 +695,6 @@ int getInput(){
 
 } // End of getInput()
 
-/* void openHistory()
- *
- * Description:
- *
- * Opens the file .hist_list if it exists and if it exists then take the data
- * from the file and puts it into the history array until there is no more
- * data left to take from the file.
- *
- */
-void openHistory(){
-
-	FILE *fp;
-	char c[513];
-	char *p;
- 	int h = 0;
-
- 	/* If .hist_list exists, read it and add to history.
- 	   If .hist_list doesn't exist, create it and skip
- 	   adding to history as the file is empty therefore
- 	   there is nothing to add. 
- 	 */
-	if((fp = fopen(".hist_list", "r")) == NULL){ //find or create file
-		puts("Creating new history file in home directory");
-	} else { //file exists, read it.
-
-		while (1) {
-			if((fgets(c, 513, fp)) == NULL){ //end of file check
-				break;
-			}
-
-			// Getting rid of the new line char, replacing with a terminating char
-			if ((p = strchr(c, '\n')) != NULL)
-			*p = '\0';
-
-			update_history(c);
-
-			h++;
-	 	}
-
-	 	fclose(fp);
-
-	}
-
-} //end openHistory()
-
-/* void saveHistory()
- *
- * Description:
- *
- * Opens the file .hist_list or creates the file if none exists. It takes the
- * contents of the history array and puts each bit of data on a new line in order
- * from the start of the array. When there is nothing left to be copied from the
- * array then the file if closed.
- *
- */
-void saveHistory(){
-
-	FILE *fp;
-
-	fp = fopen(".hist_list", "w+");
-
- 	int g = 0;
-	while(strcmp(history[g], "") != 0){ //Ensures empty history isn't printed.
-		fprintf(fp, "%s\n", history[g]);
-		g++;
-	}
- 	
-
- 	fclose(fp);
-}
-
 int main() {
 
 	printf(VERSION);
@@ -697,7 +702,7 @@ int main() {
 		" & Aidan O'Grady\n");
 	printf(COPYRIGHT);
 
-	char *path = getPath();
+	path = getPath();
 	set_home_dir();
 
 	int return_val = -1;
@@ -721,13 +726,7 @@ int main() {
 		} else if (return_val == INPUT_ERROR) {
 			printf("I broke");
 			continue;
-		} else if (return_val == INPUT_EXIT) {
-			setPathString(path);
-			printf("\nExiting the shell . . .\n\n");
-			printf("PATH returned to: %s \n\n", getPath());
-			saveHistory();
-			break;
-		} // User if
+		} 
  	}; // Close Shell Loop
 
  	return(0);
