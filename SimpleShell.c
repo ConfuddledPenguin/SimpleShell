@@ -94,7 +94,17 @@
  *		required by the assignment specification.
  *		^ Thomas
  *
+ *	v0.7.2 - 20/03/2014 - Exit changes
+ *
  *		Fixed the issue where exit can make it into the history
+ *		^ Tom
+ *
+ *		Moved the exiting section of the user loop in main and placed the code
+ *		in a seperate method exiting(). this allows us to exit the program from
+ *		any location in the program. 
+ *			Also removed the exit check from tokenising making the general code
+ *		cleaner. The current check for exit is in process input this makes 
+ *		sense.
  *		^ Tom
  *
  ******************************************************************************/
