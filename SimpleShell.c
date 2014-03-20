@@ -568,11 +568,11 @@ void update_history(char input[512]){
  * int INPUT_RUN		- If it was successful
  * int INPUT_ERROR		- If something has gone drastically wrong
  * int INPUT_CONTINUE	- If the entered command should not be processed.
- * 1
-
+ * 
  */
 int getInput(){
 	
+	char inputCopy[513];
 	char input[513];
 	char *p;
 
@@ -585,6 +585,8 @@ int getInput(){
  		return INPUT_EXIT;
  	}
 
+ 	//This may clear the input remove the issue of there being to many
+ 	//in the input
  	fflush(stdin);
 
  	// Checking user has not just hit enter
@@ -595,14 +597,18 @@ int getInput(){
  	if ((p = strchr(input, '\n')) != NULL)
  		*p = '\0';
 
- 	if(input[0] != '!')
- 		update_history(input);
+ 	//Get copy of the string before tokenising
+ 	strcpy(inputCopy, input);
 
  	int return_val;
  	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
 
  		return return_val;
  	}
+
+ 	//Add the input to the history if possible
+ 	if(inputCopy[0] != '!')
+ 		update_history(inputCopy);
 
  	process_input(); //user input all processed and stored, now carry it out.
 
