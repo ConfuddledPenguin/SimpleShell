@@ -78,38 +78,18 @@
  *		history file to be read and saved after each use of the SimpleShell so
  *		the history of the commands they have used is kept over multiple uses.
  *
- *	v0.7.1 - 07/03/2014 - Fixed openHistory()
- *
- *		Found a bug on linux where the shell would crash while running on linux
- *		if the history file did not already exist. The program would create the
- *		new file but as it would be empty, any attempt to read data from it
- *		would cause segmentation errors.
- * 
- *		Moved the call to saveHistory() wihin main() to inside if(INPUT_EXIT) so
- *		the shell isn't wasting time by making unessesary writes to memory. It
- *		now only reads the file on start up and writes to it on the program's
- *		exit.
- *
- *		Also changed the history file name from .history to .hist_list as
- *		required by the assignment specification.
- *		^ Thomas
- *
- *	v0.7.2 - 20/03/2014 - Exit changes
- *
- *		Fixed the issue where exit can make it into the history
- *		^ Tom
- *
- *		Moved the exiting section of the user loop in main and placed the code
- *		in a seperate method exiting(). this allows us to exit the program from
- *		any location in the program. 
- *			Also removed the exit check from tokenising making the general code
- *		cleaner. The current check for exit is in process input this makes 
- *		sense.
- *		^ Tom
+ *	v0.8 - 27/03/2014 - Stage Eight
+ *	
+ *		Added the functions alias(), add_alias(), alias_exists(), unalias()
+ * 		print_alias() to add the ability for the user to add alias during their
+ *		use of the shell. Changes to tokenise() where needed to check if their
+ *		input is an alias before the line is fully tokenised. It is also
+ *		possible for the user to remove alias that they had previously created.
+ *	
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.7.1. Last Update 07/03/2014\n"
+#define VERSION "Simple Shell v0.8.0. Last Update 27/03/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
@@ -739,7 +719,7 @@ void alias(){
 
 }
 
-/* voud un_alias()
+/* void un_alias()
  *
  * Description:
  *

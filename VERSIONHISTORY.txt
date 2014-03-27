@@ -1,11 +1,11 @@
 SimpleShell Version History
 
-================================================================================
+===============================================================================
 Stage One
 
 Commenced 	- 28/01/2014
 Ended		- 04/02/2014
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
  
 	v0.0 - 28/01/2014 - File birth
 
@@ -72,12 +72,12 @@ Ended		- 04/02/2014
  		^ Tom
 
 
-================================================================================
+===============================================================================
 Stage Two
 
 Commenced 	- 07/02/2014
 Ended		- 14/02/2014 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 	v0.1.1 - 07/02/2014 - Input Processing
  
@@ -183,12 +183,12 @@ Ended		- 14/02/2014
  		^ Tom
 
 
-================================================================================
+===============================================================================
 Stage Three
 
 Commenced 	- 14/02/2014 
 Ended		- 14/02/2014 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 	v0.2.1 - 14/02/2014 - Set Home Directory
  
@@ -210,12 +210,12 @@ Ended		- 14/02/2014
  		^ Tom
  		
 
-================================================================================
+===============================================================================
 Stage Four
 
 Commenced 	- 14/02/2014 
 Ended		- 16/02/2014
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
  	v0.3.1 - 16/02/2014 - Getting and restoring the original PATH
  
@@ -239,12 +239,12 @@ Ended		- 16/02/2014
  		Finalized everything
  		^ Tom
 
-================================================================================
+===============================================================================
 Stage Five
 
 Commenced 	- 16/02/2014 
 Ended		- 16/02/2014
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 
 	v0.4.1 - 16/02/2014 - Change Directory
@@ -256,14 +256,14 @@ Ended		- 16/02/2014
 	v0.5.0 - 16/02/2014 - Final stage five
 
  		Finalized everything
- 		^ Thomas/Grant
+ 		^ Tom/Thomas/Grant
 
-================================================================================
+===============================================================================
 Stage Six
 
 Commenced 	- 16/02/2014 
 Ended		- 06/03/2014
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 
 	v0.5.1 - 19/02/2014 - History
@@ -343,12 +343,12 @@ Ended		- 06/03/2014
  		Finalized everything
  		^ Tom/Aidan/Grant
 
-================================================================================
+===============================================================================
 Stage Seven
 
 Commenced 	- 06/03/2014 
 Ended		- 06/03/2014
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 	v0.6.1 - 06/03/2014 - saveHistory
 
@@ -372,9 +372,119 @@ Ended		- 06/03/2014
 
 
 
-================================================================================
+===============================================================================
 Stage Eight
 
 Commenced 	- 06/03/2014 
-Ended		- Ongoing
---------------------------------------------------------------------------------
+Ended		- 27/03/2014
+-------------------------------------------------------------------------------
+
+	v0.7.1 - 07/03/2014 - Fixed openHistory()
+ 
+		Found a bug on linux where the shell would crash while running on linux
+ 		if the history file did not already exist. The program would create the
+ 		new file but as it would be empty, any attempt to read data from it
+ 		would cause segmentation errors.
+  
+ 		Moved the call to saveHistory() wihin main() to inside if(INPUT_EXIT) so
+ 		the shell isn't wasting time by making unessesary writes to memory. It
+ 		now only reads the file on start up and writes to it on the program's
+ 		exit.
+ 
+ 		Also changed the history file name from .history to .hist_list as
+ 		required by the assignment specification.
+ 		^ Thomas
+
+ 	v0.7.2 - 13/03/2014 - Implemented add_alias()
+ 
+		New method called add_alias() was created to allow the user to call the
+		command alias along with another two parameters to make a new alias for
+		the name of the first parameter.
+
+		The aliases are stored in a new struct called Alias with one pointer to 
+		the name of the alias and another to the command that it maps to. The 
+		struct was initialised in main and the processInput() was updated to 
+		check for the inital command being alias and using it to call 
+		add_alias()
+ 		^ Aidan
+
+ 	v0.7.3 - 13/03/2014 - Implemented print_alias()
+ 
+		New method to print out all the alias currently contained within the 
+		alias struct by using a while loop to go though the struct to get out 
+		each alias name and the accompanying command. However if the count_alias
+		is at 0 then there is no alias is the array so the error message is 
+		displayed to show that there is no aliases.
+ 		^ Aidan
+
+ 	v0.7.4 - 13/03/2014 - Implemented alias()
+ 
+		New method alias was created to check is the user wants to run 
+		print_alias or add_alias. It checks to see if the command[1] is null to 
+		see if anything has been entered after the alias command. If there is 
+		nothing then it will run print_alias otherwise it will run add_alias 
+		instead. Made relevent change to processInput() to use alias().
+ 		^ Aidan
+
+ 	v0.7.5 - 20/03/2014 - Implemented unalias()
+ 
+		Unalias method added to allow the user to take out a selected alias from 
+		the current aliaes stored in the struct. It searches though the struct
+		for to find if the alias that the user ask to remove exists. If it 
+		if contained within the struct them it shifts all aliases and commands
+		to the left after the location of the alias that is to be removed, while
+		count_alias if decremented.
+
+		If it does not find the alias then it will print out a message saying
+		that the alias does not exist.
+ 		^ Aidan
+ 
+ 	v0.7.6 - 20/03/2014 - Exit changes
+ 
+ 		Fixed the issue where exit can make it into the history
+ 		^ Tom
+ 
+ 		Moved the exiting section of the user loop in main and placed the code
+ 		in a seperate method exiting(). this allows us to exit the program from
+ 		any location in the program. 
+ 		
+ 		Also removed the exit check from tokenising making the general code
+ 		cleaner. The current check for exit is in process input this makes 
+ 		sense.
+ 		^ Tom
+
+ 	v0.7.7 - 20/03/2014 - Invoking Aliases
+ 
+		Implemented the invoking of alias inside the tokenise() so that the 
+		alias check is performed before fully tokenising the line. This is done
+		by checking the first command entered to see if it is an alias. If the
+		command is an alias then it will concantinate the command that the alias
+		is meant to be and the remainder of the original command entered. It 
+		will them carry out tokenise of the new input created.
+
+		If there is no alias then it just runs tokenise as normal.
+ 		^ Aidan
+
+ 	v0.7.8 - 20/03/2014 - Fixing Issues with Aliases
+ 
+		Fixed issues with checking to make sure that you can't add anymore
+		aliases once the limit of 10 has been reached. Fixed issues with the
+		shifting of aliases that was not clearing out the last stored alias so
+		messes with a new alias being added.
+
+		Added check to make sure you can't alias an alias and you can't alias
+		a command to itself.
+ 		^ Aidan/Grant
+
+
+ 	v0.8.0 - 27/03/2014 - Final stage Eight
+
+ 		Finalized everything
+ 		^ Tom/Grant
+
+===============================================================================
+Stage Nine
+
+Commenced 	- 27/03/2014 
+Ended		- ONGOING
+-------------------------------------------------------------------------------
