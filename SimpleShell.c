@@ -170,12 +170,13 @@ int count_history;
  * An array of strings that stores a command and it's parameters.
  * 	-	command[0] stores the command.
  * 	-	command[1-X] stores the subsequent parameters.
- *
  */
 char *command[50];
 
 /*
- * Stores the orginal path
+ * Stores the orginal path, from before the shell is started
+ * This si stored here due to the fact that passing it would become every so 
+ * messy
  */
 char *path;
 
