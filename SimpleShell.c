@@ -110,6 +110,8 @@
  ******************************************************************************/
 
 #define VERSION "Simple Shell v0.7.1. Last Update 07/03/2014\n"
+#define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
+				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
 
 //To allow kill() to compile in linux without error
@@ -142,8 +144,14 @@
 
 #define SIZE(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
 
+typedef struct{
+	char * alias;
+	char * aliased_command;
+} Alias;
+
 
 void process_input(); //Forward declaration to be used in invoke_previous()
+int alias_exists(char * target);
 
 /* char *history[20]
  * 
@@ -161,7 +169,18 @@ char history[20][512];
  * Stores the next available position in the history array.
  *
  */
-int count_history;
+int count_history; 
+
+/* Alias aliases[10]
+ *
+ * Description:
+ *
+ * Stores 10 aliases.
+ *
+ */
+Alias aliases[10];
+
+int count_alias;
 
 /* char *command[50]
  *
@@ -299,11 +318,28 @@ int tokenise(char *input){
 
  	char *tokenizer = " \t|<>";
  	char *token;
-
+ 	char *inputCopy = malloc(sizeof(input));
+ 	strcpy(inputCopy, input);
  	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
  	if(command[0] == NULL)
  		return INPUT_CONTINUE;
+
+
+ 	/* If the input includes an alias invoke, then it must be processed. */
+ 	int index = alias_exists(command[0]);
+ 	if(index >= 0){
+ 		char *temp = malloc(sizeof(temp));
+ 		strcpy(temp, aliases[index].aliased_command); //The aliased command
+ 		while ( (token = strtok(NULL, tokenizer) ) != NULL) {
+ 			/* The rest of the input is added to the temp string.
+ 			 * This means that "alias x ls" will turn "x Desktop" to 
+ 			 * "ls Desktop. */
+ 			strcat(temp, " ");
+ 			strcat(temp, token);
+ 		}
+ 		return tokenise(temp); //Recursively call tokenise with the new command.
+ 	}
 
  	int i = 1;
  	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
@@ -553,7 +589,7 @@ void invoke_previous(int index){
  *
  * Description:
  *
- * Determines whether or not the histoy invocation is of the previous command
+ * Determines whether or not the history invocation is of the previous command
  * or another command in history. The function also checks whether or not the
  * command is valid.
  *
@@ -582,6 +618,153 @@ void invoke_history(){
 			puts("Invalid history invocation.");
 	}
 
+}
+
+/* void print_alias
+ *
+ * Description:
+ *
+ * Prints out all the current existing aliases one by one, assuming that they
+ * exist, otherwise, a message will be printed telling the user.
+ *
+ */
+void print_alias(){
+	int i = 0;
+	if(count_alias == 0)
+		puts("There are no aliases recognized.");
+	while(i < count_alias){
+		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
+		i++;
+	}
+}
+
+/* int alias_exists(char * target )
+ *
+ * Description:
+ *
+ * This function takes the string passed in, and looks through all existing 
+ * aliases with the target as the name of the alias.
+ *
+ * Returns:
+ *
+ * i:	The index where the target is an alias.
+ * -1:	The alias has not been found.
+ *
+ */
+int alias_exists(char * target){
+	for(int i = 0; i < count_alias; i++){
+		char * temp = aliases[i].alias;
+		if(strcmp(temp, target) == 0)
+			return i;
+	}
+	return -1;
+}
+
+/* void add_alias()
+ *
+ * This function adds a new alias to the list of aliases in the program.
+ * It ensures that an alias creation is valid (that there is both an alias and
+ * aliased command, the alias array has space available and that an alias is not
+ * being given to an existing alias.
+ *
+ * If the alias already exists, then it is overwritten with the new one.
+ *
+ */
+void add_alias(){
+
+	//Ensures there is an aliased command and that and the user is not aliasing
+	//the same command, ie "alias a a" which shouldn't be allowed.
+	if(command[2] == NULL || strcmp(command[1], command[2]) == 0){
+		puts("Invalid alias");
+		return;
+	}
+	
+	int index = alias_exists(command[2]);
+	//The user has attempted to give an alias an alias.
+	if(index >= 0)
+		puts("You cannot give an alias to an existing alias.");
+
+	//Creating an alias.
+	else{
+		index = alias_exists(command[1]); 
+		//Overwriting an existing one.
+		if(index >= 0){
+			puts("An alias with this name already exists, overwriting.");
+			aliases[index].alias = command[1];
+			int i = 2;
+			//Every command token is concatenated to the aliased command. 
+			strcpy(aliases[index].aliased_command, "");
+			while(command[i] != NULL){
+				strcat(aliases[index].aliased_command, command[i]);
+				strcat(aliases[index].aliased_command, " ");
+				i++;
+			}
+		}
+		//Creating a brand new alias.
+		else{
+			if(count_alias >= SIZE(aliases)){
+				puts("List of aliases is full");
+				return;
+			}		
+			aliases[count_alias].alias = command[1];
+			int i = 2;
+			strcpy(aliases[count_alias].aliased_command, "");
+			//Every command token is concatenated to the aliased command. 
+			while(command[i] != NULL){
+				strcat(aliases[count_alias].aliased_command, command[i]);
+				strcat(aliases[count_alias].aliased_command, " ");
+				i++;
+			}
+			count_alias++; //Incrementing to reflect position of next alias.
+		}
+	}
+}
+
+/* void alias()
+ *
+ * Description:
+ *
+ * This knows that command[0] is "alias". The function determines whether or not
+ * the user wishes to create an alias, or see all aliases based on whether or
+ * not the next token is null or not.
+ *
+ */
+void alias(){
+
+	if(command[1] == NULL)
+		print_alias();
+
+	else
+		add_alias();
+
+}
+
+/* voud un_alias()
+ *
+ * Description:
+ *
+ * Removing an alias. Ensuring that the alias exists in the first place, the
+ * program shifts items in the aliases aaray left so that the alias to be
+ * removed is overwritten.
+ *
+ */
+void unalias(){
+
+	if(command[1] == NULL)
+		puts("No alias selected");
+	else{
+		int index = alias_exists(command[1]);
+		if(index >= 0){
+			for(int i=index+1; i<count_alias; i++){
+				//The aliases after the removed one are shifted left by one.
+	 			strcpy(aliases[i-1].alias, aliases[i].alias);
+				strcpy(aliases[i-1].aliased_command,aliases[i].aliased_command);
+ 			}
+			count_alias--;
+		}
+		else
+			puts("Alias does not exist.");
+	}
 }
 
 void exiting(){
@@ -631,9 +814,18 @@ void process_input() {
 
 		invoke_history();
 
+	} else if(strcmp(command[0], "alias") == 0){
+
+		alias();
+
+	} else if(strcmp(command[0], "unalias") == 0){
+
+		unalias();
+		
 	} else if (strcmp(command[0], "exit") == 0){
 
 		exiting();
+		
 	} else {
 
 		run_external_cmd();
@@ -709,8 +901,7 @@ int getInput(){
 int main() {
 
 	printf(VERSION);
-	printf("Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" 
-		" & Aidan O'Grady\n");
+	printf(AUTHORS);
 	printf(COPYRIGHT);
 
 	path = getPath();
@@ -720,9 +911,17 @@ int main() {
 
 	// Initializing the count_history.
 	count_history = 0;
+	count_alias = 0;
 
 	for(int i=0; i<SIZE(history); i++)
 		strcpy(history[i], "");
+
+	for(int i = 0; i < SIZE(aliases); i++){
+		aliases[i].alias = malloc(sizeof(aliases[i].alias));
+		aliases[i].aliased_command = malloc(sizeof(aliases[i].aliased_command));
+	}
+		
+
 
 	openHistory();
 
