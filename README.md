@@ -1,7 +1,7 @@
-#Simple Shell v0.8.0 27/03/2014#
+#Simple Shell v0.8.1 27/03/2014#
 
 
-###Authors:##
+###Authors:###
 
 Thomas Maxwell		- gvb12182
 

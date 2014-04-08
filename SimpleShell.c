@@ -85,11 +85,18 @@
  *		use of the shell. Changes to tokenise() where needed to check if their
  *		input is an alias before the line is fully tokenised. It is also
  *		possible for the user to remove alias that they had previously created.
+ *
+ *	v0.8.1 - 07/04/2014 - saveAlias
+ *	
+ *		Added the functions saveAlias() which opens or creates a file called 
+ * 		.aliases in the users home directory and saves a list of all the
+ *		aliases that are stored by the shell along with the commands they map
+ *		to. It is called in the exiting function much like saveHistory.
  *	
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.8.0. Last Update 27/03/2014\n"
+#define VERSION "Simple Shell v0.8.1. Last Update 27/03/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
@@ -236,7 +243,8 @@ void openHistory(){
 				break;
 			}
 
-			// Getting rid of the new line char, replacing with a terminating char
+			// Getting rid of the new line char, replacing with a terminating 
+			// char
 			if ((p = strchr(c, '\n')) != NULL)
 			*p = '\0';
 
@@ -256,9 +264,9 @@ void openHistory(){
  * Description:
  *
  * Opens the file .hist_list or creates the file if none exists. It takes the
- * contents of the history array and puts each bit of data on a new line in order
- * from the start of the array. When there is nothing left to be copied from the
- * array then the file if closed.
+ * contents of the history array and puts each bit of data on a new line in 
+ * order from the start of the array. When there is nothing left to be copied 
+ * from the array then the file if closed.
  *
  */
 void saveHistory(){
@@ -273,6 +281,28 @@ void saveHistory(){
 		g++;
 	}
  	
+
+ 	fclose(fp);
+}
+
+/* void saveAlias()
+ *
+ * Description:
+ *
+ * Opens the file .aliases or creates the file if none exists.
+ *
+ */
+void saveAlias(){
+
+	FILE *fp;
+
+	fp = fopen(".aliases", "w+");
+
+	int i = 0;
+	while(i < count_alias && count_alias != 0){
+		fprintf(fp, "%s %s\n", aliases[i].alias, aliases[i].aliased_command);
+		i++;
+	}
 
  	fclose(fp);
 }
@@ -753,6 +783,7 @@ void exiting(){
 	printf("\nExiting the shell . . .\n\n");
 	printf("PATH returned to: %s \n\n", getPath());
 	saveHistory();
+	saveAlias();
 	exit(0);
 }
 
