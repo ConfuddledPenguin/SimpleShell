@@ -88,15 +88,21 @@
  *
  *	v0.8.1 - 07/04/2014 - saveAlias
  *	
- *		Added the functions saveAlias() which opens or creates a file called 
+ *		Added the function saveAlias() which opens or creates a file called 
  * 		.aliases in the users home directory and saves a list of all the
  *		aliases that are stored by the shell along with the commands they map
  *		to. It is called in the exiting function much like saveHistory.
+ *
+ *	v0.8.2 - 08/04/2014 - loadAlias
  *	
+ *		Added the function loadAlias() which opens a file called .aliases
+ * 		if it exists in the users home directory and for each line in the file
+ *		it processes it as a new alias to add it to the list of stored aliases
+ *		until the whole file has been read.
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.8.1. Last Update 27/03/2014\n"
+#define VERSION "Simple Shell v0.8.2. Last Update 08/04/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
@@ -139,6 +145,7 @@ typedef struct{
 
 void process_input(); //Forward declaration to be used in invoke_previous()
 int alias_exists(char * target);
+int tokenise(char *input);
 
 /* char *history[20]
  * 
@@ -284,6 +291,61 @@ void saveHistory(){
 
  	fclose(fp);
 }
+
+/* void loadAlias()
+ *
+ * Description:
+ *
+ * Opens the file .aliases if it exists and if it exists then take the data
+ * from the file and processes it to make a new alias until there is no more
+ * data left to take from the file.
+ *
+ */
+void loadAlias(){
+
+	FILE *fp;
+	char c[513];
+	char *p;
+ 	int h = 0;
+
+ 	/* If .aliases exists, read it and add to list of aliases.
+ 	   If .aliases doesn't exist, create it and skip
+ 	   adding to history as the file is empty therefore
+ 	   there is nothing to add. 
+ 	 */
+	if((fp = fopen(".aliases", "r")) == NULL){ //find or create file
+		puts("Creating new alias file in home directory");
+	} 
+	else { //file exists, read it.
+
+		while (1) {
+			char *temp = malloc(sizeof(temp));
+			strcpy(temp, "alias");
+			if((fgets(c, 513, fp)) == NULL){ //end of file check
+				break;
+			}
+
+			// Getting rid of the new line char, replacing with a terminating 
+			// char
+			if ((p = strchr(c, '\n')) != NULL)
+			*p = '\0';
+
+			strcat(temp, " ");
+			strcat(temp, c);
+
+			int return_val;
+			if( ( return_val = tokenise(temp)  ) == INPUT_RUN ){
+				process_input();
+ 			}
+
+			h++;
+	 	}
+
+	 	fclose(fp);
+
+	}
+
+} //end loadAlias()
 
 /* void saveAlias()
  *
@@ -935,6 +997,7 @@ int main() {
 
 
 	openHistory();
+	loadAlias();
 
 	// User loop
 	while (1) {
