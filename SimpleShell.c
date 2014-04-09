@@ -93,14 +93,21 @@
  *		that with each use of the shell any aliases that esist when it is closed
  *		is kept stored for the next use of the program.
  *
- *	v1.1 - 09/04/2014 - Final Changes
+ *	v1.1 - 09/04/2014 - New Macros
  *
- *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into a 
- *		macro since a one line function seemed pointless.
+ *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into 
+ *		seperate macros for each function. Each funtion was onle one line of
+ *		code so having it as a marco makes it a bit more maintainable.
+ *
+ *	v1.2 - 09/04/2014 - Header File
+ *
+ *		New header file called SimpleShell.h has been created to store the
+ *		macros used in the program, the contants, forward declerations as
+ *		well as the struct used for aliases created for the shell.
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v1.1.0. Last Update 09/04/2014\n"
+#define VERSION "Simple Shell v1.2.0. Last Update 09/04/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
@@ -131,6 +138,9 @@
 //Include SimpleShell header file
 #include "SimpleShell.h"
 
+//------------------------------------------------------------------------------
+// Global vars
+//------------------------------------------------------------------------------
 
 /* Alias aliases[10]
  *
@@ -182,7 +192,13 @@ char *path;
 int count_history, count_alias; 
 
 
-/* void update(history)
+
+//------------------------------------------------------------------------------
+// Actual code starts here
+//------------------------------------------------------------------------------
+
+
+/* void update_history(char input[512])
  *
  * Description:
  * 
@@ -207,7 +223,8 @@ void update_history(char input[512]){
 
  	}
 
-}
+} //end updateHistory()
+
 
 /* void loadHistory()
  *
@@ -280,7 +297,8 @@ void saveHistory(){
 
  	fclose(fp);
 
-}
+} //end saveHistory()
+
 
 /* void loadAlias()
  *
@@ -338,11 +356,15 @@ void loadAlias(){
 
 } //end loadAlias()
 
+
 /* void saveAlias()
  *
  * Description:
  *
- * Opens the file .aliases or creates the file if none exists.
+ * Opens the file .aliases or creates the file if none exists. It will take all the
+ * contents of the alias stucts if any exist and print them out into the file with
+ * each line containing the alias name and the command that it maps to seperated by
+ * a space. Once all the alias are printed to the file, the file is closed.
  *
  */
 void saveAlias(){
@@ -360,7 +382,8 @@ void saveAlias(){
 	}
 
  	fclose(fp);
-}
+} //end saveAlias()
+
 
 /*	int tokenise(char *input)
  *
@@ -383,9 +406,6 @@ int tokenise(char *input){
 
  	char *tokenizer = " \t|<>";
  	char *token;
-
- 	char *inputCopy = malloc(sizeof(input));
- 	strcpy(inputCopy, input);
 
  	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
@@ -433,7 +453,8 @@ int tokenise(char *input){
 
  	return INPUT_RUN;
 
-} //  End tokenise(char *input)
+} //end tokenise(char *input)
+
 
 
 /* void reset_command()
@@ -508,6 +529,13 @@ void run_external_cmd() {
  */
 void print_working_dir() {
 
+
+	if(command[1] != NULL){
+			
+		puts("Too many arguments input");
+		return;
+	}
+
 	char current_dir[100];
 	puts(getcwd(current_dir, 100));
 
@@ -529,6 +557,12 @@ void print_working_dir() {
  *
  */
 void change_directory() {
+
+	if(command[2] != NULL){
+
+		puts("Too many arguments input");
+		return;
+	}
 
 	if(command[1] == NULL) { //no parameters, navigate to HOME
 
@@ -597,7 +631,7 @@ void print_history(){
 
 	}
 
-}
+} //end print_history()
 
 
 /* void invoke_previous(int index)
@@ -642,10 +676,10 @@ void invoke_previous(int index){
 
 	}
 
-}
+} //end invoke_previous(int index)
 
+/* void invoke_history()
 
-/* void invoke_history 
  *
  * Description:
  *
@@ -678,7 +712,7 @@ void invoke_history(){
 			puts("Invalid history invocation.");
 	}
 
-}
+} //end invoke_history()
 
 
 /* void print_alias
@@ -701,7 +735,7 @@ void print_alias(){
 		i++;
 	}
 
-}
+} //end print_alias()
 
 
 /* int alias_exists(char * target )
@@ -726,7 +760,8 @@ int alias_exists(char * target){
 	}
 
 	return -1;
-}
+} //end alias_exists(char * target)
+
 
 /* void update_alias(int index)
  *
@@ -805,7 +840,7 @@ void add_alias(){
 
 	}
 
-}
+} //end add_Alias()
 
 
 /* void alias()
@@ -825,7 +860,7 @@ void alias(){
 	else
 		add_alias();
 
-}
+} //end alias()
 
 /* void un_alias()
  *
@@ -858,7 +893,7 @@ void unalias(){
 		else
 			puts("Alias does not exist.");
 	}
-}
+} //end unalias()
 
 /* void exiting()
  *
@@ -874,7 +909,7 @@ void exiting(){
 	saveHistory();
 	saveAlias();
 	exit(0);
-}
+} //end exiting()
 
 /* void process_input()
  *
@@ -886,47 +921,42 @@ void exiting(){
  */
 void process_input() {
 
-	if(strcmp(command[0], "pwd") == 0) {
 
-		if(command[1] != NULL)
-			puts("Too many arguments input");
-		else
-			print_working_dir();
+	if(command[0][0] == '!'){
 
-	} else if(strcmp(command[0], "cd") == 0) {
+		invoke_history();
 
-		if(command[2] != NULL)
-			puts("Too many arguments input");
-		else
-			change_directory();
+	} else if(strcmp(command[0], "cd") == 0){
 
-	} else if(strcmp(command[0], "getpath") == 0) {
+		change_directory();
 
-		puts(GET_PATH());
+	} else if(strcmp(command[0], "pwd") == 0){
 
-	} else if(strcmp(command[0], "setpath") == 0) {
+		print_working_dir();
 
-		setPath();
+	} else if (strcmp(command[0], "exit") == 0){
+
+		exiting();
+		
+	} else if(strcmp(command[0], "alias") == 0){
+
+		alias();
 
 	} else if(strcmp(command[0], "history") == 0){
 
 		print_history();
 
-	} else if(command[0][0] == '!'){
+	} else if(strcmp(command[0], "getpath") == 0){
 
-		invoke_history();
+		puts(GET_PATH());
 
-	} else if(strcmp(command[0], "alias") == 0){
+	} else if(strcmp(command[0], "setpath") == 0){
 
-		alias();
+		setPath();
 
 	} else if(strcmp(command[0], "unalias") == 0){
 
 		unalias();
-		
-	} else if (strcmp(command[0], "exit") == 0){
-
-		exiting();
 		
 	} else {
 
@@ -994,9 +1024,9 @@ int getInput(){
 
  	return INPUT_RUN;
 
-} // End of getInput()
+} //end getInput()
 
-/* int gloadHistoryAlias()
+/* int loadHistoryAlias()
  * 
  * #include <string.h>
  * #include <stdlib.h>
@@ -1022,7 +1052,7 @@ void loadHistoryAlias(){
 
 	loadHistory();
 	loadAlias();
-}
+} //end loadHistoryAlias()
 
 int main() {
 
