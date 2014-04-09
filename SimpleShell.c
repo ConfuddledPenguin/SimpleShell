@@ -144,14 +144,14 @@
  */
 char history[20][512];
 
-/* int count_history
+/* int count_history, count_alias
  *
  * Description:
  *
- * Stores the next available position in the history array.
+ * Stores the next available position in the history and aliases arrays.
  *
  */
-int count_history; 
+int count_history, count_alias; 
 
 /* Alias aliases[10]
  *
@@ -162,24 +162,23 @@ int count_history;
  */
 Alias aliases[10];
 
-int count_alias;
-
-/* char *command[50]
+/* char *command[50], path
  *
- * Description:
+ * Description command[50]:
  *
  * An array of strings that stores a command and it's parameters.
  * 	-	command[0] stores the command.
  * 	-	command[1-X] stores the subsequent parameters.
- */
-char *command[50];
-
-/*
+ *
+ *
+ * Description path:
+ *
  * Stores the orginal path, from before the shell is started
  * This is stored here due to the fact that passing it would become so very
  * messy
+ *
  */
-char *path;
+char *command[50], *path;
 
 
 //------------------------------------------------------------------------------
@@ -204,9 +203,8 @@ void update_history(char input[512]){
 
  	} else{
 
- 		for(int i=1; i<LENGTH(history); i++){ //Array contents shifted to left.
+ 		for(int i=1; i<LENGTH(history); i++) //Array contents shifted to left.
  			strcpy(history[i-1], history[i]);
- 		}
 
  		strcpy(history[LENGTH(history)-1], input);
 
@@ -225,8 +223,7 @@ void update_history(char input[512]){
 void loadHistory(){
 
 	FILE *fp;
-	char c[513];
-	char *p;
+	char c[513], *p;
  	int h = 0;
 
  	/* If .hist_list exists, read it and add to history.
@@ -257,7 +254,7 @@ void loadHistory(){
 
 	}
 
-} //end openHistory()
+} //end loadHistory()
 
 /* void saveHistory()
  *
@@ -676,8 +673,7 @@ void print_alias(){
  */
 int alias_exists(char * target){
 	for(int i = 0; i < count_alias; i++){
-		char * temp = aliases[i].alias;
-		if(strcmp(temp, target) == 0)
+		if(strcmp(aliases[i].alias, target) == 0)
 			return i;
 	}
 	return -1;
