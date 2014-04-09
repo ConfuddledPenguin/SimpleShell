@@ -93,6 +93,11 @@
  *		that with each use of the shell any aliases that esist when it is closed
  *		is kept stored for the next use of the program.
  *
+ *	v1.1 - 09/04/2014 - Final Changes
+ *
+ *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into a 
+ *		macro since a one line function seemed pointless.
+ *
  ******************************************************************************/
 
 #define VERSION "Simple Shell v1.0.0. Last Update 09/04/2014\n"
@@ -129,6 +134,9 @@
 
 
 #define LENGTH(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
+#define SET_HOME_DIR() chdir(getenv("HOME")) //Set current dir as home dir
+#define GET_PATH() getenv("PATH") //Gets current PATH of system. 
+#define SET_PATH_STRING(path) setenv("PATH", path, 1) //Sets current PATH
 
 typedef struct{
 	char * alias;
@@ -478,18 +486,6 @@ void run_external_cmd() {
 	}
 } //end run_external_cmd()
 
-/* void set_home_dir()
- *
- * #include <stdlib.h>
- * 
- * Description:
- *
- * Set the current directory as the home directory
- *
- */
-void set_home_dir() {
-	chdir(getenv("HOME"));
-} //end set_home_dir()
 
 /* void print_working_dir()
  *
@@ -523,7 +519,7 @@ void change_directory() {
 
 	if(command[1] == NULL) { //no parameters, navigate to HOME
 
-		set_home_dir();
+		SET_HOME_DIR();
 
 	} else { //absolute path
 
@@ -534,36 +530,6 @@ void change_directory() {
 
 } //end change_directory()
 
-/* char *getPath()
- *
- * #include <string.h>
- * #include <stdlib.h>
- *
- * Description:
- *
- * Gets the current PATH of the system
- *
- * Returns:
- *
- * char *PATH	- the current PATH of the system 
- */
-char *getPath(){
-	return getenv("PATH");
-}
-
-/* char *setPathString()
- *
- * #include <string.h>
- * #include <stdlib.h>
- *
- * Description:
- *
- * Sets the current PATH of the system
- *
- */
-void setPathString(char *path){
-	setenv("PATH", path, 1);
-}
 
 /* void setPath()
  *
@@ -834,9 +800,9 @@ void unalias(){
 
 void exiting(){
 
-	setPathString(path);
+	SET_PATH_STRING(path);
 	printf("\nExiting the shell . . .\n\n");
-	printf("PATH returned to: %s \n\n", getPath());
+	printf("PATH returned to: %s \n\n", GET_PATH());
 	saveHistory();
 	saveAlias();
 	exit(0);
@@ -866,7 +832,7 @@ void process_input() {
 
 	} else if(strcmp(command[0], "getpath") == 0) {
 
-		puts(getPath());
+		puts(GET_PATH());
 
 	} else if(strcmp(command[0], "setpath") == 0) {
 
@@ -998,8 +964,8 @@ int main() {
 	printf(AUTHORS);
 	printf(COPYRIGHT);
 
-	path = getPath();
-	set_home_dir();
+	path = GET_PATH();
+	SET_HOME_DIR();
 
 	loadHistoryAlias();
 
