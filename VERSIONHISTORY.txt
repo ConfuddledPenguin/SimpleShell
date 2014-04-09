@@ -486,5 +486,33 @@ Ended		- 27/03/2014
 Stage Nine
 
 Commenced 	- 27/03/2014 
+Ended		- 09/04/2014
+-------------------------------------------------------------------------------
+
+	v0.8.1 - 07/04/2014 - saveAlias
+ 	
+ 		Added the function saveAlias() which opens or creates a file called 
+  		.aliases in the users home directory and saves a list of all the
+ 		aliases that are stored by the shell along with the commands they map
+ 		to. It is called in the exiting function much like saveHistory.
+ 		^ Grant
+ 
+ 	v0.8.2 - 08/04/2014 - loadAlias
+ 	
+ 		Added the function loadAlias() which opens a file called .aliases
+  		if it exists in the users home directory and for each line in the file
+ 		it processes it as a new alias to add it to the list of stored aliases
+ 		until the whole file has been read.
+ 		^ Grant
+
+ 	v1.0.0 - 09/08/2014 - Final stage Nine
+
+ 		Finalized everything
+ 		^ Grant
+
+===============================================================================
+Final
+
+Commenced 	- 09/04/2014 
 Ended		- ONGOING
 -------------------------------------------------------------------------------

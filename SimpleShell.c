@@ -86,23 +86,16 @@
  *		input is an alias before the line is fully tokenised. It is also
  *		possible for the user to remove alias that they had previously created.
  *
- *	v0.8.1 - 07/04/2014 - saveAlias
+ *	v1.0 - 09/04/2014 - Stage Nine
  *	
- *		Added the function saveAlias() which opens or creates a file called 
- * 		.aliases in the users home directory and saves a list of all the
- *		aliases that are stored by the shell along with the commands they map
- *		to. It is called in the exiting function much like saveHistory.
- *
- *	v0.8.2 - 08/04/2014 - loadAlias
- *	
- *		Added the function loadAlias() which opens a file called .aliases
- * 		if it exists in the users home directory and for each line in the file
- *		it processes it as a new alias to add it to the list of stored aliases
- *		until the whole file has been read.
+ *		Added functions loadAlias and saveAlias that bth allow the storage of  
+ * 		aliases in a .aliases file in the users home directory so that
+ *		that with each use of the shell any aliases that esist when it is closed
+ *		is kept stored for the next use of the program.
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v0.8.2. Last Update 08/04/2014\n"
+#define VERSION "Simple Shell v1.0.0. Last Update 09/04/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
