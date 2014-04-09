@@ -399,8 +399,6 @@ int tokenise(char *input){
 
  	char *tokenizer = " \t|<>";
  	char *token;
- 	char *inputCopy = malloc(sizeof(input));
- 	strcpy(inputCopy, input);
  	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
  	if(command[0] == NULL)
