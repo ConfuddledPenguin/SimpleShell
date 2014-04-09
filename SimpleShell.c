@@ -486,6 +486,13 @@ void run_external_cmd() {
  *
  */
 void print_working_dir() {
+
+	if(command[1] != NULL){
+			
+		puts("Too many arguments input");
+		return;
+	}
+
 	char current_dir[100];
 	puts(getcwd(current_dir, 100));
 } //end print_working_dir()
@@ -505,6 +512,12 @@ void print_working_dir() {
  *
  */
 void change_directory() {
+
+	if(command[2] != NULL){
+
+		puts("Too many arguments input");
+		return;
+	}
 
 	if(command[1] == NULL) { //no parameters, navigate to HOME
 
@@ -812,45 +825,41 @@ void exiting(){
  */
 void process_input() {
 
-	if(strcmp(command[0], "pwd") == 0) {
-		if(command[1] != NULL)
-			puts("Too many arguments input");
-		else
-			print_working_dir();
+	if(command[0][0] == '!'){
 
-	} else if(strcmp(command[0], "cd") == 0) {
-		if(command[2] != NULL)
-			puts("Too many arguments input");
-		else
-			change_directory();
+		invoke_history();
 
-	} else if(strcmp(command[0], "getpath") == 0) {
+	} else if(strcmp(command[0], "cd") == 0){
 
-		puts(GET_PATH());
+		change_directory();
 
-	} else if(strcmp(command[0], "setpath") == 0) {
+	} else if(strcmp(command[0], "pwd") == 0){
 
-		setPath();
+		print_working_dir();
+
+	} else if (strcmp(command[0], "exit") == 0){
+
+		exiting();
+		
+	} else if(strcmp(command[0], "alias") == 0){
+
+		alias();
 
 	} else if(strcmp(command[0], "history") == 0){
 
 		print_history();
 
-	} else if(command[0][0] == '!'){
+	} else if(strcmp(command[0], "getpath") == 0){
 
-		invoke_history();
+		puts(GET_PATH());
 
-	} else if(strcmp(command[0], "alias") == 0){
+	} else if(strcmp(command[0], "setpath") == 0){
 
-		alias();
+		setPath();
 
 	} else if(strcmp(command[0], "unalias") == 0){
 
 		unalias();
-		
-	} else if (strcmp(command[0], "exit") == 0){
-
-		exiting();
 		
 	} else {
 
