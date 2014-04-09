@@ -93,10 +93,17 @@
  *		that with each use of the shell any aliases that esist when it is closed
  *		is kept stored for the next use of the program.
  *
- *	v1.1 - 09/04/2014 - Final Changes
+ *	v1.1 - 09/04/2014 - New Macros
  *
- *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into a 
- *		macro since a one line function seemed pointless.
+ *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into 
+ *		seperate macros for each function. Each funtion was onle one line of
+ *		code so having it as a marco makes it a bit more maintainable.
+ *
+ *	v1.2 - 09/04/2014 - Header File
+ *
+ *		New header file called SimpleShell.h has been created to store the
+ *		macros used in the program, the contants, forward declerations as
+ *		well as the struct used for aliases created for the shell.
  *
  ******************************************************************************/
 
@@ -167,6 +174,7 @@ Alias aliases[10];
  * 	-	command[0] stores the command.
  * 	-	command[1-X] stores the subsequent parameters.
  *
+<<<<<<< HEAD
  *
  * Description path:
  *
@@ -174,10 +182,21 @@ Alias aliases[10];
  * This is stored here due to the fact that passing it would become so very
  * messy
  *
+=======
+ */
+char *command[50];
+
+/* char *path
+ *
+ * Description:
+ *
+ * Stores the orginal path, from before the shell is started
+ * 
+>>>>>>> final_commentary
  */
 char *command[50], *path;
 
-/* void update(history)
+/* void update_history(char input[512])
  *
  * Description:
  * 
@@ -201,7 +220,7 @@ void update_history(char input[512]){
  		strcpy(history[LENGTH(history)-1], input);
 
  	}
-}
+} //end updateHistory()
 
 /* void loadHistory()
  *
@@ -272,7 +291,7 @@ void saveHistory(){
  	
 
  	fclose(fp);
-}
+} //end saveHistory()
 
 /* void loadAlias()
  *
@@ -333,7 +352,10 @@ void loadAlias(){
  *
  * Description:
  *
- * Opens the file .aliases or creates the file if none exists.
+ * Opens the file .aliases or creates the file if none exists. It will take all the
+ * contents of the alias stucts if any exist and print them out into the file with
+ * each line containing the alias name and the command that it maps to seperated by
+ * a space. Once all the alias are printed to the file, the file is closed.
  *
  */
 void saveAlias(){
@@ -349,7 +371,7 @@ void saveAlias(){
 	}
 
  	fclose(fp);
-}
+} //end saveAlias()
 
 /*	int tokenise(char *input)
  *
@@ -410,7 +432,7 @@ int tokenise(char *input){
  		}
  	}
  	return INPUT_RUN;
-} //  End tokenise(char *input)
+} //end tokenise(char *input)
 
 
 /* void reset_command()
@@ -556,7 +578,7 @@ void print_history(){
 		i++;
 	}
 
-}
+} //end print_history()
 
 /* void invoke_previous(int index)
  *
@@ -595,9 +617,9 @@ void invoke_previous(int index){
 	else{
 		puts("Invalid history invocation."); //The number put in is invalid.
 	}
-}
+} //end invoke_previous(int index)
 
-/* void invoke_history 
+/* void invoke_history()
  *
  * Description:
  *
@@ -630,7 +652,7 @@ void invoke_history(){
 			puts("Invalid history invocation.");
 	}
 
-}
+} //end invoke_history()
 
 /* void print_alias
  *
@@ -648,7 +670,7 @@ void print_alias(){
 		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
 		i++;
 	}
-}
+} //end print_alias()
 
 /* int alias_exists(char * target )
  *
@@ -669,7 +691,7 @@ int alias_exists(char * target){
 			return i;
 	}
 	return -1;
-}
+} //end alias_exists(char * target)
 
 /* void add_alias()
  *
@@ -729,7 +751,7 @@ void add_alias(){
 			count_alias++; //Incrementing to reflect position of next alias.
 		}
 	}
-}
+} //end add_Alias()
 
 /* void alias()
  *
@@ -748,7 +770,7 @@ void alias(){
 	else
 		add_alias();
 
-}
+} //end alias()
 
 /* void un_alias()
  *
@@ -776,7 +798,7 @@ void unalias(){
 		else
 			puts("Alias does not exist.");
 	}
-}
+} //end unalias()
 
 /* void exiting()
  *
@@ -792,7 +814,7 @@ void exiting(){
 	saveHistory();
 	saveAlias();
 	exit(0);
-}
+} //end exiting()
 
 /* void process_input()
  *
@@ -914,9 +936,9 @@ int getInput(){
 
  	return INPUT_RUN;
 
-} // End of getInput()
+} //end getInput()
 
-/* int gloadHistoryAlias()
+/* int loadHistoryAlias()
  * 
  * #include <string.h>
  * #include <stdlib.h>
@@ -942,7 +964,7 @@ void loadHistoryAlias(){
 
 	loadHistory();
 	loadAlias();
-}
+} //end loadHistoryAlias()
 
 int main() {
 
