@@ -192,11 +192,16 @@ char *path;
 int count_history, count_alias; 
 
 
-
+//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // Actual code starts here
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------
+// History Code
+//------------------------------------------------------------------------------
 
 /* void update_history(char input[512])
  *
@@ -222,7 +227,6 @@ void update_history(char input[512]){
  		strcpy(history[LENGTH(history)-1], input);
 
  	}
-
 } //end updateHistory()
 
 
@@ -269,8 +273,8 @@ void loadHistory(){
 	 	fclose(fp);
 
 	}
-
 } //end loadHistory()
+
 
 /* void saveHistory()
  *
@@ -296,8 +300,56 @@ void saveHistory(){
 	}
 
  	fclose(fp);
-
 } //end saveHistory()
+
+
+/* void invoke_previous(int index)
+ *
+ * Description:
+ *
+ * Invokes a previous command from the history.
+ *
+ */
+void invoke_previous(int index){
+
+	char temp[513];
+
+	if(index >= 0 && index <= 19){ //Checks if index is between 0 and 19.
+		if(strcmp(history[index], "") == 0){ //Checks if there is history
+			
+			puts("No command in history.");
+
+		} else{
+			
+			strcpy(temp, history[index]); //Copies history[index] to temp
+			int index = 1;
+			
+			while(command[index] != NULL) {
+				
+				sprintf(temp, "%s ", temp); //Tidiness
+				strcat(temp, command[index]); //Adds commands after !! to temp
+				index++;
+
+			}
+			
+			puts(temp);
+
+			if(tokenise(temp) == INPUT_RUN)
+				process_input();
+
+		}
+
+	} else{
+
+		puts("Invalid history invocation."); //The number put in is invalid.
+
+	}
+} //end invoke_previous(int index)
+
+
+//------------------------------------------------------------------------------
+// Aliasing Code
+//------------------------------------------------------------------------------
 
 
 /* void loadAlias()
@@ -353,7 +405,6 @@ void loadAlias(){
 	 	fclose(fp);
 
 	}
-
 } //end loadAlias()
 
 
@@ -383,6 +434,455 @@ void saveAlias(){
 
  	fclose(fp);
 } //end saveAlias()
+
+
+/* void print_alias
+ *
+ * Description:
+ *
+ * Prints out all the current existing aliases one by one, assuming that they
+ * exist, otherwise, a message will be printed telling the user.
+ *
+ */
+void print_alias(){
+
+	int i = 0;
+
+	if(count_alias == 0)
+		puts("There are no aliases recognized.");
+
+	while(i < count_alias){
+		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
+		i++;
+	}
+} //end print_alias()
+
+
+/* int alias_exists(char * target )
+ *
+ * Description:
+ *
+ * This function takes the string passed in, and looks through all existing 
+ * aliases with the target as the name of the alias.
+ *
+ * Returns:
+ *
+ * i:	The index where the target is an alias.
+ * -1:	The alias has not been found.
+ *
+ */
+int alias_exists(char * target){
+
+	for(int i = 0; i < count_alias; i++){
+
+		if(strcmp(aliases[i].alias, target) == 0)
+			return i;
+	}
+
+	return -1;
+} //end alias_exists(char * target)
+
+
+/* void update_alias(int index)
+ *
+ * Description:
+ *
+ * Updates an element in the alias array, based on index with the content of the
+ * new alias being added.
+ *
+ */
+void update_alias(int index){
+
+	aliases[index].alias = command[1];
+	int i = 2;
+
+	//Every command token is concatenated to the aliased command. 
+	strcpy(aliases[index].aliased_command, "");
+
+	while(command[i] != NULL){
+
+		strcat(aliases[index].aliased_command, command[i]);
+		strcat(aliases[index].aliased_command, " ");
+		i++;
+
+	}
+}
+
+
+/* void add_alias()
+ *
+ * This function adds a new alias to the list of aliases in the program.
+ * It ensures that an alias creation is valid (that there is both an alias and
+ * aliased command, the alias array has space available and that an alias is not
+ * being given to an existing alias.
+ *
+ * If the alias already exists, then it is overwritten with the new one.
+ *
+ */
+void add_alias(){
+
+	//Ensures there is an aliased command and that and the user is not aliasing
+	//the same command, ie "alias a a" which shouldn't be allowed.
+	if(command[2] == NULL || strcmp(command[1], command[2]) == 0){
+		puts("Invalid alias");
+		return;
+	}
+	
+	int index = alias_exists(command[2]);
+	//The user has attempted to give an alias an alias.
+	if(index >= 0)
+		puts("You cannot give an alias to an existing alias.");
+
+	//Creating an alias.
+	else{
+
+		index = alias_exists(command[1]); 
+		//Overwriting an existing one.
+
+		if(index >= 0){
+			puts("An alias with this name already exists, overwriting.");
+			update_alias(index);
+		}
+
+		//Creating a brand new alias.
+		else{
+
+			if(count_alias >= LENGTH(aliases)){
+				puts("List of aliases is full");
+				return;
+			}		
+
+			update_alias(count_alias);
+			count_alias++; //Incrementing to reflect position of next alias.
+
+		}
+
+	}
+} //end add_Alias()
+
+
+//------------------------------------------------------------------------------
+// Built in Commands
+//------------------------------------------------------------------------------
+
+
+/* void run_external_cmd(char *command[50])
+ *
+ * #include <sys/types.h>
+ * #include <sys/wait.h>
+ * #include <unistd.h>
+ * #include <signal.h>
+ * #include <errno.h>
+ *
+ * Description:
+ *
+ * Takes in the user's input and runs the relevant executable file or
+ * built in command.
+ *
+ */
+void run_external_cmd() {
+
+	pid_t PID; //Process ID
+
+	PID = fork();
+
+	if(PID > 0) { //if parent process
+
+		wait(NULL); //wait for child to exit
+
+	} else if(PID == 0){ //else must be child process
+
+		if(execvp(command[0], command) == -1) { //if execvp fails
+
+			perror(command[0]);
+			kill(getpid(), SIGKILL); //kill child process
+
+		}
+
+	} else { //fork failed
+
+		puts("Something went horribly wrong :/"); //whoops :/
+
+	}
+} //end run_external_cmd()
+
+
+/* void print_working_dir()
+ *
+ * #include <unistd.h>
+ *
+ * Description:
+ *
+ * Print the current directory.
+ *
+ */
+void print_working_dir() {
+
+
+	if(command[1] != NULL){
+			
+		puts("Too many arguments input");
+		return;
+	}
+
+	char current_dir[100];
+	puts(getcwd(current_dir, 100));
+} //end print_working_dir()
+
+
+/* void change_directory()
+ *
+ * #include <errno.h>
+ *
+ * Description:
+ *
+ * Navigate to a directory specified by the user.
+ * If no parameters are input after the command then the
+ * function sets the home directory as the current directory.
+ * If the parameters contains a "/" at the begining it will
+ * navigate from the root of the filesystem (absolute 
+ * path) otherwise it will treat it as a relative path.
+ *
+ */
+void change_directory() {
+
+	if(command[2] != NULL){
+
+		puts("Too many arguments input");
+		return;
+	}
+
+	if(command[1] == NULL) { //no parameters, navigate to HOME
+
+		SET_HOME_DIR();
+
+	} else { //absolute path
+
+		if(chdir(command[1]) == -1)
+			perror(command[1]);
+
+	}
+} //end change_directory()
+
+
+/* void setPath()
+ *
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Adds new directories specified by the user into the system's
+ * PATH enviroment.
+ *
+ */
+void setPath() {
+
+	struct stat sb;
+
+	if(command[1] == NULL || command[2] != NULL){
+
+		printf("ERROR: Wrong Usage - setpath <PATH>\n");
+		return;
+
+	} 
+
+	if (stat(command[1], &sb) == 0 && S_ISDIR(sb.st_mode)){
+
+		if(setenv("PATH", command[1], 1) == -1)
+
+			puts("PATH update failed");
+
+	} else {
+
+		printf("ERROR: <%s> is not a directory\n", command[1]);
+
+	}
+} //end setpath()
+
+
+/* void print_history()
+ * 
+ * Description:
+ *
+ * Prints the previous 20 inputs from the user.
+ *
+ */
+void print_history(){
+
+	int i = 0;
+	while(i < count_history){ //Ensures empty history isn't printed.
+
+		printf("%i. %s\n", i+1, history[i]);
+		i++;
+
+	}
+} //end print_history()
+
+
+/* void invoke_history()
+
+ *
+ * Description:
+ *
+ * Determines whether or not the history invocation is of the previous command
+ * or another command in history. The function also checks whether or not the
+ * command is valid.
+ *
+ */
+void invoke_history(){
+
+	if(strcmp(command[0], "!!") == 0)
+		invoke_previous(count_history-1);
+
+	else{
+
+		char *position = strtok(command[0], "!"); //Copies command[0] w/o '!'
+		char temp[LENGTH(position)]; //A new string the same size as position.
+
+
+		int index = atoi(position); /* Retrieves an int from position, if there
+		is no int, then it is 0. */
+		sprintf(temp, "%i", index); // Converts index back into its own string.
+
+		/* If the two strings match, then the history invocation is valid. 
+		 * This means that an input of "!1a" is not valid, while "!1" is.
+		 */
+		if(strcmp(temp, position) == 0)
+			invoke_previous(index-1);
+		else
+			puts("Invalid history invocation.");
+	}
+} //end invoke_history()
+
+
+/* void alias()
+ *
+ * Description:
+ *
+ * This knows that command[0] is "alias". The function determines whether or not
+ * the user wishes to create an alias, or see all aliases based on whether or
+ * not the next token is null or not.
+ *
+ */
+void alias(){
+
+	if(command[1] == NULL)
+		print_alias();
+
+	else
+		add_alias();
+} //end alias()
+
+
+/* void un_alias()
+ *
+ * Description:
+ *
+ * Removing an alias. Ensuring that the alias exists in the first place, the
+ * program shifts items in the aliases aaray left so that the alias to be
+ * removed is overwritten.
+ *
+ */
+void unalias(){
+
+	if(command[1] == NULL)
+		puts("No alias selected");
+
+	else{
+		int index = alias_exists(command[1]);
+		
+		if(index >= 0){
+			
+			for(int i=index+1; i<count_alias; i++){
+				//The aliases after the removed one are shifted left by one.
+	 			strcpy(aliases[i-1].alias, aliases[i].alias);
+				strcpy(aliases[i-1].aliased_command,aliases[i].aliased_command);
+ 			}
+
+			count_alias--;
+		}
+
+		else
+			puts("Alias does not exist.");
+	}
+} //end unalias()
+
+
+/* void exiting()
+ *
+ * Description:
+ *
+ * Exits the program
+ */
+void exiting(){
+
+	SET_PATH_STRING(path);
+	printf("\nExiting the shell . . .\n\n");
+	printf("PATH returned to: %s \n\n", GET_PATH());
+	saveHistory();
+	saveAlias();
+	exit(0);
+} //end exiting()
+
+
+//------------------------------------------------------------------------------
+// Control
+//------------------------------------------------------------------------------
+
+
+/* void process_input()
+ *
+ * Description:
+ *
+ * Checks for built in commands. If none available
+ * then run system command.
+ *
+ */
+void process_input() {
+
+
+	if(command[0][0] == '!'){
+
+		invoke_history();
+
+	} else if(strcmp(command[0], "cd") == 0){
+
+		change_directory();
+
+	} else if(strcmp(command[0], "pwd") == 0){
+
+		print_working_dir();
+
+	} else if (strcmp(command[0], "exit") == 0){
+
+		exiting();
+		
+	} else if(strcmp(command[0], "alias") == 0){
+
+		alias();
+
+	} else if(strcmp(command[0], "history") == 0){
+
+		print_history();
+
+	} else if(strcmp(command[0], "getpath") == 0){
+
+		puts(GET_PATH());
+
+	} else if(strcmp(command[0], "setpath") == 0){
+
+		setPath();
+
+	} else if(strcmp(command[0], "unalias") == 0){
+
+		unalias();
+		
+	} else {
+
+		run_external_cmd();
+
+	}
+} //end process_input()
 
 
 /*	int tokenise(char *input)
@@ -452,519 +952,8 @@ int tokenise(char *input){
  	}
 
  	return INPUT_RUN;
-
 } //end tokenise(char *input)
 
-
-
-/* void reset_command()
- *
- * Description:
- *
- * Resets the contents of command to NULL
- *
- */
-void reset_command() {
-	
-	int i = 0;
-
-	while(command[i] != NULL) {
-
-		command[i] = NULL;
-		i++;
-
-	}
-
-} //end reset_command()
-
-/* void run_external_cmd(char *command[50])
- *
- * #include <sys/types.h>
- * #include <sys/wait.h>
- * #include <unistd.h>
- * #include <signal.h>
- * #include <errno.h>
- *
- * Description:
- *
- * Takes in the user's input and runs the relevant executable file or
- * built in command.
- *
- */
-void run_external_cmd() {
-
-	pid_t PID; //Process ID
-
-	PID = fork();
-
-	if(PID > 0) { //if parent process
-
-		wait(NULL); //wait for child to exit
-
-	} else if(PID == 0){ //else must be child process
-
-		if(execvp(command[0], command) == -1) { //if execvp fails
-
-			perror(command[0]);
-			kill(getpid(), SIGKILL); //kill child process
-
-		}
-
-	} else { //fork failed
-
-		puts("Something went horribly wrong :/"); //whoops :/
-
-	}
-} //end run_external_cmd()
-
-
-/* void print_working_dir()
- *
- * #include <unistd.h>
- *
- * Description:
- *
- * Print the current directory.
- *
- */
-void print_working_dir() {
-
-
-	if(command[1] != NULL){
-			
-		puts("Too many arguments input");
-		return;
-	}
-
-	char current_dir[100];
-	puts(getcwd(current_dir, 100));
-
-} //end print_working_dir()
-
-
-/* void change_directory()
- *
- * #include <errno.h>
- *
- * Description:
- *
- * Navigate to a directory specified by the user.
- * If no parameters are input after the command then the
- * function sets the home directory as the current directory.
- * If the parameters contains a "/" at the begining it will
- * navigate from the root of the filesystem (absolute 
- * path) otherwise it will treat it as a relative path.
- *
- */
-void change_directory() {
-
-	if(command[2] != NULL){
-
-		puts("Too many arguments input");
-		return;
-	}
-
-	if(command[1] == NULL) { //no parameters, navigate to HOME
-
-		SET_HOME_DIR();
-
-	} else { //absolute path
-
-		if(chdir(command[1]) == -1)
-			perror(command[1]);
-
-	}
-
-} //end change_directory()
-
-
-/* void setPath()
- *
- * #include <stdlib.h>
- *
- * Description:
- *
- * Adds new directories specified by the user into the system's
- * PATH enviroment.
- *
- */
-void setPath() {
-
-	struct stat sb;
-
-	if(command[1] == NULL || command[2] != NULL){
-
-		printf("ERROR: Wrong Usage - setpath <PATH>\n");
-		return;
-
-	} 
-
-	if (stat(command[1], &sb) == 0 && S_ISDIR(sb.st_mode)){
-
-		if(setenv("PATH", command[1], 1) == -1)
-
-			puts("PATH update failed");
-
-	} else {
-
-		printf("ERROR: <%s> is not a directory\n", command[1]);
-
-	}
-
-} //end setpath()
-
-
-/* void print_history()
- * 
- * Description:
- *
- * Prints the previous 20 inputs from the user.
- *
- */
-void print_history(){
-
-	int i = 0;
-	while(i < count_history){ //Ensures empty history isn't printed.
-
-		printf("%i. %s\n", i+1, history[i]);
-		i++;
-
-	}
-
-} //end print_history()
-
-
-/* void invoke_previous(int index)
- *
- * Description:
- *
- * Invokes a previous command from the history.
- *
- */
-void invoke_previous(int index){
-
-	char temp[513];
-
-	if(index >= 0 && index <= 19){ //Checks if index is between 0 and 19.
-		if(strcmp(history[index], "") == 0){ //Checks if there is history
-			
-			puts("No command in history.");
-
-		} else{
-			
-			strcpy(temp, history[index]); //Copies history[index] to temp
-			int index = 1;
-			
-			while(command[index] != NULL) {
-				
-				sprintf(temp, "%s ", temp); //Tidiness
-				strcat(temp, command[index]); //Adds commands after !! to temp
-				index++;
-
-			}
-			
-			puts(temp);
-
-			if(tokenise(temp) == INPUT_RUN)
-				process_input();
-
-		}
-
-	} else{
-
-		puts("Invalid history invocation."); //The number put in is invalid.
-
-	}
-
-} //end invoke_previous(int index)
-
-/* void invoke_history()
-
- *
- * Description:
- *
- * Determines whether or not the history invocation is of the previous command
- * or another command in history. The function also checks whether or not the
- * command is valid.
- *
- */
-void invoke_history(){
-
-	if(strcmp(command[0], "!!") == 0)
-		invoke_previous(count_history-1);
-
-	else{
-
-		char *position = strtok(command[0], "!"); //Copies command[0] w/o '!'
-		char temp[LENGTH(position)]; //A new string the same size as position.
-
-
-		int index = atoi(position); /* Retrieves an int from position, if there
-		is no int, then it is 0. */
-		sprintf(temp, "%i", index); // Converts index back into its own string.
-
-		/* If the two strings match, then the history invocation is valid. 
-		 * This means that an input of "!1a" is not valid, while "!1" is.
-		 */
-		if(strcmp(temp, position) == 0)
-			invoke_previous(index-1);
-		else
-			puts("Invalid history invocation.");
-	}
-
-} //end invoke_history()
-
-
-/* void print_alias
- *
- * Description:
- *
- * Prints out all the current existing aliases one by one, assuming that they
- * exist, otherwise, a message will be printed telling the user.
- *
- */
-void print_alias(){
-
-	int i = 0;
-
-	if(count_alias == 0)
-		puts("There are no aliases recognized.");
-
-	while(i < count_alias){
-		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
-		i++;
-	}
-
-} //end print_alias()
-
-
-/* int alias_exists(char * target )
- *
- * Description:
- *
- * This function takes the string passed in, and looks through all existing 
- * aliases with the target as the name of the alias.
- *
- * Returns:
- *
- * i:	The index where the target is an alias.
- * -1:	The alias has not been found.
- *
- */
-int alias_exists(char * target){
-
-	for(int i = 0; i < count_alias; i++){
-
-		if(strcmp(aliases[i].alias, target) == 0)
-			return i;
-	}
-
-	return -1;
-} //end alias_exists(char * target)
-
-
-/* void update_alias(int index)
- *
- * Description:
- *
- * Updates an element in the alias array, based on index with the content of the
- * new alias being added.
- *
- */
-void update_alias(int index){
-
-	aliases[index].alias = command[1];
-	int i = 2;
-
-	//Every command token is concatenated to the aliased command. 
-	strcpy(aliases[index].aliased_command, "");
-
-	while(command[i] != NULL){
-
-		strcat(aliases[index].aliased_command, command[i]);
-		strcat(aliases[index].aliased_command, " ");
-		i++;
-
-	}
-
-}
-
-
-/* void add_alias()
- *
- * This function adds a new alias to the list of aliases in the program.
- * It ensures that an alias creation is valid (that there is both an alias and
- * aliased command, the alias array has space available and that an alias is not
- * being given to an existing alias.
- *
- * If the alias already exists, then it is overwritten with the new one.
- *
- */
-void add_alias(){
-
-	//Ensures there is an aliased command and that and the user is not aliasing
-	//the same command, ie "alias a a" which shouldn't be allowed.
-	if(command[2] == NULL || strcmp(command[1], command[2]) == 0){
-		puts("Invalid alias");
-		return;
-	}
-	
-	int index = alias_exists(command[2]);
-	//The user has attempted to give an alias an alias.
-	if(index >= 0)
-		puts("You cannot give an alias to an existing alias.");
-
-	//Creating an alias.
-	else{
-
-		index = alias_exists(command[1]); 
-		//Overwriting an existing one.
-
-		if(index >= 0){
-			puts("An alias with this name already exists, overwriting.");
-			update_alias(index);
-		}
-
-		//Creating a brand new alias.
-		else{
-
-			if(count_alias >= LENGTH(aliases)){
-				puts("List of aliases is full");
-				return;
-			}		
-
-			update_alias(count_alias);
-			count_alias++; //Incrementing to reflect position of next alias.
-
-		}
-
-	}
-
-} //end add_Alias()
-
-
-/* void alias()
- *
- * Description:
- *
- * This knows that command[0] is "alias". The function determines whether or not
- * the user wishes to create an alias, or see all aliases based on whether or
- * not the next token is null or not.
- *
- */
-void alias(){
-
-	if(command[1] == NULL)
-		print_alias();
-
-	else
-		add_alias();
-
-} //end alias()
-
-/* void un_alias()
- *
- * Description:
- *
- * Removing an alias. Ensuring that the alias exists in the first place, the
- * program shifts items in the aliases aaray left so that the alias to be
- * removed is overwritten.
- *
- */
-void unalias(){
-
-	if(command[1] == NULL)
-		puts("No alias selected");
-
-	else{
-		int index = alias_exists(command[1]);
-		
-		if(index >= 0){
-			
-			for(int i=index+1; i<count_alias; i++){
-				//The aliases after the removed one are shifted left by one.
-	 			strcpy(aliases[i-1].alias, aliases[i].alias);
-				strcpy(aliases[i-1].aliased_command,aliases[i].aliased_command);
- 			}
-
-			count_alias--;
-		}
-
-		else
-			puts("Alias does not exist.");
-	}
-} //end unalias()
-
-/* void exiting()
- *
- * Description:
- *
- * Exits the program
- */
-void exiting(){
-
-	SET_PATH_STRING(path);
-	printf("\nExiting the shell . . .\n\n");
-	printf("PATH returned to: %s \n\n", GET_PATH());
-	saveHistory();
-	saveAlias();
-	exit(0);
-} //end exiting()
-
-/* void process_input()
- *
- * Description:
- *
- * Checks for built in commands. If none available
- * then run system command.
- *
- */
-void process_input() {
-
-
-	if(command[0][0] == '!'){
-
-		invoke_history();
-
-	} else if(strcmp(command[0], "cd") == 0){
-
-		change_directory();
-
-	} else if(strcmp(command[0], "pwd") == 0){
-
-		print_working_dir();
-
-	} else if (strcmp(command[0], "exit") == 0){
-
-		exiting();
-		
-	} else if(strcmp(command[0], "alias") == 0){
-
-		alias();
-
-	} else if(strcmp(command[0], "history") == 0){
-
-		print_history();
-
-	} else if(strcmp(command[0], "getpath") == 0){
-
-		puts(GET_PATH());
-
-	} else if(strcmp(command[0], "setpath") == 0){
-
-		setPath();
-
-	} else if(strcmp(command[0], "unalias") == 0){
-
-		unalias();
-		
-	} else {
-
-		run_external_cmd();
-
-	}
-
-} //end process_input()
 
 /* int getInput()
  * 
@@ -1023,8 +1012,28 @@ int getInput(){
  	process_input(); //user input all processed and stored, now carry it out.
 
  	return INPUT_RUN;
-
 } //end getInput()
+
+
+/* void reset_command()
+ *
+ * Description:
+ *
+ * Resets the contents of command to NULL
+ *
+ */
+void reset_command() {
+	
+	int i = 0;
+
+	while(command[i] != NULL) {
+
+		command[i] = NULL;
+		i++;
+
+	}
+} //end reset_command()
+
 
 /* int loadHistoryAlias()
  * 
@@ -1054,6 +1063,10 @@ void loadHistoryAlias(){
 	loadAlias();
 } //end loadHistoryAlias()
 
+
+/* GRANT FILL
+ *
+ */
 int main() {
 
 	printf(VERSION);
