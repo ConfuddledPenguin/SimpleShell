@@ -6,7 +6,7 @@
 #define INPUT_ERROR 2
 
 
-// Maco's
+// Macro's
 #define LENGTH(x) (sizeof(x)/sizeof(x[0]))  //number of elements in array
 #define SET_HOME_DIR() chdir(getenv("HOME")) //Set current dir as home dir
 #define GET_PATH() getenv("PATH") //Gets current PATH of system. 
