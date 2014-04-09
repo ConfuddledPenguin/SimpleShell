@@ -178,7 +178,7 @@ char *command[50];
  */
 char *path;
 
-/* void update(history)
+/* void update_history(char input[512])
  *
  * Description:
  * 
@@ -203,7 +203,7 @@ void update_history(char input[512]){
  		strcpy(history[LENGTH(history)-1], input);
 
  	}
-}
+} //end updateHistory()
 
 /* void loadHistory()
  *
@@ -275,7 +275,7 @@ void saveHistory(){
  	
 
  	fclose(fp);
-}
+} //end saveHistory()
 
 /* void loadAlias()
  *
@@ -352,7 +352,7 @@ void saveAlias(){
 	}
 
  	fclose(fp);
-}
+} //end saveAlias()
 
 /*	int tokenise(char *input)
  *
@@ -413,7 +413,7 @@ int tokenise(char *input){
  		}
  	}
  	return INPUT_RUN;
-} //  End tokenise(char *input)
+} //end tokenise(char *input)
 
 
 /* void reset_command()
@@ -559,7 +559,7 @@ void print_history(){
 		i++;
 	}
 
-}
+} //end print_history()
 
 /* void invoke_previous(int index)
  *
@@ -598,9 +598,9 @@ void invoke_previous(int index){
 	else{
 		puts("Invalid history invocation."); //The number put in is invalid.
 	}
-}
+} //end invoke_previous(int index)
 
-/* void invoke_history 
+/* void invoke_history()
  *
  * Description:
  *
@@ -633,7 +633,7 @@ void invoke_history(){
 			puts("Invalid history invocation.");
 	}
 
-}
+} //end invoke_history()
 
 /* void print_alias
  *
@@ -651,7 +651,7 @@ void print_alias(){
 		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
 		i++;
 	}
-}
+} //end print_alias()
 
 /* int alias_exists(char * target )
  *
@@ -673,7 +673,7 @@ int alias_exists(char * target){
 			return i;
 	}
 	return -1;
-}
+} //end alias_exists(char * target)
 
 /* void add_alias()
  *
@@ -733,7 +733,7 @@ void add_alias(){
 			count_alias++; //Incrementing to reflect position of next alias.
 		}
 	}
-}
+} //end add_Alias()
 
 /* void alias()
  *
@@ -752,7 +752,7 @@ void alias(){
 	else
 		add_alias();
 
-}
+} //end alias()
 
 /* void un_alias()
  *
@@ -780,7 +780,7 @@ void unalias(){
 		else
 			puts("Alias does not exist.");
 	}
-}
+} //end unalias()
 
 /* void exiting()
  *
@@ -796,7 +796,7 @@ void exiting(){
 	saveHistory();
 	saveAlias();
 	exit(0);
-}
+} //end exiting()
 
 /* void process_input()
  *
@@ -918,7 +918,7 @@ int getInput(){
 
  	return INPUT_RUN;
 
-} // End of getInput()
+} //end getInput()
 
 /* int gloadHistoryAlias()
  * 
@@ -946,7 +946,7 @@ void loadHistoryAlias(){
 
 	loadHistory();
 	loadAlias();
-}
+} //end loadHistoryAlias()
 
 int main() {
 
