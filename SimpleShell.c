@@ -107,7 +107,7 @@
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v1.1.0. Last Update 09/04/2014\n"
+#define VERSION "Simple Shell v1.2.0. Last Update 09/04/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
@@ -174,15 +174,12 @@ Alias aliases[10];
  * 	-	command[0] stores the command.
  * 	-	command[1-X] stores the subsequent parameters.
  *
-<<<<<<< HEAD
- *
  * Description path:
  *
  * Stores the orginal path, from before the shell is started
  * This is stored here due to the fact that passing it would become so very
  * messy
  *
-=======
  */
 char *command[50];
 
@@ -192,7 +189,6 @@ char *command[50];
  *
  * Stores the orginal path, from before the shell is started
  * 
->>>>>>> final_commentary
  */
 char *command[50], *path;
 
