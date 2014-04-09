@@ -189,8 +189,16 @@ char *path;
  * Stores the next available position in the history and aliases arrays.
  *
  */
-int count_history, count_alias; 
+int count_history, count_alias;
 
+/* char Junk[16];
+ *
+ * Description:
+ *
+ * Temorary location to store overflow from stdin
+ *
+ */ 
+ char Junk[16];
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -987,6 +995,8 @@ int getInput(){
  		printf("\n");
  		exiting();
  	}
+
+ 	FLUSH_STDIN(input);
 
  	// Checking user has not just hit enter
  	if (input[0] == '\n')

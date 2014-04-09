@@ -12,6 +12,7 @@
 #define GET_PATH() getenv("PATH") //Gets current PATH of system. 
 #define SET_PATH_STRING(path) setenv("PATH", path, 1) //Sets current PATH
 
+#define FLUSH_STDIN(x) {if(x[strlen(x)-1]!='\n'){do fgets(Junk,16,stdin);while(Junk[strlen(Junk)-1]!='\n');}else x[strlen(x)-1]='\0';}
 
 // Forword declarations
 void process_input(); //Forward declaration to be used in invoke_previous()
