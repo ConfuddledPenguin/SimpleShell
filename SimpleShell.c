@@ -135,7 +135,7 @@
 #define INPUT_ERROR 2
 
 
-#define SIZE(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
+#define LENGTH(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
 
 typedef struct{
 	char * alias;
@@ -188,7 +188,7 @@ char *command[50];
 
 /*
  * Stores the orginal path, from before the shell is started
- * This si stored here due to the fact that passing it would become every so 
+ * This is stored here due to the fact that passing it would become so very
  * messy
  */
 char *path;
@@ -204,23 +204,23 @@ char *path;
  */
 void update_history(char input[512]){
 
-	if(count_history < SIZE(history)){
+	if(count_history < LENGTH(history)){
 
  		strcpy(history[count_history], input);
  		count_history++;
 
  	} else{
 
- 		for(int i=1; i<SIZE(history); i++){ //Array contents shifted to left.
+ 		for(int i=1; i<LENGTH(history); i++){ //Array contents shifted to left.
  			strcpy(history[i-1], history[i]);
  		}
 
- 		strcpy(history[SIZE(history)-1], input);
+ 		strcpy(history[LENGTH(history)-1], input);
 
  	}
 }
 
-/* void openHistory()
+/* void loadHistory()
  *
  * Description:
  *
@@ -229,7 +229,7 @@ void update_history(char input[512]){
  * data left to take from the file.
  *
  */
-void openHistory(){
+void loadHistory(){
 
 	FILE *fp;
 	char c[513];
@@ -674,7 +674,7 @@ void invoke_history(){
 	else{
 
 		char *position = strtok(command[0], "!"); //Copies command[0] w/o '!'
-		char temp[SIZE(position)]; //A new string the same size as position.
+		char temp[LENGTH(position)]; //A new string the same size as position.
 
 
 		int index = atoi(position); /* Retrieves an int from position, if there
@@ -774,7 +774,7 @@ void add_alias(){
 		}
 		//Creating a brand new alias.
 		else{
-			if(count_alias >= SIZE(aliases)){
+			if(count_alias >= LENGTH(aliases)){
 				puts("List of aliases is full");
 				return;
 			}		
@@ -971,6 +971,34 @@ int getInput(){
 
 } // End of getInput()
 
+/* int gloadHistoryAlias()
+ * 
+ * #include <string.h>
+ * #include <stdlib.h>
+ *
+ * Description:
+ *
+ * Intialises the history and alias storage and loads the files from the disk
+ * 
+ */
+void loadHistoryAlias(){
+
+	
+	count_history = 0;
+	count_alias = 0;
+
+	for(int i=0; i<LENGTH(history); i++)
+		strcpy(history[i], "");
+
+	for(int i = 0; i < LENGTH(aliases); i++){
+		aliases[i].alias = malloc(sizeof(aliases[i].alias));
+		aliases[i].aliased_command = malloc(sizeof(aliases[i].aliased_command));
+	}
+
+	loadHistory();
+	loadAlias();
+}
+
 int main() {
 
 	printf(VERSION);
@@ -980,25 +1008,9 @@ int main() {
 	path = getPath();
 	set_home_dir();
 
+	loadHistoryAlias();
+
 	int return_val = -1;
-
-	// Initializing the count_history.
-	count_history = 0;
-	count_alias = 0;
-
-	for(int i=0; i<SIZE(history); i++)
-		strcpy(history[i], "");
-
-	for(int i = 0; i < SIZE(aliases); i++){
-		aliases[i].alias = malloc(sizeof(aliases[i].alias));
-		aliases[i].aliased_command = malloc(sizeof(aliases[i].aliased_command));
-	}
-		
-
-
-	openHistory();
-	loadAlias();
-
 	// User loop
 	while (1) {
 
