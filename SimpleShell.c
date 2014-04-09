@@ -105,6 +105,7 @@
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
 
+
 //To allow kill() to compile in linux without error
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
@@ -115,6 +116,7 @@
 #define _BSD_SOURCE
 #endif
 
+//Include required files
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -126,27 +128,9 @@
 #include <errno.h> 
 #include <sys/stat.h>
 
+//Include SimpleShell header file
+#include "SimpleShell.h"
 
-#define PROMPT "> "
-#define INPUT_CONTINUE 0
-#define INPUT_RUN 1
-#define INPUT_ERROR 2
-
-
-#define LENGTH(x) (sizeof(x)/sizeof(x[0])) //number of elements in array
-#define SET_HOME_DIR() chdir(getenv("HOME")) //Set current dir as home dir
-#define GET_PATH() getenv("PATH") //Gets current PATH of system. 
-#define SET_PATH_STRING(path) setenv("PATH", path, 1) //Sets current PATH
-
-typedef struct{
-	char * alias;
-	char * aliased_command;
-} Alias;
-
-
-void process_input(); //Forward declaration to be used in invoke_previous()
-int alias_exists(char * target);
-int tokenise(char *input);
 
 /* char *history[20]
  * 
@@ -794,6 +778,12 @@ void unalias(){
 	}
 }
 
+/* void exiting()
+ *
+ * Description:
+ *
+ * Exits the program
+ */
 void exiting(){
 
 	SET_PATH_STRING(path);
