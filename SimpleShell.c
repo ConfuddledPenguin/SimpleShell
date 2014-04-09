@@ -132,6 +132,15 @@
 #include "SimpleShell.h"
 
 
+/* Alias aliases[10]
+ *
+ * Description:
+ *
+ * Stores 10 aliases.
+ *
+ */
+Alias aliases[10];
+
 /* char *history[20]
  * 
  * Description:
@@ -140,6 +149,28 @@
  *
  */
 char history[20][512];
+
+/* char *command[50], path
+ *
+ * Description command[50]:
+ *
+ * An array of strings that stores a command and it's parameters.
+ * 	-	command[0] stores the command.
+ * 	-	command[1-X] stores the subsequent parameters.
+ *
+ */
+char *command[50];
+
+/* char *path
+ *
+ * Description:
+ *
+ * Stores the orginal path, from before the shell is started
+ * This is stored here due to the fact that passing it would become so very
+ * messy
+ *
+ */
+char *path;
 
 /* int count_history, count_alias
  *
@@ -150,32 +181,6 @@ char history[20][512];
  */
 int count_history, count_alias; 
 
-/* Alias aliases[10]
- *
- * Description:
- *
- * Stores 10 aliases.
- *
- */
-Alias aliases[10];
-
-/* char *command[50], path
- *
- * Description command[50]:
- *
- * An array of strings that stores a command and it's parameters.
- * 	-	command[0] stores the command.
- * 	-	command[1-X] stores the subsequent parameters.
- *
- *
- * Description path:
- *
- * Stores the orginal path, from before the shell is started
- * This is stored here due to the fact that passing it would become so very
- * messy
- *
- */
-char *command[50], *path;
 
 /* void update(history)
  *
@@ -188,12 +193,12 @@ char *command[50], *path;
  */
 void update_history(char input[512]){
 
-	if(count_history < LENGTH(history)){
+	if(count_history < LENGTH(history)) {
 
  		strcpy(history[count_history], input);
  		count_history++;
 
- 	} else{
+ 	} else {
 
  		for(int i=1; i<LENGTH(history); i++) //Array contents shifted to left.
  			strcpy(history[i-1], history[i]);
@@ -201,6 +206,7 @@ void update_history(char input[512]){
  		strcpy(history[LENGTH(history)-1], input);
 
  	}
+
 }
 
 /* void loadHistory()
@@ -223,19 +229,20 @@ void loadHistory(){
  	   adding to history as the file is empty therefore
  	   there is nothing to add. 
  	 */
-	if((fp = fopen(".hist_list", "r")) == NULL){ //find or create file
+	if( (fp = fopen(".hist_list", "r")) == NULL) //find or create file
 		puts("Creating new history file in home directory");
-	} else { //file exists, read it.
 
-		while (1) {
-			if((fgets(c, 513, fp)) == NULL){ //end of file check
+	else { //file exists, read it.
+
+		while(1) {
+
+			if( (fgets(c, 513, fp)) == NULL) //end of file check
 				break;
-			}
 
 			// Getting rid of the new line char, replacing with a terminating 
 			// char
-			if ((p = strchr(c, '\n')) != NULL)
-			*p = '\0';
+			if ( (p = strchr(c, '\n')) != NULL)
+				*p = '\0';
 
 			update_history(c);
 
@@ -261,17 +268,18 @@ void loadHistory(){
 void saveHistory(){
 
 	FILE *fp;
-
 	fp = fopen(".hist_list", "w+");
 
  	int g = 0;
 	while(strcmp(history[g], "") != 0){ //Ensures empty history isn't printed.
+		
 		fprintf(fp, "%s\n", history[g]);
 		g++;
+
 	}
- 	
 
  	fclose(fp);
+
 }
 
 /* void loadAlias()
@@ -295,32 +303,33 @@ void loadAlias(){
  	   adding to history as the file is empty therefore
  	   there is nothing to add. 
  	 */
-	if((fp = fopen(".aliases", "r")) == NULL){ //find or create file
+	if( (fp = fopen(".aliases", "r")) == NULL) { //find or create file
 		puts("Creating new alias file in home directory");
-	} 
-	else { //file exists, read it.
+	
+	} else { //file exists, read it.
 
 		while (1) {
+			
 			char *temp = malloc(sizeof(temp));
 			strcpy(temp, "alias");
-			if((fgets(c, 513, fp)) == NULL){ //end of file check
+
+			if( (fgets(c, 513, fp)) == NULL)//end of file check
 				break;
-			}
 
 			// Getting rid of the new line char, replacing with a terminating 
 			// char
-			if ((p = strchr(c, '\n')) != NULL)
-			*p = '\0';
+			if( (p = strchr(c, '\n')) != NULL)
+				*p = '\0';
 
 			strcat(temp, " ");
 			strcat(temp, c);
 
 			int return_val;
-			if( ( return_val = tokenise(temp)  ) == INPUT_RUN ){
+			if( (return_val = tokenise(temp)) == INPUT_RUN)
 				process_input();
- 			}
 
 			h++;
+
 	 	}
 
 	 	fclose(fp);
@@ -343,9 +352,11 @@ void saveAlias(){
 	fp = fopen(".aliases", "w+");
 
 	int i = 0;
-	while(i < count_alias && count_alias != 0){
+	while(i < count_alias && count_alias != 0) {
+
 		fprintf(fp, "%s %s\n", aliases[i].alias, aliases[i].aliased_command);
 		i++;
+
 	}
 
  	fclose(fp);
@@ -372,31 +383,39 @@ int tokenise(char *input){
 
  	char *tokenizer = " \t|<>";
  	char *token;
+
  	char *inputCopy = malloc(sizeof(input));
  	strcpy(inputCopy, input);
+
  	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
+
  	if(command[0] == NULL)
  		return INPUT_CONTINUE;
 
-
  	/* If the input includes an alias invoke, then it must be processed. */
  	int index = alias_exists(command[0]);
- 	if(index >= 0){
+ 	if(index >= 0) {
+
  		char *temp = malloc(sizeof(temp));
  		strcpy(temp, aliases[index].aliased_command); //The aliased command
- 		while ( (token = strtok(NULL, tokenizer) ) != NULL) {
+ 		
+ 		while ( (token = strtok(NULL, tokenizer)) != NULL) {
+ 			
  			/* The rest of the input is added to the temp string.
  			 * This means that "alias x ls" will turn "x Desktop" to 
  			 * "ls Desktop. */
  			strcat(temp, " ");
  			strcat(temp, token);
+
  		}
+
  		return tokenise(temp); //Recursively call tokenise with the new command.
+ 	
  	}
 
  	int i = 1;
- 	while ( (token = strtok(NULL, tokenizer) ) != NULL) {
+ 	while( (token = strtok(NULL, tokenizer)) != NULL) {
 
  		command[i] = malloc(sizeof(command[i]));
  		strcpy(command[i], token);
@@ -407,9 +426,13 @@ int tokenise(char *input){
 
  			printf("Error: Too many parameters\n");
  			return INPUT_CONTINUE;
+
  		}
+
  	}
+
  	return INPUT_RUN;
+
 } //  End tokenise(char *input)
 
 
@@ -423,10 +446,14 @@ int tokenise(char *input){
 void reset_command() {
 	
 	int i = 0;
+
 	while(command[i] != NULL) {
+
 		command[i] = NULL;
 		i++;
+
 	}
+
 } //end reset_command()
 
 /* void run_external_cmd(char *command[50])
@@ -456,8 +483,10 @@ void run_external_cmd() {
 	} else if(PID == 0){ //else must be child process
 
 		if(execvp(command[0], command) == -1) { //if execvp fails
+
 			perror(command[0]);
 			kill(getpid(), SIGKILL); //kill child process
+
 		}
 
 	} else { //fork failed
@@ -478,9 +507,12 @@ void run_external_cmd() {
  *
  */
 void print_working_dir() {
+
 	char current_dir[100];
 	puts(getcwd(current_dir, 100));
+
 } //end print_working_dir()
+
 
 /* void change_directory()
  *
@@ -530,16 +562,23 @@ void setPath() {
 
 		printf("ERROR: Wrong Usage - setpath <PATH>\n");
 		return;
-	}
+
+	} 
 
 	if (stat(command[1], &sb) == 0 && S_ISDIR(sb.st_mode)){
+
 		if(setenv("PATH", command[1], 1) == -1)
+
 			puts("PATH update failed");
-	}else {
+
+	} else {
+
 		printf("ERROR: <%s> is not a directory\n", command[1]);
+
 	}
 
 } //end setpath()
+
 
 /* void print_history()
  * 
@@ -552,11 +591,14 @@ void print_history(){
 
 	int i = 0;
 	while(i < count_history){ //Ensures empty history isn't printed.
+
 		printf("%i. %s\n", i+1, history[i]);
 		i++;
+
 	}
 
 }
+
 
 /* void invoke_previous(int index)
  *
@@ -588,14 +630,20 @@ void invoke_previous(int index){
 			}
 			
 			puts(temp);
+
 			if(tokenise(temp) == INPUT_RUN)
 				process_input();
+
 		}
-	}
-	else{
+
+	} else{
+
 		puts("Invalid history invocation."); //The number put in is invalid.
+
 	}
+
 }
+
 
 /* void invoke_history 
  *
@@ -608,9 +656,9 @@ void invoke_previous(int index){
  */
 void invoke_history(){
 
-	if(strcmp(command[0], "!!") == 0){
+	if(strcmp(command[0], "!!") == 0)
 		invoke_previous(count_history-1);
-	}
+
 	else{
 
 		char *position = strtok(command[0], "!"); //Copies command[0] w/o '!'
@@ -632,6 +680,7 @@ void invoke_history(){
 
 }
 
+
 /* void print_alias
  *
  * Description:
@@ -641,14 +690,19 @@ void invoke_history(){
  *
  */
 void print_alias(){
+
 	int i = 0;
+
 	if(count_alias == 0)
 		puts("There are no aliases recognized.");
+
 	while(i < count_alias){
 		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
 		i++;
 	}
+
 }
+
 
 /* int alias_exists(char * target )
  *
@@ -664,12 +718,42 @@ void print_alias(){
  *
  */
 int alias_exists(char * target){
+
 	for(int i = 0; i < count_alias; i++){
+
 		if(strcmp(aliases[i].alias, target) == 0)
 			return i;
 	}
+
 	return -1;
 }
+
+/* void update_alias(int index)
+ *
+ * Description:
+ *
+ * Updates an element in the alias array, based on index with the content of the
+ * new alias being added.
+ *
+ */
+void update_alias(int index){
+
+	aliases[index].alias = command[1];
+	int i = 2;
+
+	//Every command token is concatenated to the aliased command. 
+	strcpy(aliases[index].aliased_command, "");
+
+	while(command[i] != NULL){
+
+		strcat(aliases[index].aliased_command, command[i]);
+		strcat(aliases[index].aliased_command, " ");
+		i++;
+
+	}
+
+}
+
 
 /* void add_alias()
  *
@@ -697,39 +781,32 @@ void add_alias(){
 
 	//Creating an alias.
 	else{
+
 		index = alias_exists(command[1]); 
 		//Overwriting an existing one.
+
 		if(index >= 0){
 			puts("An alias with this name already exists, overwriting.");
-			aliases[index].alias = command[1];
-			int i = 2;
-			//Every command token is concatenated to the aliased command. 
-			strcpy(aliases[index].aliased_command, "");
-			while(command[i] != NULL){
-				strcat(aliases[index].aliased_command, command[i]);
-				strcat(aliases[index].aliased_command, " ");
-				i++;
-			}
+			update_alias(index);
 		}
+
 		//Creating a brand new alias.
 		else{
+
 			if(count_alias >= LENGTH(aliases)){
 				puts("List of aliases is full");
 				return;
 			}		
-			aliases[count_alias].alias = command[1];
-			int i = 2;
-			strcpy(aliases[count_alias].aliased_command, "");
-			//Every command token is concatenated to the aliased command. 
-			while(command[i] != NULL){
-				strcat(aliases[count_alias].aliased_command, command[i]);
-				strcat(aliases[count_alias].aliased_command, " ");
-				i++;
-			}
+
+			update_alias(count_alias);
 			count_alias++; //Incrementing to reflect position of next alias.
+
 		}
+
 	}
+
 }
+
 
 /* void alias()
  *
@@ -763,16 +840,21 @@ void unalias(){
 
 	if(command[1] == NULL)
 		puts("No alias selected");
+
 	else{
 		int index = alias_exists(command[1]);
+		
 		if(index >= 0){
+			
 			for(int i=index+1; i<count_alias; i++){
 				//The aliases after the removed one are shifted left by one.
 	 			strcpy(aliases[i-1].alias, aliases[i].alias);
 				strcpy(aliases[i-1].aliased_command,aliases[i].aliased_command);
  			}
+
 			count_alias--;
 		}
+
 		else
 			puts("Alias does not exist.");
 	}
@@ -805,12 +887,14 @@ void exiting(){
 void process_input() {
 
 	if(strcmp(command[0], "pwd") == 0) {
+
 		if(command[1] != NULL)
 			puts("Too many arguments input");
 		else
 			print_working_dir();
 
 	} else if(strcmp(command[0], "cd") == 0) {
+
 		if(command[2] != NULL)
 			puts("Too many arguments input");
 		else
@@ -885,10 +969,6 @@ int getInput(){
  		exiting();
  	}
 
- 	//This may clear the input remove the issue of there being to many
- 	//in the input
- 	fflush(stdin);
-
  	// Checking user has not just hit enter
  	if (input[0] == '\n')
  		return INPUT_CONTINUE;
@@ -901,7 +981,7 @@ int getInput(){
  	strcpy(inputCopy, input);
 
  	int return_val;
- 	if( ( return_val = tokenise(input)  ) != INPUT_RUN ){
+ 	if (( return_val = tokenise(input)) != INPUT_RUN ){
 
  		return return_val;
  	}
@@ -962,6 +1042,7 @@ int main() {
 		reset_command(); // Empty command
 
 		return_val = getInput();
+
 		if (return_val == INPUT_CONTINUE) {
 			continue;
 		} else if (return_val == INPUT_ERROR) {
