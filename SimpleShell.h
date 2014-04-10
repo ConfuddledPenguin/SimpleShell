@@ -5,6 +5,10 @@
 #define INPUT_RUN 1
 #define INPUT_ERROR 2
 
+#define SIZE_OF_ALIASES 10
+#define SIZE_OF_HISTORY 20
+#define SIZE_OF_COMMANDS 50
+
 
 // Macro's
 #define LENGTH(x) (sizeof(x)/sizeof(x[0]))  //number of elements in array
@@ -12,7 +16,9 @@
 #define GET_PATH() getenv("PATH") //Gets current PATH of system. 
 #define SET_PATH_STRING(path) setenv("PATH", path, 1) //Sets current PATH
 
-#define FLUSH_STDIN(x) {if(x[strlen(x)-1]!='\n'){do fgets(Junk,16,stdin);while(Junk[strlen(Junk)-1]!='\n');}else x[strlen(x)-1]='\0';}
+#define FLUSH_STDIN(x) {if(x[strlen(x)-1]!='\n'){do fgets(Junk,16,stdin); \
+						while(Junk[strlen(Junk)-1]!='\n');} \
+						else x[strlen(x)-1]='\0';}
 
 // Forword declarations
 void process_input(); //Forward declaration to be used in invoke_previous()

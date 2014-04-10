@@ -142,34 +142,37 @@
 // Global vars
 //------------------------------------------------------------------------------
 
-/* Alias aliases[10]
+/* Alias aliases[SIZE_OF_ALIASES]
  *
  * Description:
  *
- * Stores 10 aliases.
+ * Stores a number of aliases specified in the header file as SIZE_OF_ALIASES.
+ * In ths case it is currently set to 10.
  *
  */
-Alias aliases[10];
+Alias aliases[SIZE_OF_ALIASES];
 
-/* char *history[20]
+/* char *history[SIZE_OF_HISTORY]
  * 
  * Description:
  *
- * An array of 20 strings which store the previous 20 inputs from the user.
+ * An array of strings which store a number of previous inputs from the user 
+ * which is specified in the header file under SIZE_OF_HISTORY. In this case it
+ * is set to 20.
  *
  */
-char history[20][512];
+char history[SIZE_OF_HISTORY][512];
 
-/* char *command[50], path
+/* char *command[SIZE_OF_COMMANDS], path
  *
- * Description command[50]:
+ * Description command[SIZE_OF_COMMANDS]:
  *
  * An array of strings that stores a command and it's parameters.
  * 	-	command[0] stores the command.
  * 	-	command[1-X] stores the subsequent parameters.
  *
  */
-char *command[50];
+char *command[SIZE_OF_COMMANDS];
 
 /* char *path
  *
@@ -251,7 +254,6 @@ void loadHistory(){
 
 	FILE *fp;
 	char c[513], *p;
- 	int h = 0;
 
  	/* If .hist_list exists, read it and add to history.
  	   If .hist_list doesn't exist, create it and skip
@@ -259,7 +261,8 @@ void loadHistory(){
  	   there is nothing to add. 
  	 */
 	if( (fp = fopen(".hist_list", "r")) == NULL) //find or create file
-		puts("Creating new history file in home directory");
+		fprintf(stderr, "Error in loadHistory: There is no .hist_list file" \
+				"present.\n Creating new history file in home directory\n");
 
 	else { //file exists, read it.
 
@@ -275,7 +278,6 @@ void loadHistory(){
 
 			update_history(c);
 
-			h++;
 	 	}
 
 	 	fclose(fp);
@@ -325,7 +327,8 @@ void invoke_previous(int index){
 	if(index >= 0 && index <= 19){ //Checks if index is between 0 and 19.
 		if(strcmp(history[index], "") == 0){ //Checks if there is history
 			
-			puts("No command in history.");
+			fprintf(stderr, "Error in invoke_previous: There is no command in" \
+					"history\n");
 
 		} else{
 			
@@ -349,7 +352,8 @@ void invoke_previous(int index){
 
 	} else{
 
-		puts("Invalid history invocation."); //The number put in is invalid.
+		fprintf(stderr, "Error in invoke_previous: Invalid history" \
+				"invocation\n"); //The number put in is invalid.
 
 	}
 } //end invoke_previous(int index)
@@ -361,6 +365,10 @@ void invoke_previous(int index){
 
 
 /* void loadAlias()
+ *
+ * #include <stdio.h>
+ * #include <string.h>
+ * #include <stdlib.h>
  *
  * Description:
  *
@@ -374,7 +382,6 @@ void loadAlias(){
 	FILE *fp;
 	char c[513];
 	char *p;
- 	int h = 0;
 
  	/* If .aliases exists, read it and add to list of aliases.
  	   If .aliases doesn't exist, create it and skip
@@ -382,7 +389,8 @@ void loadAlias(){
  	   there is nothing to add. 
  	 */
 	if( (fp = fopen(".aliases", "r")) == NULL) { //find or create file
-		puts("Creating new alias file in home directory");
+		fprintf(stderr, "Error in loadAlias: There is no aliases file present."\
+				"Creating new alias file in home directory\n");
 	
 	} else { //file exists, read it.
 
@@ -406,7 +414,7 @@ void loadAlias(){
 			if( (return_val = tokenise(temp)) == INPUT_RUN)
 				process_input();
 
-			h++;
+			free(temp);
 
 	 	}
 
@@ -420,10 +428,11 @@ void loadAlias(){
  *
  * Description:
  *
- * Opens the file .aliases or creates the file if none exists. It will take all the
- * contents of the alias stucts if any exist and print them out into the file with
- * each line containing the alias name and the command that it maps to seperated by
- * a space. Once all the alias are printed to the file, the file is closed.
+ * Opens the file .aliases or creates the file if none exists. It will take all 
+ * the contents of the alias stucts if any exist and print them out into the 
+ * file with each line containing the alias name and the command that it maps to 
+ * seperated by a space. Once all the alias are printed to the file, the file is
+ * closed.
  *
  */
 void saveAlias(){
@@ -457,7 +466,8 @@ void print_alias(){
 	int i = 0;
 
 	if(count_alias == 0)
-		puts("There are no aliases recognized.");
+		fprintf(stderr, "Error in print_alias: There are no aliases" \
+				"recognized.\n");
 
 	while(i < count_alias){
 		printf("%s: %s\n", aliases[i].alias, aliases[i].aliased_command);
@@ -532,14 +542,15 @@ void add_alias(){
 	//Ensures there is an aliased command and that and the user is not aliasing
 	//the same command, ie "alias a a" which shouldn't be allowed.
 	if(command[2] == NULL || strcmp(command[1], command[2]) == 0){
-		puts("Invalid alias");
+		fprintf(stderr, "Error in add_alias: Invalid alias\n");
 		return;
 	}
 	
 	int index = alias_exists(command[2]);
 	//The user has attempted to give an alias an alias.
 	if(index >= 0)
-		puts("You cannot give an alias to an existing alias.");
+		fprintf(stderr, "Error in add_alias: You cannot give an alias to an" \
+				"existing alias\n");
 
 	//Creating an alias.
 	else{
@@ -548,7 +559,8 @@ void add_alias(){
 		//Overwriting an existing one.
 
 		if(index >= 0){
-			puts("An alias with this name already exists, overwriting.");
+			fprintf(stderr, "Error in add_alias: An alias with this name" \
+					"already exists, overwriting existing alias\n");
 			update_alias(index);
 		}
 
@@ -556,7 +568,8 @@ void add_alias(){
 		else{
 
 			if(count_alias >= LENGTH(aliases)){
-				puts("List of aliases is full");
+				fprintf(stderr, "Error in add_alias: List of aliases is full," \
+						"unable to create new alias\n");
 				return;
 			}		
 
@@ -609,7 +622,8 @@ void run_external_cmd() {
 
 	} else { //fork failed
 
-		puts("Something went horribly wrong :/"); //whoops :/
+		fprintf(stderr, "Error in run_external_cmd: Something went horribly" \
+				"wrong with forking\n"); //whoops :/
 
 	}
 } //end run_external_cmd()
@@ -629,7 +643,8 @@ void print_working_dir() {
 
 	if(command[1] != NULL){
 			
-		puts("Too many arguments input");
+		fprintf(stderr, "Error in print_working_dir: Too many arguments" \
+				"given in input\n");
 		return;
 	}
 
@@ -656,7 +671,8 @@ void change_directory() {
 
 	if(command[2] != NULL){
 
-		puts("Too many arguments input");
+		fprintf(stderr, "Error in change_directory: Too many arguments" \
+				"given in input\n");
 		return;
 	}
 
@@ -689,7 +705,7 @@ void setPath() {
 
 	if(command[1] == NULL || command[2] != NULL){
 
-		printf("ERROR: Wrong Usage - setpath <PATH>\n");
+		fprintf(stderr, "Error in setPath: Wrong Usage - setpath <PATH>\n");
 		return;
 
 	} 
@@ -698,11 +714,12 @@ void setPath() {
 
 		if(setenv("PATH", command[1], 1) == -1)
 
-			puts("PATH update failed");
+			fprintf(stderr, "Error in setPath: PATH update failed\n");
 
 	} else {
 
-		printf("ERROR: <%s> is not a directory\n", command[1]);
+		fprintf(stderr, "Error in SetPath: <%s> is not a directory\n",
+				command[1]);
 
 	}
 } //end setpath()
@@ -758,7 +775,8 @@ void invoke_history(){
 		if(strcmp(temp, position) == 0)
 			invoke_previous(index-1);
 		else
-			puts("Invalid history invocation.");
+			fprintf(stderr, "Error in invoke_history: Invalid history" \
+					"invocation");
 	}
 } //end invoke_history()
 
@@ -794,7 +812,8 @@ void alias(){
 void unalias(){
 
 	if(command[1] == NULL)
-		puts("No alias selected");
+		fprintf(stderr, "Error in unlias: No alias selected");
+	
 
 	else{
 		int index = alias_exists(command[1]);
@@ -811,7 +830,7 @@ void unalias(){
 		}
 
 		else
-			puts("Alias does not exist.");
+			fprintf(stderr, "Error in unlias: Alias does not exist");
 	}
 } //end unalias()
 
@@ -949,10 +968,11 @@ int tokenise(char *input){
  		strcpy(command[i], token);
  		i++;
 
- 		// Spec says no more than 50 parameters will be entered
- 		if (i >= 50) {
+ 		// Prints out message the number of parameters entered is over the
+ 		// command size limit.
+ 		if (i >= SIZE_OF_COMMANDS) {
 
- 			printf("Error: Too many parameters\n");
+ 			fprintf(stderr, "Error in tokenise: Too many parameters\n");
  			return INPUT_CONTINUE;
 
  		}
@@ -1074,7 +1094,7 @@ void loadHistoryAlias(){
 } //end loadHistoryAlias()
 
 
-/* GRANT FILL
+/* int main()
  *
  */
 int main() {
@@ -1099,10 +1119,11 @@ int main() {
 		if (return_val == INPUT_CONTINUE) {
 			continue;
 		} else if (return_val == INPUT_ERROR) {
-			printf("I broke");
+			fprintf(stderr, "Error in main: Unknown error caused program to" \
+					"break\n");
 			continue;
 		} 
  	}; // Close Shell Loop
 
  	return(0);
-}
+} //end main()
