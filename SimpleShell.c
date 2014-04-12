@@ -98,12 +98,14 @@
  *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into 
  *		separate macros for each function. Each function was only one line of
  *		code so having it as a marco makes it a bit more maintainable.
+ *		^ Aidan
  *
  *	v1.2 - 09/04/2014 - Header File
  *
  *		New header file called SimpleShell.h has been created to store the
  *		macros used in the program, the constants, forward declarations as
- *		well as the struct used for aliases created for the shell.
+ *		well as the structure used for aliases created for the shell.
+ *		^ Tom
  *
  ******************************************************************************/
 
@@ -113,12 +115,12 @@
 #define COPYRIGHT "Copyright 2014.\n"
 
 
-//To allow kill() to compile in Linux without error
+//To allow kill() to compile in Linux without errors exploding everywhere
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
 #endif
 
-//to allow setenv() to compile in Linux without error
+//to allow setenv() to compile in Linux without errors exploding everywhere
 #ifndef _BSD_SOURCE
 #define _BSD_SOURCE
 #endif
@@ -694,7 +696,7 @@ void change_directory() {
  * Description:
  *
  * Adds new directories specified by the user into the system's
- * PATH enviroment.
+ * PATH environment.
  *
  */
 void setPath() {
@@ -803,7 +805,7 @@ void alias(){
  * Description:
  *
  * Removing an alias. Ensuring that the alias exists in the first place, the
- * program shifts items in the aliases aaray left so that the alias to be
+ * program shifts items in the aliases array left so that the alias to be
  * removed is overwritten.
  *
  */
