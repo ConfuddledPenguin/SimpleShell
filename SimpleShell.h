@@ -1,6 +1,7 @@
 
 // Constants
 #define PROMPT "> "
+
 #define INPUT_CONTINUE 0
 #define INPUT_RUN 1
 #define INPUT_ERROR 2
@@ -21,7 +22,7 @@
 						else x[strlen(x)-1]='\0';}
 
 // Forword declarations
-void process_input(); //Forward declaration to be used in invoke_previous()
+void process_input();
 int alias_exists(char * target);
 int tokenise(char *input);
 
