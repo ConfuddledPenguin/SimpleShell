@@ -124,7 +124,7 @@ Ended		- 14/02/2014
  		tidied up as input_command is still being used in some places when it
  		could probably be completely removed.
  
- 		The SimpleShell can now successfully carry out most built in unix
+ 		The SimpleShell can now successfully carry out most built in Unix
  		commands and run executable files. It can also pass in any required
  		parameters.
 		^ Thomas
@@ -154,7 +154,7 @@ Ended		- 14/02/2014
  	 	command was stored in command[0] then malloc was being used to assign
  		the memory. The line assigning memory had simply been overlooked when
  		making changes. Also added a new function to reset command to NULL
- 		everytime the program continues the loop.
+ 		every time the program continues the loop.
  		^ Thomas
 
 		Cleaned up getInput() to make it more readable and maintainable. 
@@ -162,7 +162,7 @@ Ended		- 14/02/2014
 		correctly.
  		^ Tom
  
- 		Fixed issue with kill() not being defined in linux.
+ 		Fixed issue with kill() not being defined in Linux.
  		^ Tom
  
  		Removed all input checking "printf's" & "puts" from processInput().
@@ -229,9 +229,9 @@ Ended		- 16/02/2014
  	v0.3.2 - 16/02/2014 - Add to PATH
  
  		Added two new built in commands: getpath and setpath. The getpath()
- 		function prints out the contents of the system's PATH enviroment while
+ 		function prints out the contents of the system's PATH environment while
  		the setpath() function allows the user to add new directories into the
- 		PATH enviroment.
+ 		PATH environment.
  		^ Thomas
 
  	v0.4.0 - 16/02/2014 - Final stage four
@@ -334,7 +334,7 @@ Ended		- 06/03/2014
  
  		Removed excess setpath() function.
  		Modified setPath() and setpath() so things make more sense. As these
- 		functions where very similiar. One taking a string, with the other 
+ 		functions where very similar. One taking a string, with the other 
  		taking the command.
  		^Tom
 
@@ -353,7 +353,7 @@ Ended		- 06/03/2014
 	v0.6.1 - 06/03/2014 - saveHistory
 
 		Added saveHistory(), where the contents of the history array is taken
-		and stored into a file which is rewitten if exists or created if it does
+		and stored into a file which is rewritten if exists or created if it does
 		not exist. The call to the function was added after everything else in
 		main().
 		^ Grant
@@ -381,13 +381,13 @@ Ended		- 27/03/2014
 
 	v0.7.1 - 07/03/2014 - Fixed openHistory()
  
-		Found a bug on linux where the shell would crash while running on linux
+		Found a bug on Linux where the shell would crash while running on Linux
  		if the history file did not already exist. The program would create the
  		new file but as it would be empty, any attempt to read data from it
  		would cause segmentation errors.
   
- 		Moved the call to saveHistory() wihin main() to inside if(INPUT_EXIT) so
- 		the shell isn't wasting time by making unessesary writes to memory. It
+ 		Moved the call to saveHistory() within main() to inside if(INPUT_EXIT) so
+ 		the shell isn't wasting time by making unnecessary writes to memory. It
  		now only reads the file on start up and writes to it on the program's
  		exit.
  
@@ -404,7 +404,7 @@ Ended		- 27/03/2014
 		The aliases are stored in a new struct called Alias with one pointer to 
 		the name of the alias and another to the command that it maps to. The 
 		struct was initialised in main and the processInput() was updated to 
-		check for the inital command being alias and using it to call 
+		check for the initial command being alias and using it to call 
 		add_alias()
  		^ Aidan
 
@@ -423,7 +423,7 @@ Ended		- 27/03/2014
 		print_alias or add_alias. It checks to see if the command[1] is null to 
 		see if anything has been entered after the alias command. If there is 
 		nothing then it will run print_alias otherwise it will run add_alias 
-		instead. Made relevent change to processInput() to use alias().
+		instead. Made relevant change to processInput() to use alias().
  		^ Aidan
 
  	v0.7.5 - 20/03/2014 - Implemented unalias()
@@ -445,7 +445,7 @@ Ended		- 27/03/2014
  		^ Tom
  
  		Moved the exiting section of the user loop in main and placed the code
- 		in a seperate method exiting(). this allows us to exit the program from
+ 		in a separate method exiting(). this allows us to exit the program from
  		any location in the program. 
  		
  		Also removed the exit check from tokenising making the general code
@@ -458,7 +458,7 @@ Ended		- 27/03/2014
 		Implemented the invoking of alias inside the tokenise() so that the 
 		alias check is performed before fully tokenising the line. This is done
 		by checking the first command entered to see if it is an alias. If the
-		command is an alias then it will concantinate the command that the alias
+		command is an alias then it will concatenate the command that the alias
 		is meant to be and the remainder of the original command entered. It 
 		will them carry out tokenise of the new input created.
 

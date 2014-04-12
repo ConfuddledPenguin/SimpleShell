@@ -662,8 +662,8 @@ void print_working_dir() {
  * Navigate to a directory specified by the user.
  * If no parameters are input after the command then the
  * function sets the home directory as the current directory.
- * If the parameters contains a "/" at the begining it will
- * navigate from the root of the filesystem (absolute 
+ * If the parameters contains a "/" at the beginning it will
+ * navigate from the root of the file system (absolute 
  * path) otherwise it will treat it as a relative path.
  *
  */
