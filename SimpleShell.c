@@ -892,11 +892,12 @@ void unalias(){
  */
 void exiting(){
 
+	SET_HOME_DIR();
+	saveHistory();
+	saveAlias();
 	SET_PATH_STRING(path);
 	printf("\nExiting the shell . . .\n\n");
 	printf("PATH returned to: %s \n\n", GET_PATH());
-	saveHistory();
-	saveAlias();
 	exit(0);
 } //end exiting()
 
@@ -984,6 +985,7 @@ int tokenise(char *input){
 
  	char *tokenizer = " \t|<>";
  	char *token;
+ 	char *p;
 
  	command[0] = malloc(sizeof(command[0]));
  	command[0] = strtok(input, tokenizer);
@@ -1014,6 +1016,9 @@ int tokenise(char *input){
 
  	int i = 1;
  	while( (token = strtok(NULL, tokenizer)) != NULL) {
+
+ 		if ((p = strchr(token, '\\')) != NULL)
+ 		*p = ' ';
 
  		command[i] = malloc(sizeof(command[i]));
  		strcpy(command[i], token);
