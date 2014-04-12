@@ -1,10 +1,10 @@
-
 // Constants
 #define PROMPT "> "
 #define INPUT_CONTINUE 0
 #define INPUT_RUN 1
 #define INPUT_ERROR 2
 
+// Array sizes
 #define SIZE_OF_ALIASES 10
 #define SIZE_OF_HISTORY 20
 #define SIZE_OF_COMMANDS 50
@@ -20,7 +20,7 @@
 						while(Junk[strlen(Junk)-1]!='\n');} \
 						else x[strlen(x)-1]='\0';}
 
-// Forword declarations
+// Forward declarations
 void process_input(); //Forward declaration to be used in invoke_previous()
 int alias_exists(char * target);
 int tokenise(char *input);
