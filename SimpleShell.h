@@ -1,5 +1,6 @@
 // Constants
 #define PROMPT "> "
+
 #define INPUT_CONTINUE 0
 #define INPUT_RUN 1
 #define INPUT_ERROR 2

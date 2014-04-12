@@ -88,22 +88,24 @@
  *
  *	v1.0 - 09/04/2014 - Stage Nine
  *	
- *		Added functions loadAlias and saveAlias that bth allow the storage of  
+ *		Added functions loadAlias and saveAlias that both allow the storage of  
  * 		aliases in a .aliases file in the users home directory so that
- *		that with each use of the shell any aliases that esist when it is closed
+ *		that with each use of the shell any aliases that exist when it is closed
  *		is kept stored for the next use of the program.
  *
  *	v1.1 - 09/04/2014 - New Macros
  *
  *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into 
- *		seperate macros for each function. Each funtion was onle one line of
+ *		separate macros for each function. Each function was only one line of
  *		code so having it as a marco makes it a bit more maintainable.
+ *		^ Aidan
  *
  *	v1.2 - 09/04/2014 - Header File
  *
  *		New header file called SimpleShell.h has been created to store the
- *		macros used in the program, the contants, forward declerations as
- *		well as the struct used for aliases created for the shell.
+ *		macros used in the program, the constants, forward declarations as
+ *		well as the structure used for aliases created for the shell.
+ *		^ Tom
  *
  ******************************************************************************/
 
@@ -113,12 +115,12 @@
 #define COPYRIGHT "Copyright 2014.\n"
 
 
-//To allow kill() to compile in linux without error
+//To allow kill() to compile in Linux without errors exploding everywhere
 #ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
 #endif
 
-//to allow setenv() to compile in linux without error
+//to allow setenv() to compile in Linux without errors exploding everywhere
 #ifndef _BSD_SOURCE
 #define _BSD_SOURCE
 #endif
@@ -147,7 +149,6 @@
  * Description:
  *
  * Stores a number of aliases specified in the header file as SIZE_OF_ALIASES.
- * In ths case it is currently set to 10.
  *
  */
 Alias aliases[SIZE_OF_ALIASES];
@@ -157,8 +158,7 @@ Alias aliases[SIZE_OF_ALIASES];
  * Description:
  *
  * An array of strings which store a number of previous inputs from the user 
- * which is specified in the header file under SIZE_OF_HISTORY. In this case it
- * is set to 20.
+ * which is specified in the header file under SIZE_OF_HISTORY.
  *
  */
 char history[SIZE_OF_HISTORY][512];
@@ -178,7 +178,7 @@ char *command[SIZE_OF_COMMANDS];
  *
  * Description:
  *
- * Stores the orginal path, from before the shell is started
+ * Stores the original path, from before the shell is started
  * This is stored here due to the fact that passing it would become so very
  * messy
  *
@@ -198,7 +198,7 @@ int count_history, count_alias;
  *
  * Description:
  *
- * Temorary location to store overflow from stdin
+ * Temporary location to store overflow from stdin
  *
  */ 
  char Junk[16];
@@ -360,7 +360,7 @@ void invoke_previous(int index){
 
 
 //------------------------------------------------------------------------------
-// Aliasing Code
+// Alias Code
 //------------------------------------------------------------------------------
 
 
@@ -696,7 +696,7 @@ void change_directory() {
  * Description:
  *
  * Adds new directories specified by the user into the system's
- * PATH enviroment.
+ * PATH environment.
  *
  */
 void setPath() {
@@ -805,7 +805,7 @@ void alias(){
  * Description:
  *
  * Removing an alias. Ensuring that the alias exists in the first place, the
- * program shifts items in the aliases aaray left so that the alias to be
+ * program shifts items in the aliases array left so that the alias to be
  * removed is overwritten.
  *
  */
