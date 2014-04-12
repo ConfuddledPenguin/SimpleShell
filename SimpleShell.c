@@ -107,9 +107,18 @@
  *		well as the structure used for aliases created for the shell.
  *		^ Tom
  *
+ *	v1.3 - 12/04/2014 - Revision History, Comments and error messages
+ *
+ *		Revision histoy and comments checked for spelling mistakes and where
+ *		changed accordingly. New commentary whas added where needed to make
+ *		the code more maintainable. Error messages where changed to also tell
+ *		where the error occurred as well as having a better discription of what
+ *		issue actually was when informing the user.
+ *		^ Grant/Tom
+ *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v1.2.0. Last Update 09/04/2014\n"
+#define VERSION "Simple Shell v1.3.0. Last Update 12/04/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
@@ -216,6 +225,9 @@ int count_history, count_alias;
 
 /* void update_history(char input[512])
  *
+ * #include <stdio.h>
+ * #include <string.h>
+ *
  * Description:
  * 
  * Adds the latest input into the command array. In the event of a fully array,
@@ -242,6 +254,10 @@ void update_history(char input[512]){
 
 
 /* void loadHistory()
+ *
+ * #include <stdio.h>
+ * #include <string.h>
+ * #include <stdlib.h>
  *
  * Description:
  *
@@ -288,6 +304,9 @@ void loadHistory(){
 
 /* void saveHistory()
  *
+ * #include <stdio.h>
+ * #include <stdlib.h>
+ *
  * Description:
  *
  * Opens the file .hist_list or creates the file if none exists. It takes the
@@ -314,6 +333,9 @@ void saveHistory(){
 
 
 /* void invoke_previous(int index)
+ *
+ * #include <stdio.h>
+ * #include <string.h>
  *
  * Description:
  *
@@ -426,6 +448,9 @@ void loadAlias(){
 
 /* void saveAlias()
  *
+ * #include <stdio.h>
+ * #include <stdlib.h>
+ *
  * Description:
  *
  * Opens the file .aliases or creates the file if none exists. It will take all 
@@ -453,7 +478,10 @@ void saveAlias(){
 } //end saveAlias()
 
 
-/* void print_alias
+/* void print_alias()
+ *
+ * #include <stdio.h>
+ * #include <string.h>
  *
  * Description:
  *
@@ -476,7 +504,9 @@ void print_alias(){
 } //end print_alias()
 
 
-/* int alias_exists(char * target )
+/* int alias_exists(char * target)
+ *
+ * #include <stdio.h>
  *
  * Description:
  *
@@ -503,6 +533,9 @@ int alias_exists(char * target){
 
 /* void update_alias(int index)
  *
+ * #include <stdio.h>
+ * #include <string.h>
+ *
  * Description:
  *
  * Updates an element in the alias array, based on index with the content of the
@@ -528,6 +561,9 @@ void update_alias(int index){
 
 
 /* void add_alias()
+ *
+ * #include <stdio.h>
+ * #include <stdlib.h>
  *
  * This function adds a new alias to the list of aliases in the program.
  * It ensures that an alias creation is valid (that there is both an alias and
@@ -631,6 +667,7 @@ void run_external_cmd() {
 
 /* void print_working_dir()
  *
+ * #include <stdio.h>
  * #include <unistd.h>
  *
  * Description:
@@ -655,6 +692,7 @@ void print_working_dir() {
 
 /* void change_directory()
  *
+ * #include <stdio.h>
  * #include <errno.h>
  *
  * Description:
@@ -691,6 +729,7 @@ void change_directory() {
 
 /* void setPath()
  *
+ * #include <stdio.h>
  * #include <stdlib.h>
  *
  * Description:
@@ -726,7 +765,9 @@ void setPath() {
 
 
 /* void print_history()
- * 
+ *
+ * #include <stdio.h> 
+ *
  * Description:
  *
  * Prints the previous 20 inputs from the user.
@@ -745,7 +786,10 @@ void print_history(){
 
 
 /* void invoke_history()
-
+ *
+ * #include <stdio.h>
+ * #include <string.h>
+ * #include <stdlib.h>
  *
  * Description:
  *
@@ -802,6 +846,9 @@ void alias(){
 
 /* void un_alias()
  *
+ * #include <stdio.h>
+ * #include <string.h>
+ *
  * Description:
  *
  * Removing an alias. Ensuring that the alias exists in the first place, the
@@ -837,6 +884,8 @@ void unalias(){
 
 /* void exiting()
  *
+ * #include <stdio.h>
+ *
  * Description:
  *
  * Exits the program
@@ -858,6 +907,8 @@ void exiting(){
 
 
 /* void process_input()
+ *
+ * #include <string.h>
  *
  * Description:
  *
@@ -1095,6 +1146,16 @@ void loadHistoryAlias(){
 
 
 /* int main()
+ *
+ * #include <stdio.h>
+ *
+ * Description:
+ *
+ * Starts the shell with the saving of the original path before changing it to
+ * the home directory of the user. It then loads history and alias files 
+ * (if present) before starting the shell loop which will continue as long as it
+ * keeps getting INPUT_CONTINUE or INPUT_ERROR. In the latter case there is a
+ * error message printed if it is returned by getInput().
  *
  */
 int main() {
