@@ -980,11 +980,7 @@ int tokenise(char *input){
  	/* If the input includes an alias invoke, then it must be processed. */
  	int index = alias_exists(command[0]);
  	if(index >= 0) {
-
- 		while((p = strchr(token, '\\')) != NULL){
- 			*p = ' ';
- 		}
-
+ 		
  		char *temp = malloc(sizeof(temp));
  		strcpy(temp, aliases[index].aliased_command); //The aliased command
  		
