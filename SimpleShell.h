@@ -22,7 +22,7 @@
 						else x[strlen(x)-1]='\0';}
 
 // Forward declarations
-void process_input(); //Forward declaration to be used in invoke_previous()
+void process_input(); 
 int alias_exists(char * target);
 int tokenise(char *input);
 

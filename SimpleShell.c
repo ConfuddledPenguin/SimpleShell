@@ -260,11 +260,12 @@ void loadHistory(){
  	   adding to history as the file is empty therefore
  	   there is nothing to add. 
  	 */
-	if( (fp = fopen(".hist_list", "r")) == NULL) //find or create file
-		fprintf(stderr, "Error in loadHistory: There is no .hist_list file" \
-				"present.\n Creating new history file in home directory\n");
+	if( (fp = fopen(".hist_list", "r")) == NULL){ //find or create file
 
-	else { //file exists, read it.
+		fprintf(stderr, "There is no history file present."\
+				"Creating new history file in home directory\n");
+
+	}else { //file exists, read it.
 
 		while(1) {
 
@@ -395,7 +396,7 @@ void loadAlias(){
  	   there is nothing to add. 
  	 */
 	if( (fp = fopen(".aliases", "r")) == NULL) { //find or create file
-		fprintf(stderr, "Error in loadAlias: There is no aliases file present."\
+		fprintf(stderr, "There is no aliases file present."\
 				"Creating new alias file in home directory\n");
 	
 	} else { //file exists, read it.
