@@ -124,7 +124,7 @@ Ended		- 14/02/2014
  		tidied up as input_command is still being used in some places when it
  		could probably be completely removed.
  
- 		The SimpleShell can now successfully carry out most built in Unix
+ 		The SimpleShell can now successfully carry out most built in Linux
  		commands and run executable files. It can also pass in any required
  		parameters.
 		^ Thomas
@@ -505,7 +505,7 @@ Ended		- 09/04/2014
  		until the whole file has been read.
  		^ Grant
 
- 	v1.0.0 - 09/08/2014 - Final stage Nine
+ 	v0.9.0 - 09/04/2014 - Final stage Nine
 
  		Finalized everything
  		^ Grant
@@ -514,5 +514,41 @@ Ended		- 09/04/2014
 Final
 
 Commenced 	- 09/04/2014 
-Ended		- ONGOING
+Ended		- 13/04/2014
 -------------------------------------------------------------------------------
+
+	v0.9.1 - 09/04/2014 - New Macros
+ 
+ 		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into 
+ 		separate macros for each function. Each function was only one line of
+ 		code so having it as a marco makes it a bit more maintainable.
+ 		^ Aidan
+ 
+ 	v0.9.2 - 09/04/2014 - Header File
+ 
+		New header file called SimpleShell.h has been created to store the
+ 		macros used in the program, the constants, forward declarations as
+ 		well as the structure used for aliases created for the shell.
+ 		^ Tom
+ 
+ 	v0.9.3 - 12/04/2014 - Code Reorganization
+ 
+ 		All the methods where sorted into order under the headings history code,
+ 		alias code and build in commands along with a section for the global
+		variables. More white space was added to make the code easier to read.
+ 		Unnecessary code used in history and alias was removed.
+ 		^ Tom/Aidan
+
+ 	v0.9.4 - 12/04/2014 - Revision History, Comments and error messages
+ 
+ 		Revision histoy and comments checked for spelling mistakes and where
+ 		changed accordingly. New commentary whas added where needed to make
+ 		the code more maintainable. Error messages where changed to also tell
+ 		where the error occurred as well as having a better discription of what
+ 		issue actually was when informing the user.
+ 		^ Grant/Tom
+
+ 	v1.0.0 - 13/04/2014 - Final SimpleShell
+
+ 		Finalized everything
+ 		^ Grant

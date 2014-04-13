@@ -86,39 +86,23 @@
  *		input is an alias before the line is fully tokenised. It is also
  *		possible for the user to remove alias that they had previously created.
  *
- *	v1.0 - 09/04/2014 - Stage Nine
+ *	v0.9 - 09/04/2014 - Stage Nine
  *	
  *		Added functions loadAlias and saveAlias that both allow the storage of  
  * 		aliases in a .aliases file in the users home directory so that
  *		that with each use of the shell any aliases that exist when it is closed
  *		is kept stored for the next use of the program.
  *
- *	v1.1 - 09/04/2014 - New Macros
+ *	v1.0 - 13/04/2014 - Final
  *
- *		Changed SET_HOME_DIR(), GET_PATH(), SET_PATH_STRING() functions into 
- *		separate macros for each function. Each function was only one line of
- *		code so having it as a marco makes it a bit more maintainable.
- *		^ Aidan
- *
- *	v1.2 - 09/04/2014 - Header File
- *
- *		New header file called SimpleShell.h has been created to store the
- *		macros used in the program, the constants, forward declarations as
- *		well as the structure used for aliases created for the shell.
- *		^ Tom
- *
- *	v1.3 - 12/04/2014 - Revision History, Comments and error messages
- *
- *		Revision histoy and comments checked for spelling mistakes and where
- *		changed accordingly. New commentary whas added where needed to make
- *		the code more maintainable. Error messages where changed to also tell
- *		where the error occurred as well as having a better discription of what
- *		issue actually was when informing the user.
- *		^ Grant/Tom
+ *		Program is fully complete to the specification given to us for the
+ *		assignment with all nine stages fully implemented and tested. Code has
+ *		been formatted to help maintainability and readability and any code
+ *		that was not required was removed.
  *
  ******************************************************************************/
 
-#define VERSION "Simple Shell v1.3.0. Last Update 12/04/2014\n"
+#define VERSION "Simple Shell v1.0.0. Last Update 13/04/2014\n"
 #define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
 				" & Aidan O'Grady\n"
 #define COPYRIGHT "Copyright 2014.\n"
