@@ -406,7 +406,7 @@ Ended		- 27/03/2014
 		struct was initialised in main and the processInput() was updated to 
 		check for the initial command being alias and using it to call 
 		add_alias()
- 		^ Aidan
+ 		^ Aidan/Grant
 
  	v0.7.3 - 13/03/2014 - Implemented print_alias()
  
@@ -415,7 +415,7 @@ Ended		- 27/03/2014
 		each alias name and the accompanying command. However if the count_alias
 		is at 0 then there is no alias is the array so the error message is 
 		displayed to show that there is no aliases.
- 		^ Aidan
+ 		^ Aidan/Grant
 
  	v0.7.4 - 13/03/2014 - Implemented alias()
  
@@ -424,7 +424,7 @@ Ended		- 27/03/2014
 		see if anything has been entered after the alias command. If there is 
 		nothing then it will run print_alias otherwise it will run add_alias 
 		instead. Made relevant change to processInput() to use alias().
- 		^ Aidan
+ 		^ Aidan/Grant
 
  	v0.7.5 - 20/03/2014 - Implemented unalias()
  
@@ -437,7 +437,7 @@ Ended		- 27/03/2014
 
 		If it does not find the alias then it will print out a message saying
 		that the alias does not exist.
- 		^ Aidan
+ 		^ Aidan/Grant
  
  	v0.7.6 - 20/03/2014 - Exit changes
  

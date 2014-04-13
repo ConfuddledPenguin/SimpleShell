@@ -862,7 +862,7 @@ void unalias(){
 		}
 
 		else
-			fprintf(stderr, "Error in unlias: Alias does not exist");
+			fprintf(stderr, "Error in unalias: Alias does not exist");
 	}
 } //end unalias()
 
@@ -982,6 +982,10 @@ int tokenise(char *input){
  	int index = alias_exists(command[0]);
  	if(index >= 0) {
 
+ 		while((p = strchr(token, '\\')) != NULL){
+ 			*p = ' ';
+ 		}
+
  		char *temp = malloc(sizeof(temp));
  		strcpy(temp, aliases[index].aliased_command); //The aliased command
  		
@@ -1002,8 +1006,9 @@ int tokenise(char *input){
  	int i = 1;
  	while( (token = strtok(NULL, tokenizer)) != NULL) {
 
- 		if ((p = strchr(token, '\\')) != NULL)
- 		*p = ' ';
+ 		while((p = strchr(token, '\\')) != NULL){
+ 			*p = ' ';
+ 		}
 
  		command[i] = malloc(sizeof(command[i]));
  		strcpy(command[i], token);
