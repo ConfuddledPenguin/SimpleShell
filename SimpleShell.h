@@ -3,7 +3,6 @@
 
 #define INPUT_CONTINUE 0
 #define INPUT_RUN 1
-#define INPUT_ERROR 2
 
 // Array sizes
 #define SIZE_OF_ALIASES 10

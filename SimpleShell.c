@@ -962,7 +962,6 @@ void process_input() {
  * Returns:
  *
  * int INPUT_RUN		- If it was successful
- * int INPUT_ERROR		- If something has gone drastically wrong
  * int INPUT_CONTINUE	- If the entered command should not be processed.
  * 
  */
@@ -1038,11 +1037,10 @@ int tokenise(char *input){
  * Returns:
  *
  * int INPUT_RUN		- If it was successful
- * int INPUT_ERROR		- If something has gone drastically wrong
- * int INPUT_CONTINUE	- If the entered command should not be processed.
+ * int INPUT_CONTINUE	- If the entered command has not been processed.
  * 
  */
-int getInput(){
+void getInput(){
 	
 	char inputCopy[513];
 	char input[513];
@@ -1061,7 +1059,7 @@ int getInput(){
 
  	// Checking user has not just hit enter
  	if (input[0] == '\n')
- 		return INPUT_CONTINUE;
+ 		return;
 
  	// Getting rid of the new line char, replacing with a terminating char
  	if ((p = strchr(input, '\n')) != NULL)
@@ -1073,7 +1071,7 @@ int getInput(){
  	int return_val;
  	if (( return_val = tokenise(input)) != INPUT_RUN ){
 
- 		return return_val;
+ 		return;
  	}
 
  	//Add the input to the history if possible
@@ -1081,8 +1079,6 @@ int getInput(){
  		update_history(inputCopy);
 
  	process_input(); //user input all processed and stored, now carry it out.
-
- 	return INPUT_RUN;
 } //end getInput()
 
 
@@ -1159,21 +1155,12 @@ int main() {
 
 	loadHistoryAlias();
 
-	int return_val = -1;
 	// User loop
 	while (1) {
 
 		reset_command(); // Empty command
 
-		return_val = getInput();
-
-		if (return_val == INPUT_CONTINUE) {
-			continue;
-		} else if (return_val == INPUT_ERROR) {
-			fprintf(stderr, "Error in main: Unknown error caused program to" \
-					"break\n");
-			continue;
-		} 
+		getInput();
  	}; // Close Shell Loop
 
  	return(0);
