@@ -542,7 +542,7 @@ Ended		- 13/04/2014
  	v0.9.4 - 12/04/2014 - Revision History, Comments and error messages
  
  		Revision history and comments checked for spelling mistakes and where
- 		changed accordingly. New commentary whas added where needed to make
+ 		changed accordingly. New commentary was added where needed to make
  		the code more maintainable. Error messages where changed to also tell
  		where the error occurred as well as having a better discription of what
  		issue actually was when informing the user.
