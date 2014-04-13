@@ -16,6 +16,10 @@
 #define GET_PATH() getenv("PATH") //Gets current PATH of system. 
 #define SET_PATH_STRING(path) setenv("PATH", path, 1) //Sets current PATH
 
+/* The following macro is used to remove any extra characters from stdin if it
+ * overflows preventing the user from entering more characters than the
+ * character limit. Source: http://goo.gl/IO3ojg
+ */
 #define FLUSH_STDIN(x) {if(x[strlen(x)-1]!='\n'){do fgets(Junk,16,stdin); \
 						while(Junk[strlen(Junk)-1]!='\n');} \
 						else x[strlen(x)-1]='\0';}
