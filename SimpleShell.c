@@ -12,8 +12,8 @@
  *
  * Authors:
  *      Thomas Maxwell     - gvb12182
- *      Thomas Sinclair    - mlb12174
  *      Aidan O'Grady      - wlb12153
+ *      Thomas Sinclair    - mlb12174
  *      Grant Toghill      - wsb12157
  *
  * Version:
