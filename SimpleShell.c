@@ -103,8 +103,8 @@
  ******************************************************************************/
 
 #define VERSION "Simple Shell v1.0.0. Last Update 13/04/2014\n"
-#define AUTHORS "Created by: Thomas Maxwell, Thomas Sinclair, Grant Toghill" \
-				" & Aidan O'Grady\n"
+#define AUTHORS "Created by: Thomas Maxwell, Aidan O'Grady, Thomas Sinclair" \
+				" & Grant Toghill\n"
 #define COPYRIGHT "Copyright 2014.\n"
 
 
